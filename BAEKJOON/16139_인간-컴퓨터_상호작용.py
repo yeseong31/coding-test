@@ -2,6 +2,7 @@
 
 import sys
 input = sys.stdin.readline
+print = sys.stdout.write
 
 s = input()
 n = int(input())
@@ -17,10 +18,11 @@ for alpha in 'abcdefghijklmnopqrstuvwxyz':
     point.append(tmp)
 
 for _ in range(n):
-    a, l, r = input().split()
+    tmp = input().split()
+    a, l, r = tmp[0], int(tmp[1]), int(tmp[2])
     target = point[ord(a) - ord('a')]
-    ans = target[int(r)] - target[int(l)]
+    ans = target[r] - target[l]
 
-    if s[int(l)] == a:
+    if s[l] == a:
         ans += 1
-    print(str(ans))
+    print(str(ans) + '\n')
