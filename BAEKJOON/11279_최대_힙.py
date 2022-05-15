@@ -1,6 +1,17 @@
+# 연산의 개수 n
+import sys
 import heapq
 
-n = int(input())
-numbers = [int(input()) for _ in range(n)]
-heapq.heapify(numbers)
-print(numbers)
+input = sys.stdin.readline
+
+
+q = []
+for _ in range(int(input())):
+    x = int(input())
+    if x == 0:
+        if not q:
+            print(0)
+        else:
+            print(heapq.heappop(q))
+    else:
+        heapq.heappush(q, x)
