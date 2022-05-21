@@ -21,6 +21,24 @@ def quick_sort(array, start, end):
     quick_sort(array, right + 1, end)
 
 
+# [파이썬 알고리즘 인터뷰] 버전
+def quick_sort2(A, low, high):
+    def partition(l, h):
+        pivot = A[h]
+        left = l
+        for right in range(l, h):
+            if A[right] < pivot:
+                A[left], A[right] = A[right], A[left]
+                left += 1
+        A[left], A[high] = A[high], A[left]
+        return left
+
+    if low < high:
+        pivot = partition(low, high)
+        quick_sort2(A, low, pivot - 1)
+        quick_sort2(A, pivot + 1, high)
+
+
 a = [7, 5, 9, 0, 3, 1, 6, 2, 4, 8]
 quick_sort(a, 0, len(a) - 1)
 print(a)
