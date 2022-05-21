@@ -1,45 +1,32 @@
 # 실전 문제 - 미래 도시(259p)
+# 플로이드 워셜
 
-import heapq
-import sys
-
-# 회사의 개수, 경로의 개수
-n, m = map(int, input().split())
 INF = int(1e9)
 
-graph = [[] for _ in range(n + 1)]
+
+# 회사 수 n, 경로 수 m
+n, m = map(int, input().split())
+# 연결된 회사들의 정보
+graph = [[INF] * (n + 1) for _ in range(n + 1)]
+for a in range(1, n + 1):
+    for b in range(1, n + 1):
+        if a == b:
+            graph[a][b] = 0
+
 for _ in range(m):
     a, b = map(int, input().split())
-    graph[a].append((b, 1))
-    graph[b].append((a, 1))     # 양방향
+    graph[a][b] = 1
+    graph[b][a] = 1
 
-# 최종 목적지, 경유 위치
+# 경유 노드 x, 목적지 k
 x, k = map(int, input().split())
 
-# 최단 거리 테이블
-distance = [INF] * (n + 1)
+for k in range(1, n + 1):
+    for a in range(1, n + 1):
+        for b in range(1, n + 1):
+            graph[a][b] = min(graph[a][b], graph[a][k] + graph[k][b])
 
+distance = graph[1][k] + graph[k][x]
 
-# 목표: 1 -> K, K -> X의 최단 경로를 구하고, 합한 결과 출력
-def dijkstra(start, end):
-    q = []
-    heapq.heappush(q, (0, start))
-    distance[start] = True
-    while q:
-        dist, now = heapq.heappop(q)
-        if distance[now] < dist:
-            continue
-        for i in graph[now]:
-            cost = dist + i[1]
-            if cost < distance[i[0]]:
-                distance[i[0]] = cost
-                heapq.heappush(q, (cost, i[0]))
-    return distance[end]
+print(distance if distance < INF else '-1')
 
-
-n1 = dijkstra(1, k)
-n2 = dijkstra(k, x)
-if n1 != INF and n2 != INF:
-    print(n1 + n2)
-else:
-    print(-1)
