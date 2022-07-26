@@ -13,7 +13,6 @@ def solution(files):
                 tail += file[i:]
                 break
         answer.append([head, number, tail])
-
     return [''.join(v) for v in sorted(answer, key=lambda x: (x[0].lower(), int(x[1])))]
 
 
