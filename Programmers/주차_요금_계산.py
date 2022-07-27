@@ -7,9 +7,10 @@ def solution(fees, records):
 
     dic = collections.defaultdict(list)
     for record in records:
-        t, car_num, log = record.split()
-        t = int(t[:2]) * 60 + int(t[3:])
-        dic[car_num].append(t)
+        # 시각, 차량 번호, 내역
+        t, car, _ = record.split()
+        t = t.split(':')
+        dic[car].append(int(t[0]) * 60 + int(t[1]))
 
     for k in dic:
         # 23:59 출차 처리
