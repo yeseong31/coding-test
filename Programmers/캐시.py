@@ -8,16 +8,12 @@ def solution(cacheSize, cities):
     if cacheSize <= 0:
         return len(cities) * 5
 
-    cache = collections.deque([])
+    cache = collections.deque(maxlen=cacheSize)
     t = 0
     for city in cities:
         city = city.lower()
         # cache miss
         if city not in cache:
-            # 큐가 꽉 찼다면
-            if len(cache) >= cacheSize:
-                # 최근에 사용하지 않은 아이를 제거해야 함
-                cache.popleft()
             t += 5
         # cache hit
         else:
