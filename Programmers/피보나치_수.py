@@ -1,10 +1,9 @@
 def solution(n):
-    dp = [0] * 100001
-    dp[0] = 0
-    dp[1] = 1
-    dp[2] = 1
-
+    v1 = 0
+    v2 = 1
     for i in range(3, n + 1):
-        dp[i] = dp[i - 1] + dp[i - 2]
+        v1, v2 = v2, v1 + v2
+    return v1 + v2
 
-    return dp[n] % 1234567
+
+print(solution(5))
