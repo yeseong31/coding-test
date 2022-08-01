@@ -3,7 +3,7 @@ import re
 
 def solution(new_id):
     answer = re.sub('[^a-z\d\w\.\-\_]', '', new_id.lower())
-    answer = re.sub('\.\.+', '.', answer)
+    answer = re.sub('\.\.+', '..', answer)
     answer = re.sub('\.$', '', answer.lstrip('.'))
     if len(answer) == 0:
         answer = 'a'
