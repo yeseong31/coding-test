@@ -1,24 +1,18 @@
+import math
+
+
 def solution(n, stations, w):
     answer = 0
     t = len(stations) - 1
-    area = 2 * w + 1
 
     while t >= 0 and n > 0:
-        target = stations[t]
-        if n >= target:
-            div, mod = divmod(n - target - w, area)
-            answer += div
-            if mod:
-                answer += 1
-
-        n = target - w - 1
+        if n >= stations[t]:
+            answer += math.ceil((n - stations[t] - w) / (2 * w + 1))
+        n = stations[t] - w - 1
         t -= 1
 
     if n > 0:
-        div, mod = divmod(n, area)
-        answer += div
-        if mod:
-            answer += 1
+        answer += math.ceil(n / (2 * w + 1))
     return answer
 
 
