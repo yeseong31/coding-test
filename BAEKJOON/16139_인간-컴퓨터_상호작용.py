@@ -1,28 +1,21 @@
 # 특정 문자열 s, 특정 알파벳 a, 문자열의 구간 [l, r]
-
+import string
 import sys
-input = sys.stdin.readline
-print = sys.stdout.write
 
 s = input()
 n = int(input())
+length = len(s)
 
-point = []
-for alpha in 'abcdefghijklmnopqrstuvwxyz':
-    count = 0
-    tmp = []
-    for c in str(s):
-        if alpha == c:
-            count += 1
-        tmp.append(count)
-    point.append(tmp)
+alphabets = {}
+for c in string.ascii_lowercase:
+    alphabets[c] = [0]
+    cnt = 0
+    for i in range(length):
+        if s[i] == c:
+            cnt += 1
+        alphabets[c].append(cnt)
 
 for _ in range(n):
-    tmp = input().split()
+    tmp = sys.stdin.readline().rstrip().split()
     a, l, r = tmp[0], int(tmp[1]), int(tmp[2])
-    target = point[ord(a) - ord('a')]
-    ans = target[r] - target[l]
-
-    if s[l] == a:
-        ans += 1
-    print(str(ans) + '\n')
+    print(alphabets[a][r + 1] - alphabets[a][l])
