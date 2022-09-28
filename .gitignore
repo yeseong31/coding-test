@@ -212,4 +212,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-Programmers/2022실전대비모의고사/**/*
+/Programmers/secret/**/*
