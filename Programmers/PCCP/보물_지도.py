@@ -1,7 +1,6 @@
 from collections import deque
 
 
-# 정확성 36.6
 def solution(n, m, hole):
     dx = (1, 0, -1, 0)
     dy = (0, 1, 0, -1)
@@ -9,46 +8,40 @@ def solution(n, m, hole):
     board = [[1000001] * m for _ in range(n)]
     for a, b in hole:
         board[a - 1][b - 1] = -1
-    visited = [[False] * m for _ in range(n)]
 
     q = deque()
     q.append((0, 0, True))
-    visited[0][0] = True
     board[0][0] = 0
 
     while q:
         x, y, jump = q.popleft()
         for i in range(4):
             nx, ny = x + dx[i], y + dy[i]
-            if nx < 0 or nx >= n or ny < 0 or ny >= m \
-                    or (visited[nx][ny] and board[nx][ny] <= board[x][y] + 1):
+            # 범위를 넘어선 경우는 탐색하지 않음
+            if nx < 0 or nx >= n or ny < 0 or ny >= m:
                 continue
-            if board[nx][ny] == -1:
+            # 벽인 경우
+            elif board[nx][ny] == -1:
+                # 점프를 이미 쓴 경우에는 탐색하지 않음
                 if not jump:
                     continue
                 nnx, nny = nx + dx[i], ny + dy[i]
-                if nnx < 0 or nnx >= n or nny < 0 or nny >= m or board[nnx][nny] == -1 \
-                        or (visited[nnx][nny] and board[nnx][nny] <= board[x][y] + 1):
+                # 점프 이후의 칸이 범위를 넘어서거나 벽인 경우에도 탐색하지 않음
+                if nnx < 0 or nnx >= n or nny < 0 or nny >= m or board[nnx][nny] == -1:
                     continue
-                q.append((nnx, nny, False))
-                visited[nnx][nny] = True
-                board[nnx][nny] = board[x][y] + 1
-            else:
-                q.append((nx, ny, jump))
-                visited[nx][ny] = True
+                # 점프 이후의 칸의 거리를 갱신할 수 있는 경우 갱신
+                elif board[nnx][nny] > board[x][y] + 1:
+                    board[nnx][nny] = board[x][y] + 1
+                    q.append((nnx, nny, False))
+            # 이동 후 칸의 거리를 갱신할 수 있는 경우 갱신
+            elif board[nx][ny] > board[x][y] + 1:
                 board[nx][ny] = board[x][y] + 1
+                q.append((nx, ny, jump))
 
-    for bo in board:
-        print(bo)
-    print()
-    for vi in visited:
-        print(vi)
-    print()
-
-    if not visited[n - 1][m - 1]:
+    if board[n - 1][m - 1] == 1000001:
         return -1
     return board[n - 1][m - 1]
 
 
-print(solution(4, 4, [[2, 3], [3, 3]]))
-print(solution(5, 4, [[2, 1], [2, 2], [2, 3], [4, 2], [4, 3], [4, 4], [5, 1]]))
+print(solution(4, 4, [[1, 3], [2, 3], [3, 3], [2, 4]]))
+print(solution(5, 4, [[2, 1], [2, 2], [2, 3], [2, 4], [3, 3], [4, 1], [4, 3], [5, 3]]))
