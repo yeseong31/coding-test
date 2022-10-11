@@ -1,13 +1,13 @@
 def solution(n, s):
     if n > s:
         return [-1]
-
     div, mod = divmod(s, n)
     answer = [div] * n
-
-    for i in range(mod):
-        answer[len(answer) - i - 1] += 1
-
+    i = n - 1
+    while mod != 0:
+        answer[i] += 1
+        i -= 1
+        mod -= 1
     return answer
 
 
@@ -17,5 +17,5 @@ print(solution(n, s))
 n, s = 2, 1
 print(solution(n, s))
 
-n, s = 3, 8
+n, s = 2, 8
 print(solution(n, s))

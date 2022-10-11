@@ -2,27 +2,27 @@ import heapq
 
 
 def solution(operations):
-    q1 = []
-    p = 0
-    for target in  operations:
-        op, n = target.split()
-        n = int(n)
+    q1, q2 = [], []
+    length = 0
+
+    for operation in operations:
+        op, n = operation.split()
         # 숫자 삽입
         if op == 'I':
-            heapq.heappush(q1, n)
-            p += 1
-        elif p > 0 and op == 'D':
+            heapq.heappush(q1, int(n))
+            length += 1
+        elif length > 0:
             # 최댓값 삭제
-            if n == 1:
+            if n == '1':
                 q2 = heapq.nlargest(len(q1), q1)
                 heapq.heappop(q2)
                 q1 = q2
             # 최솟값 삭제
-            elif n == -1:
+            else:
                 heapq.heappop(q1)
-            p -= 1
+            length -= 1
 
-    if p == 0:
+    if length == 0:
         return [0, 0]
     return [*heapq.nlargest(1, q1), heapq.heappop(q1)]
 
