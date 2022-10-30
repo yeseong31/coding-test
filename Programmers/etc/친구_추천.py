@@ -21,7 +21,7 @@ def solution(user: str, friends: list[list[str]], visitors: list[str]) -> list[s
     for name in sorted(points, key=lambda x: (-points[x], x)):
         if name != user and name not in graph[user] and points[name] > 0:
             result.append(name)
-    return result
+    return result[:5]
 
 
 user = 'mrko'
