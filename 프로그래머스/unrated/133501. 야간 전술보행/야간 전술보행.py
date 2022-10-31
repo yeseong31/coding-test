@@ -2,13 +2,13 @@ def solution(distance, scope, times):
     answer = distance
 
     for i in range(len(times)):
-        check = 'o' * times[i][0] + 'x' * times[i][1]
-        left, right = sorted(scope[i])
-        target = left % sum(times[i])
-        
-        for step in range(right - left + 1):
-            if check[target - 1] == 'o':
-                answer = min(answer, left + step)
-            target = target + 1 if target < len(check) else 1
+        rule = 'o' * times[i][0] + 'x' * times[i][1]
+        l, r = sorted(scope[i])
+        s = l % sum(times[i])
+
+        for step in range(r - l + 1):
+            if rule[s - 1] == 'o':
+                answer = min(answer, l + step)
+            s = s + 1 if s < len(rule) else 1
 
     return answer
