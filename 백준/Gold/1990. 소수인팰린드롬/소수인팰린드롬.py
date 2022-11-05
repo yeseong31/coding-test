@@ -14,8 +14,14 @@ if b > MAX_SIZE:
 if a % 2 == 0:
     a += 1
 
-answer = [n for n in range(a, b + 1, 2) if str(n) == str(n)[::-1]]
-answer = [n for n in answer if is_prime_number(n)]
+answer = []
+for n in range(a, b + 1, 2):
+    s = str(n)
+    if s != s[::-1]:
+        continue
+    if is_prime_number(n):
+        answer.append(n)
+
 for x in answer:
     print(x)
 print(-1)
