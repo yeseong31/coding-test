@@ -40,24 +40,26 @@ class Table:
         if right is not None:
             self.table[right].left = r
 
-    def get_table(self):
-        return self.table
+    def get_answer(self):
+        answer = ''
+        for node in self.table:
+            answer += 'X' if node.rm else 'O'
+        return answer
 
 
 def solution(n, k, cmd):
-    answer = ''
-    table = Table(n, k)
-
+    t = Table(n, k)
     for target in cmd:
         if target[0] == 'C':
-            table.remove()
-        elif target[0] == 'Z':
-            table.restore()
-        elif target[0] == 'U':
-            table.up(int(target.split()[1]))
-        elif target[0] == 'D':
-            table.down(int(target.split()[1]))
-
-    for node in table.get_table():
-        answer += 'X' if node.rm else 'O'
-    return answer
+            t.remove()
+            continue
+        if target[0] == 'Z':
+            t.restore()
+            continue
+        x = int(target.split()[1])
+        if target[0] == 'U':
+            t.up(x)
+            continue
+        if target[0] == 'D':
+            t.down(x)
+    return t.get_answer()
