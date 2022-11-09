@@ -1,4 +1,7 @@
+import sys
 from collections import deque
+
+input = sys.stdin.readline
 
 
 def rotate_matrix(a):
@@ -34,13 +37,11 @@ dy = (0, 1, 0, -1)
 
 answer = 0
 q = deque()
+points = []
 
 while True:
     visited = [[False] * 12 for _ in range(6)]
     check = False
-    check_area = 0
-    points = []
-    
     for i in range(6):
         for j in range(12):
             if board[i][j] == '.':
@@ -49,18 +50,14 @@ while True:
                 continue
             p = bfs(i, j, [])
             if len(p) >= 4:
-                check_area += len(p)
                 points.extend(p)
                 check = True
-                
     if not check:
         break
     answer += 1
-    
     while points:
         x, y = points.pop()
         board[x][y] = '.'
-        
     for i in range(6):
         stack = []
         for _ in range(12):
