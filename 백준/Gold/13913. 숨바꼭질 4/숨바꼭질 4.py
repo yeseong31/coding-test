@@ -1,7 +1,4 @@
-import sys
 from collections import deque
-
-input = sys.stdin.readline
 
 
 def solution(n, k):
@@ -11,24 +8,25 @@ def solution(n, k):
         return
 
     inf = max(n, k) + max(n, k) // 2 + 1
-    q = deque([(n, [])])
-    visited = [-1] * inf
-    visited[n] = 0
+    q = deque([n])
+    dist, moves = [0] * inf, [0] * inf
 
     while q:
-        c, step = q.popleft()
-        length = len(step)
-        if c == k:
-            print(length)
-            print(n, end=' ')
-            print(*step)
+        x = q.popleft()
+        if x == k:
+            print(dist[x])
+            prev = x
+            answer = []
+            for _ in range(dist[x] + 1):
+                answer.append(prev)
+                prev = moves[prev]
+            print(*answer[::-1])
             return
-        if length > visited[c]:
-            continue
-        for x in [c * 2, c - 1, c + 1]:
-            if 0 <= x < inf and (visited[x] == -1 or length + 1 < visited[x]):
-                q.append((x, step + [x]))
-                visited[x] = length + 1
+        for nx in (x - 1, x + 1, x * 2):
+            if 0 <= nx < inf and not dist[nx]:
+                dist[nx] = dist[x] + 1
+                moves[nx] = x
+                q.append(nx)
 
 
 n, k = map(int, input().split())
