@@ -1,14 +1,13 @@
+import sys
 from collections import deque
 
-
-def answer(x, lst):
-    print(x)
-    print(*lst)
+input = sys.stdin.readline
 
 
 def solution(n, k):
     if n >= k:
-        answer(n - k, [x for x in range(n, k - 1, -1)])
+        print(n - k)
+        print(*[x for x in range(n, k - 1, -1)])
         return
 
     inf = max(n, k) + max(n, k) // 2 + 1
@@ -20,7 +19,9 @@ def solution(n, k):
         c, step = q.popleft()
         length = len(step)
         if c == k:
-            answer(length, [n] + step)
+            print(length)
+            print(n, end=' ')
+            print(*step)
             return
         if length > visited[c]:
             continue
