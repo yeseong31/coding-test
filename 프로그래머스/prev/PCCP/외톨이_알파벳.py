@@ -1,26 +1,24 @@
-import collections
+from collections import defaultdict
 
 
 def solution(input_string):
-    dic = collections.defaultdict(int)
-    left = right = 0
-    while left <= right < len(input_string):
-        # 단어 뭉치 확인
-        while right < len(input_string) and input_string[left] == input_string[right]:
-            right += 1
-        # 탐색 알파벳 저장
-        dic[input_string[left]] += 1
-        # 탐색 위치 초기화
-        left = right
-    # 외톨이 알파벳 확인
     answer = set()
-    for d in dic.keys():
-        if dic[d] >= 2:
-            answer.add(d)
-    # 결과
-    if not answer:
-        return 'N'
-    return ''.join(sorted(answer))
+    dic = defaultdict(int)
+    left = 0
+    
+    for right in range(len(input_string) + 1):
+        if right == len(input_string):
+            dic[input_string[left]] += 1
+            break
+        if input_string[left] != input_string[right]:
+            dic[input_string[left]] += 1
+            left = right
+    
+    for k in dic:
+        if dic[k] > 1 and k not in answer:
+            answer.add(k)
+    
+    return ''.join(sorted(answer)) if answer else 'N'
 
 
 input_string = "eeddee"
