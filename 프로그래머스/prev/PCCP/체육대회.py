@@ -1,16 +1,11 @@
-import itertools
+from itertools import permutations
 
 
 def solution(ability):
-    # 결과: 선발된 대표들의 해당 종목에 대한 능력치 합의 최댓값
     answer = 0
-    # 종목의 수
-    e = len(ability[0])
-    # 학생의 수
-    s = len(ability)
-    # 학생 선택 및 능력치 계산
-    for comb in list(itertools.permutations(range(s), e)):
-        answer = max(answer, sum([ability[c][i] for i, c in enumerate(comb)]))
+    n, m = len(ability), len(ability[0])
+    for perm in permutations(range(n), m):
+        answer = max(answer, sum([ability[i][j] for i, j in zip(perm, list(range(m)))]))
     return answer
 
 
