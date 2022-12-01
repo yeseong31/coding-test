@@ -1,36 +1,29 @@
 import sys
-
 input = sys.stdin.readline
-
-
-def watch_area(a, b, direction, board):
-    xy = []
-    for d in direction:
-        x, y = a, b
-
-        while True:
-            x, y = x + dx[d], y + dy[d]
-            if x < 0 or x >= n or y < 0 or y >= m or board[x][y] == '6':
-                break
-
-            if board[x][y] == '0':
-                board[x][y] = '#'
-                xy.append((x, y))
-    return xy
 
 
 def dfs(check, area):
     global answer
-
     if check == len(cctvs):
         answer = min(answer, sum([x.count('0') for x in area]))
         return
 
     x, y, cctv = cctvs[check]
-    for i in mode[cctv - 1]:
-        lst = watch_area(x, y, i, area)
+    for direction in mode[cctv - 1]:
+        lst = []
+        for d in direction:
+            nx, ny = x, y
+            
+            while True:
+                nx, ny = nx + dx[d], ny + dy[d]
+                if nx < 0 or nx >= n or ny < 0 or ny >= m or area[nx][ny] == '6':
+                    break
+                if area[nx][ny] != '0':
+                    continue
+                area[nx][ny] = '#'
+                lst.append((nx, ny))
+
         dfs(check + 1, area)
-        
         for a, b in lst:
             area[a][b] = '0'
 
@@ -52,9 +45,8 @@ office, cctvs = [], []
 for i in range(n):
     row = list(map(str, input().split()))
     for j, v in enumerate(row):
-        if v in ['0', '6']:
-            continue
-        cctvs.append((i, j, int(v)))
+        if v not in ('0', '6'):
+            cctvs.append((i, j, int(v)))
     office.append(row)
 
 answer = 65
