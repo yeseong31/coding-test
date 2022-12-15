@@ -1,20 +1,19 @@
+import sys
 from collections import defaultdict
 
-n = int(input())
-words = []
+input = sys.stdin.readline
+n = int(input().strip())
+words = [input().strip() for _ in range(n)]
+
 weights = defaultdict(int)
-dic = defaultdict(str)
+for word in words:
+    for i in range(len(word) - 1, -1, -1):
+        weights[word[i]] += 10 ** (len(word) - i)
 
-for _ in range(n):
-    target = input()
-    words.append(target)
-    for i in range(len(target) - 1, -1, -1):
-        weights[target[i]] += 10 ** (len(target) - i)
-
-weights = sorted(weights.items(), key=lambda x: x[1], reverse=True)
 cnt = 9
-for i, j in weights:
+dic = defaultdict(str)
+for i, j in sorted(weights.items(), key=lambda x: x[1], reverse=True):
     dic[i] = str(cnt)
     cnt -= 1
 
-print(sum(int(''.join(dic[x] for x in alphabet)) for alphabet in words))
+print(sum(int(''.join(dic[x] for x in word)) for word in words))
