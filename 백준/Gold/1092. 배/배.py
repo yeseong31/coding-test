@@ -14,6 +14,8 @@ def solution():
     answer = 0
     while boxes:
         for c in range(n):
+            if not boxes or cranes[c] < boxes[-1]:
+                break
             for b in range(len(boxes)):
                 if cranes[c] >= boxes[b]:
                     boxes.pop(b)
