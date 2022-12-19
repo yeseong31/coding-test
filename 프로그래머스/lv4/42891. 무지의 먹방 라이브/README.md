@@ -99,3 +99,60 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges
+
+### 문제 풀이
+- 처음에는 deque()를 이용하여 순서대로 음식을 섭취하는 것을 반복하였는데, 제한 시간을 초과하여 효율성에서 통과하지 못했다.
+  ```python
+  # 효율성에서 떨어진 코드
+  from collections import deque
+
+
+  def solution(food_times, k):
+      q = deque([(i, v) for i, v in enumerate(food_times, 1)])
+      for _ in range(k):
+          idx, food = q.popleft()
+          food -= 1
+          if food != 0:
+              q.append((idx, food))
+        
+      return q.popleft()[0]
+  ```
+  - food_times와 k가 각각 200000, 2000000까지 될 수 있으므로 단순 for문을 도는 것만으로도 제한 시간을 초과한다.
+
+
+- 따라서 섭취할 때 **시간이 적게 걸리는 음식부터 제거해 나가는 방법**으로 문제를 해결하였다.
+
+
+- 먼저 섭취 시간이 짧은 순으로 우선순위 큐를 설정한다.
+  ```python
+  q = [(v, i) for i, v in enumerate(food_times, 1)]
+  heapify(q)
+  ```
+
+  - 우선순위 큐를 이용하여 섭취 시간을 구하는 공식은 다음과 같다.
+  > 섭취 시간 
+  >
+  > = (현재 음식 섭취 시간 - 이전 음식 섭취 시간) x 남은 음식의 수
+  > 
+  > = (heappop(q)[0] - prev) * length
+
+    - 이전 음식 섭취 시간을 계산 과정에서 빼는 이유는 다음과 같다.
+      - 음식 섭취 과정에서 회전판이 음식 섭취 시간만큼 회전한다.
+      - 이때 회전 횟수만큼 나머지 음식들도 양이 줄어든다.
+      - 즉 현재 음식은 이미 이전 음식의 섭취 시간만큼 섭취된 상태이므로 이를 반영하여 계산을 수행해야 한다.
+
+- 이 공식을 코드로 최종 적용하면 다음과 같다.
+  ```python
+  while q and (q[0][0] - prev) * len(q) <= k:
+      t = heappop(q)[0]
+      k -= (t - prev) * (len(q) + 1)  # heappop으로 인해 len(q)는 1이 작은 상태임
+      prev = t
+  ```
+
+- 반복문을 빠져나오는 시점의 k는 무지 기준으로 회전판을 돌려가며 남은 음식을 먹어야 할 횟수(초)가 된다.
+- 따라서 heapify 시킨 q를 다시 음식 번호 순으로 정렬시킨 후 나머지 연산으로 최종 결과를 선택 후 이를 반환하면 된다.
+  ```python
+  return sorted(q, key=lambda x: x[1])[k % len(q)][1]
+  ```
+  
+- 최종 코드는 [이곳](https://github.com/yeseong31/COTE/blob/master/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4/lv4/42891.%E2%80%85%EB%AC%B4%EC%A7%80%EC%9D%98%E2%80%85%EB%A8%B9%EB%B0%A9%E2%80%85%EB%9D%BC%EC%9D%B4%EB%B8%8C/%EB%AC%B4%EC%A7%80%EC%9D%98%E2%80%85%EB%A8%B9%EB%B0%A9%E2%80%85%EB%9D%BC%EC%9D%B4%EB%B8%8C.py)을 참고한다.
