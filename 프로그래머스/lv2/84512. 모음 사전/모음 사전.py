@@ -1,12 +1,5 @@
+from itertools import product
+
 def solution(word):
-    def dfs(words: list, cur: str, length: int):
-        if length >= 6:
-            return
-        if cur != '':
-            words.append(cur)
-        for x in 'AEIOU':
-            dfs(words, cur + x, length + 1)
-        
-    data = []
-    dfs(data, '', 0)
+    data = sorted([''.join(p) for i in range(5) for p in product('AEIOU', repeat=i + 1)])
     return data.index(word) + 1
