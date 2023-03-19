@@ -1,11 +1,18 @@
-def solution(n, times):
-    answer = 0
-    l, r = 0, max(times) * n
-    while l <= r:
-        m = (l + r) // 2
-        if sum([m // t for t in times]) >= n:
-            answer = m
-            r = m - 1
+def binary_search(n, times):
+    start, end = 1, max(times) * n
+    while start <= end:
+        mid = (start + end) // 2
+        check = 0
+        for t in times:
+            check += mid // t
+            if check >= n:
+                break
+        if check >= n:
+            result = mid
+            end = mid - 1
         else:
-            l = m + 1
-    return answer
+            start = mid + 1
+    return result
+
+def solution(n, times):
+    return binary_search(n, times)
