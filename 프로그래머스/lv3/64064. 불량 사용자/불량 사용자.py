@@ -1,23 +1,17 @@
-from itertools import permutations
+import re
 
 
 def solution(user_id, banned_id):
-    def check_id(bid, uid):
-        if len(bid) != len(uid):
-            return False
-        for b, u in zip(bid, uid):
-            if b != '*' and b != u:
-                return False
-        return True
+    def search(index: int, visited: int, answer: set, patterns: list) -> None:
+        if index == len(patterns):
+            answer.add(visited)
+            return
+        for i in range(len(user_id)):
+            if visited & (1 << i) > 0 or not re.fullmatch(patterns[index], user_id[i]):
+                continue
+            search(index + 1, visited | (1 << i), answer, patterns)
 
-    answer = []    
-    for perm in permutations(user_id, len(banned_id)):
-        count = 0
-        for bid, uid in zip(banned_id, perm):
-            if check_id(bid, uid):
-                count += 1
-        check_id_set = set(perm)
-        if count == len(banned_id) and check_id_set not in answer:
-            answer.append(check_id_set)
-    
+    answer = set()
+    patterns = [x.replace('*', '.') for x in banned_id]
+    search(0, 0, answer, patterns)
     return len(answer)
