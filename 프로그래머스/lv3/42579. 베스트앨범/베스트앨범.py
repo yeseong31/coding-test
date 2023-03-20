@@ -1,13 +1,17 @@
-from collections import defaultdict, Counter
+from collections import defaultdict
 
 
 def solution(genres, plays):
     answer = []
-    total = defaultdict(int)
-    musics = defaultdict(list)
+    dic = defaultdict(int)
+    q = defaultdict(list)
+    
     for i, (g, p) in enumerate(zip(genres, plays)):
-        total[g] += p
-        musics[g].append((p, i))
-    for k in sorted(total, key=lambda x: -total[x]):
-        answer += [v[1] for v in sorted(musics[k], key=lambda x: -x[0])[:2]]
+        dic[g] += p
+        q[g].append((i, p))
+
+    for k in sorted(dic.items(), key=lambda x: x[1], reverse=True):
+        for i, _ in sorted(q[k[0]], key=lambda x: x[1], reverse=True)[:2]:
+            answer.append(i)
+
     return answer
