@@ -1,23 +1,24 @@
 def solution(stones, k):
     answer = 0
-    left, right = 0, max(stones)
+    start, end = 0, max(stones)
     
-    while left <= right:
-        mid = (left + right) // 2
-        check = 0
+    while start <= end:
+        mid = (start + end) // 2
+        result = True
+        count = 0
         
         for stone in stones:
-            if check == k:
-                break
-            if stone - mid <= 0:
-                check += 1
+            if stone < mid:
+                count += 1
+                if count >= k:
+                    result = False
             else:
-                check = 0
-                
-        if check == k:
-            answer = mid
-            right = mid - 1
+                count = 0
+        
+        if result:
+            answer = max(answer, mid)
+            start = mid + 1
         else:
-            left = mid + 1
-    
+            end = mid - 1
+        
     return answer
