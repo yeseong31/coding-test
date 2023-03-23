@@ -1,20 +1,19 @@
-from collections import Counter
+from collections import defaultdict
 
 
 def solution(gems):
-    answer = 0, len(gems)
-    kind = set(gems)
-    counter = Counter()
+    count = len(set(gems))
+    left, right = 0, len(gems) - 1
+    dic = defaultdict(int)
     
     l = 0
-    for r in range(len(gems)):
-        counter[gems[r]] += 1
-        while len(counter) == len(kind):
-            counter[gems[l]] -= 1
-            if counter[gems[l]] == 0:
-                del counter[gems[l]]
-            l += 1            
-            if r + 1 - l < answer[1] - answer[0]:
-                answer = l, r + 1
-    
-    return answer
+    for r, v in enumerate(gems):
+        dic[v] += 1
+        if len(dic) == count:
+            while l < r and dic[gems[l]] > 1:
+                dic[gems[l]] -= 1
+                l += 1
+            if r - l < right - left:
+                left, right = l, r
+            
+    return left + 1, right + 1
