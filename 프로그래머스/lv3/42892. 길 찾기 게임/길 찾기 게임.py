@@ -1,59 +1,59 @@
 import sys
-sys.setrecursionlimit(10 ** 4)
+sys.setrecursionlimit(10**6)
 
 
 class Node:
-    def __init__(self, x, v):
+    def __init__(self, i, x):
+        self.i = i
+        self.x = x
         self.left = None
         self.right = None
-        self.x = x
-        self.v = v
-
         
+
 class Tree:
     def __init__(self):
         self.root = None
     
-    def insert(self, x, v):
-        self.root = self._insert(self.root, x, v)
+    def insert(self, i, x):
+        self.root = self._insert(self.root, i, x)
         return self.root is not None
-
-    def _insert(self, node, x, v):
+    
+    def _insert(self, node, i, x):
         if node is None:
-            return Node(x, v)
+            return Node(i, x)
         if x < node.x:
-            node.left = self._insert(node.left, x, v)
+            node.left = self._insert(node.left, i, x)
         else:
-            node.right = self._insert(node.right, x, v)
+            node.right = self._insert(node.right, i, x)
         return node
     
     def preorder(self):
         return self._preorder(self.root)
 
-    def _preorder(self, node, lst=[]):
-        if lst is None:
-            lst = []
+    def _preorder(self, node, result=None):
+        if result is None:
+            result = []
         if node:
-            lst.append(node.v)
-            self._preorder(node.left, lst)
-            self._preorder(node.right, lst)
-        return lst
+            result.append(node.i)
+            self._preorder(node.left, result)
+            self._preorder(node.right, result)
+        return result
     
     def postorder(self):
         return self._postorder(self.root)
     
-    def _postorder(self, node, lst=[]):
-        if lst is None:
-            lst = []
+    def _postorder(self, node, result=None):
+        if result is None:
+            result = []
         if node:
-            self._postorder(node.left, lst)
-            self._postorder(node.right, lst)      
-            lst.append(node.v)
-        return lst    
+            self._postorder(node.left, result)
+            self._postorder(node.right, result)
+            result.append(node.i)
+        return result
 
 
 def solution(nodeinfo):
     tree = Tree()
-    for x, y, v in sorted([(x, y, i) for i, (x, y) in enumerate(nodeinfo, 1)], key=lambda w: (-w[1], w[0])):
-        tree.insert(x, v)
+    for x, _, i in sorted([(x, y, i) for i, (x, y) in enumerate(nodeinfo, 1)], key=lambda k: (-k[1], k[0])):
+        tree.insert(i, x)
     return tree.preorder(), tree.postorder()
