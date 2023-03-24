@@ -1,11 +1,9 @@
 def solution(routes):
     answer = 0
-    
-    routes.sort(key=lambda x: -x[1])
+    routes.sort()
     while routes:
-        end = routes.pop()[1]
-        answer += 1
-        while routes and routes[-1][0] <= end:
+        target = routes.pop()[0]
+        while routes and routes[-1][0] <= target <= routes[-1][1]:
             routes.pop()
-    
+        answer += 1
     return answer
