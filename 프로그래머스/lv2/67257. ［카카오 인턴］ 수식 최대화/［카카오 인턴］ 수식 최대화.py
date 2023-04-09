@@ -2,49 +2,47 @@ import re
 from itertools import permutations
 
 
-def calculate(exp):
+def calc(target):
     stack = []
-    for tok in exp:
-        if tok.isdigit():
-            stack.append(int(tok))
+    for t in target:
+        if t.isdigit():
+            stack.append(int(t))
             continue
-        m, n = stack.pop(), stack.pop()
-        if tok == '+':
-            stack.append(n + m)
-        elif tok == '-':
-            stack.append(n - m)
+        n2, n1 = stack.pop(), stack.pop()
+        if t == '+':
+            stack.append(n1 + n2)
+        elif t == '-':
+            stack.append(n1 - n2)
         else:
-            stack.append(n * m)
-    return abs(stack.pop())
-
+            stack.append(n1 * n2)
+    return stack.pop()
 
 def to_postfix(tokens, priority):
-    ops, result = [], []
+    stack, result = [], []
+    
     for token in tokens:
         if token.isdigit():
             result.append(token)
             continue
-        if not ops:
-            ops.append(token)
+        if not stack:
+            stack.append(token)
             continue
-        while ops:
-            if priority[token] > priority[ops[-1]]:
+        # 우선순위가 낮다면 더 이상 낮아지지 않을 때까지 스택 비우기
+        while stack:
+            if priority[token] < priority[stack[-1]]:
                 break
-            result.append(ops.pop())
-        ops.append(token)
-        
-    while ops:
-        result.append(ops.pop())
-    return result
+            result.append(stack.pop())
+        stack.append(token)
+
+    while stack:
+        result.append(stack.pop())
+    return calc(result)
 
 
 def solution(expression):
     answer = 0
     tokens = re.split(r'([-+*])|\s+', expression)
-    
-    for x in permutations(('+', '-', '*')):
-        priority = {v: i for i, v in enumerate(list(x))}
-        exp = to_postfix(tokens, priority)
-        answer = max(answer, calculate(exp))
-    
+    for perm in permutations(['+', '-', '*'], 3):
+        priority = {v: i for i, v in enumerate(perm)}
+        answer = max(answer, abs(to_postfix(tokens, priority)))
     return answer
