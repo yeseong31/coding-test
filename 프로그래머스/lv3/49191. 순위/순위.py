@@ -1,19 +1,22 @@
+from collections import defaultdict
+
+
 def solution(n, results):
-    answer = [0] * (n + 1)
-    graph = [[0] * (n + 1) for _ in range(n + 1)]
+    answer = 0
+    win, lose = defaultdict(set), defaultdict(set)
     
-    for a, b in results:
-        graph[a][b] = 1
-    
-    for k in range(1, n + 1):
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if graph[i][k] == graph[k][j] == 1:
-                    graph[i][j] = 1
+    for w, l in results:
+        win[w].add(l)
+        lose[l].add(w)
+
+    for i in range(1, n + 1):
+        for w in win[i]:
+            lose[w].update(lose[i])
+        for l in lose[i]:
+            win[l].update(win[i])
     
     for i in range(1, n + 1):
-        for j in range(1, n + 1):
-            answer[i] += graph[i][j]
-            answer[j] += graph[i][j]
-
-    return answer.count(n - 1)
+        if len(win[i]) + len(lose[i]) == n - 1:
+            answer += 1
+    
+    return answer
