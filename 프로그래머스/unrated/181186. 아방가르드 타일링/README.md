@@ -1,10 +1,10 @@
 # [unrated] 아방가르드 타일링 - 181186 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181186#) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181186) 
 
 ### 성능 요약
 
-메모리: 13.7 MB, 시간: 81.51 ms
+메모리: 13.8 MB, 시간: 93.19 ms
 
 ### 구분
 
