@@ -2,8 +2,11 @@ def dfs(start, end, tree):
     if start >= end:
         return tree[start]
     mid = (start + end) // 2
-    left, right = dfs(start, mid - 1, tree), dfs(mid + 1, end, tree)
-    if not left or (tree[mid] == '0' and left == '1') or not right or (tree[mid] == '0' and right == '1'):
+    left = dfs(start, mid - 1, tree)
+    if not left or (tree[mid] == '0' and left == '1'):
+        return False
+    right = dfs(mid + 1, end, tree)
+    if not right or (tree[mid] == '0' and right == '1'):
         return False
     if left == right == tree[mid] == '0':
         return '0'
