@@ -214,4 +214,4 @@ cython_debug/
 
 /**/secret/**/*
 TEST.py
-/secret
+secret/
