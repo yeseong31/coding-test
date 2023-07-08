@@ -1,6 +1,7 @@
 def solution(phone_book):
     phone_book.sort()
-    for p1, p2 in zip(phone_book, phone_book[1:]):
-        if p2.startswith(p1):
+    for i in range(1, len(phone_book)):
+        p1, p2 = phone_book[i - 1], phone_book[i]
+        if p2[:len(p1)] == p1:
             return False
     return True
