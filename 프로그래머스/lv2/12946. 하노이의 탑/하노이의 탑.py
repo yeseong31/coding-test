@@ -1,12 +1,12 @@
 def solution(n):
-    def hanoi(n, s, e, m, ans):
-        if n == 1:
-            return ans.append([s, e])
-        
-        hanoi(n - 1, s, m, e, ans)
-        ans.append([s, e])
-        hanoi(n - 1, m, e, s, ans)
+    def hanoi(x, start, mid, end):
+        if x == 1:
+            answer.append([start, end])
+            return
+        hanoi(x - 1, start, end, mid)
+        answer.append([start, end])
+        hanoi(x - 1, mid, start, end)
     
     answer = []
-    hanoi(n, 1, 3, 2, answer)
+    hanoi(n, 1, 2, 3)
     return answer
