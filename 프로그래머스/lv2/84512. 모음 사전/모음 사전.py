@@ -1,5 +1,18 @@
-from itertools import product
-
 def solution(word):
-    data = sorted([''.join(p) for i in range(5) for p in product('AEIOU', repeat=i + 1)])
-    return data.index(word) + 1
+    def make_dic(p, depth):
+        if depth > 5:
+            return
+        if p != '':
+            data.append(p)
+        for x in 'AEIOU':
+            make_dic(f'{p}{x}', depth + 1)
+    
+    answer = 0
+    data = []
+    make_dic('', 0)
+    
+    for i in range(len(data)):
+        if data[i] == word:
+            return i + 1
+    
+    return answer
