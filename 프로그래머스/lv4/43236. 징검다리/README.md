@@ -1,10 +1,10 @@
 # [level 4] 징검다리 - 43236 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/43236) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/43236#) 
 
 ### 성능 요약
 
-메모리: 10.1 MB, 시간: 0.01 ms
+메모리: 11.6 MB, 시간: 101.94 ms
 
 ### 구분
 
@@ -12,7 +12,7 @@
 
 ### 채점결과
 
-<br/>정확성: 100.0<br/>합계: 100.0 / 100.0
+Empty
 
 ### 문제 설명
 
@@ -87,7 +87,8 @@
 
 <p><a href="http://contest.usaco.org/DEC06.htm" target="_blank" rel="noopener">출처</a></p>
 
-<p>※ 공지 - 2020년 2월 17일 테스트케이스가 추가되었습니다.</p>
+<p>※ 공지 - 2020년 2월 17일 테스트케이스가 추가되었습니다.<br>
+※ 공지 - 2023년 5월 15일 테스트케이스가 추가되었습니다. 기존에 제출한 코드가 통과하지 못할 수도 있습니다.</p>
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges
