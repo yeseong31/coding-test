@@ -11,11 +11,11 @@ def solution(N, number):
         for j in range(1, i):
             for k in dp[j]:
                 for l in dp[i - j]:
-                    if k < number:
-                        target.add(k + l)
-                        target.add(k * l)
-                    if k > 0:
+                    target.add(k + l)
+                    if k - l > 0:
                         target.add(k - l)
+                    if k * l <= number:
+                        target.add(k * l)
                     if k != 0 and l != 0:
                         target.add(k // l)
         
