@@ -3,15 +3,15 @@ from collections import defaultdict
 
 def solution(genres, plays):
     answer = []
-    dic = defaultdict(int)
-    q = defaultdict(list)
+    total_play = defaultdict(int)
+    genre_list = defaultdict(list)
     
-    for i, (g, p) in enumerate(zip(genres, plays)):
-        dic[g] += p
-        q[g].append((i, p))
-
-    for k in sorted(dic.items(), key=lambda x: x[1], reverse=True):
-        for i, _ in sorted(q[k[0]], key=lambda x: x[1], reverse=True)[:2]:
-            answer.append(i)
-
+    for i, (play, genre) in enumerate(zip(plays, genres)):
+        total_play[genre] += play
+        genre_list[genre].append((play, i))
+    
+    for k in sorted(total_play, key=lambda x: total_play[x], reverse=True):
+        for g in sorted(genre_list[k], key=lambda x: (-x[0], x[1]))[:2]:
+            answer.append(g[1])
+        
     return answer
