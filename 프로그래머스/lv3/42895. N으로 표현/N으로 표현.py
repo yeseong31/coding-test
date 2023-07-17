@@ -1,21 +1,25 @@
+from collections import deque
+
+
 def solution(N, number):
-    answer = 0
-    dp = [set() for i in range(9)]
-    
+    dp = [set() for _ in range(9)]
+
     for i in range(1, 9):
-        case = dp[i]
-        case.add(int(str(N) * i))
-        # 이전에 만들었던 결과들을 전부 순회
+        target = dp[i]
+        target.add(int(str(N) * i))
+        
         for j in range(1, i):
             for k in dp[j]:
                 for l in dp[i - j]:
-                    case.add(k + l)
-                    case.add(k - l)
-                    case.add(k * l)
-                    if l != 0 and k != 0:
-                        case.add(k // l)
+                    if k < number:
+                        target.add(k + l)
+                        target.add(k * l)
+                    if k > 0:
+                        target.add(k - l)
+                    if k != 0 and l != 0:
+                        target.add(k // l)
         
-        if number in case:
+        if number in target:
             return i
-    
+        
     return -1
