@@ -2,18 +2,22 @@ from collections import defaultdict
 
 
 def solution(gems):
-    count = len(set(gems))
-    left, right = 0, len(gems) - 1
+    answer = 1, len(gems)
     dic = defaultdict(int)
+    length = len(set(gems))
     
-    l = 0
-    for r, v in enumerate(gems):
-        dic[v] += 1
-        if len(dic) == count:
-            while l < r and dic[gems[l]] > 1:
-                dic[gems[l]] -= 1
-                l += 1
-            if r - l < right - left:
-                left, right = l, r
+    left = 0
+    for right, gem in enumerate(gems):
+        dic[gem] += 1
+        
+        while len(dic) == length:
+            dic[gems[left]] -= 1
             
-    return left + 1, right + 1
+            if dic[gems[left]] == 0:
+                if answer[1] - answer[0] > right - left:
+                    answer = left + 1, right + 1
+                dic.pop(gems[left])
+            
+            left += 1
+    
+    return answer
