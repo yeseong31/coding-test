@@ -1,10 +1,12 @@
 def solution(numbers):
-    answer = []
-    for n in numbers:
-        if n % 2 == 0:
-            answer.append(n + 1)
-            continue
-        target = f'{0}{bin(n)[2:]}'
-        r = target.rindex('0')
-        answer.append(int(f'{target[:r]}{10}{target[r + 2:]}', 2))
-    return answer
+    
+    def find_result(x):
+        if x % 2 == 0:
+            return x + 1
+        
+        target = f'0{bin(x)[2:]}'
+        idx = target.rindex('0')
+        result = f'{target[:idx]}10{target[idx+2:]}'
+        return int(result, 2)
+    
+    return [find_result(n) for n in numbers]
