@@ -1,7 +1,17 @@
+from collections import deque
+
+
 def solution(numbers, target):
-    def dfs(idx, val):
-        if idx == len(numbers):
-            return 1 if val == target else 0
-        return dfs(idx + 1, val + numbers[idx]) + dfs(idx + 1, val - numbers[idx])
+    answer = 0
+    q = deque([(0, 0)])
     
-    return dfs(0, 0)
+    while q:
+        n, i = q.popleft()
+        if i == len(numbers):
+            if n == target:
+                answer += 1
+            continue
+        q.append((n + numbers[i], i + 1))
+        q.append((n - numbers[i], i + 1))
+    
+    return answer
