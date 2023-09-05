@@ -1,15 +1,12 @@
-from collections import deque
+import re
 
 
-def solution(skill, skill_trees):
+def solution(skill: str, skill_trees: list) -> int:
     answer = 0
-    for skills in skill_trees:
-        skill_list = deque(skill)
-        flag = True
-        for s in skills:
-            if s in skill and s != skill_list.popleft():
-                flag = False
-                break
-        if flag:
+    
+    for skill_tree in skill_trees:
+        target = re.sub(f'[^{skill}]', '', skill_tree)
+        if skill.startswith(target):
             answer += 1
+    
     return answer
