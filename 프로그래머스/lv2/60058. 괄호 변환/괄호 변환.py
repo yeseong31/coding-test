@@ -1,47 +1,41 @@
-def reverse(u):
-    result = []
-    for v in u:
-        if v == '(':
-            result.append(')')
-        else:
-            result.append('(')
-    return ''.join(result)
-
-
-def validate(u):
-    if u == '':
-        return False
-    
+def is_valid(s):
     stack = []
-    for v in u:
-        if v == '(':
-            stack.append('(')
-            continue
-        while stack and stack[-1] == '(':
+    for c in s:
+        if c == '(':
+            stack.append(c)
+        elif stack:
             stack.pop()
+        else:
+            return False
+    
     return not stack
 
 
-def split(w):
-    count = 0
-    for i in range(len(w)):
-        if i != 0 and count == 0:
-            return w[:i], w[i:]
-        if w[i] == '(':
-            count += 1
-        else:
-            count -= 1
-    return w, ''
-
-
-def dfs(w):
-    if w == '':
-        return w
-    u, v = split(w)
-    if validate(u):
-        return u + dfs(v)
-    return '(' + dfs(v) + ')' + reverse(u[1:-1])
+def reverse_parenthesis(s, dic):
+    return ''.join(dic[c] for c in s)
 
 
 def solution(p):
-    return dfs(p)
+    dic = {
+        '(': ')', ')': '('
+    }
+    
+    if p == '':
+        return p
+    
+    u, b = [], 0
+    for c in p:
+        if c == '(':
+            b += 1
+        else:
+            b -= 1
+        
+        u.append(c)
+        if b == 0:
+            break
+    
+    v = ''.join(p[len(u):])
+    if is_valid(u):
+        return f"{''.join(u)}{solution(v)}"
+    else:
+        return f'({solution(v)}){reverse_parenthesis(u[1:-1], dic)}'
