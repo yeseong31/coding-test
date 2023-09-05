@@ -25,11 +25,7 @@ def solution(p):
     
     u, b = [], 0
     for c in p:
-        if c == '(':
-            b += 1
-        else:
-            b -= 1
-        
+        b += 1 if c == '(' else -1
         u.append(c)
         if b == 0:
             break
