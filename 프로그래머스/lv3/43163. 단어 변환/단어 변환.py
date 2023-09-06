@@ -5,23 +5,15 @@ def solution(begin, target, words):
     if target not in words:
         return 0
     
-    q = deque([(begin, 0, {begin, })])
+    q = deque([(begin, 0)])
     while q:
-        cur, step, visited = q.popleft()
+        cur, i = q.popleft()
         if cur == target:
-            return step
-        lst = []
-        for word in words:
-            if word in visited:
-                continue
-            count = 0
-            for c, w in zip(cur, word):
-                if c == w:
-                    count += 1
-            if len(cur) - count == 1:
-                lst.append(word)
-        for l in lst:
-            visited.add(l)
-            q.append((l, step + 1, visited))
+            return i
+        next_words = [word for word in words if len(cur) - 1 == sum(c == w for c, w in zip(cur, word))]
+        if not next_words:
+            return 0
+        for nw in next_words:
+            q.append((nw, i + 1))
         
     return 0
