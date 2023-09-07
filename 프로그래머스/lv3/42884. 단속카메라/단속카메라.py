@@ -1,9 +1,10 @@
 def solution(routes):
     answer = 0
-    routes.sort()
-    while routes:
-        target = routes.pop()[0]
-        while routes and routes[-1][0] <= target <= routes[-1][1]:
-            routes.pop()
-        answer += 1
+    target = -30001
+    
+    for start_time, end_time in sorted(routes, key=lambda x: x[1]):
+        if target < start_time:
+            answer += 1
+            target = end_time
+    
     return answer
