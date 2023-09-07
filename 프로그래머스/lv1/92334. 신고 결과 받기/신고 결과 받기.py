@@ -2,20 +2,17 @@ from collections import defaultdict
 
 
 def solution(id_list, report, k):
-    answer = []
-    dic = defaultdict(list)
-    cnt = defaultdict(int)
+    sanctions = defaultdict(set)
+    mail = defaultdict(int)
     
-    for target in set(report):
-        a, b = target.split()
-        dic[a].append(b)
-        cnt[b] += 1
+    for ids in report:
+        report_id, reported_id = ids.split()
+        sanctions[reported_id].add(report_id)
+        
+    for key in sanctions:
+        if len(sanctions[key]) < k:
+            continue
+        for v in sanctions[key]:
+            mail[v] += 1
     
-    for uid in id_list:
-        res = 0
-        for v in dic[uid]:
-            if cnt[v] >= k:
-                res += 1
-        answer.append(res)
-    
-    return answer
+    return [mail[id] for id in id_list]
