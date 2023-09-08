@@ -1,22 +1,27 @@
 def solution(board, skill):
     answer = 0
     n, m = len(board), len(board[0])
-    check = [[0] * (m + 1) for _ in range(n + 1)]
+    checked = [[0] * (m + 1) for _ in range(n + 1)]
     
-    for _type, r1, c1, r2, c2, degree in skill:
-        if _type == 1:
-            degree *= -1
-        check[r1][c1] += degree
-        check[r2 + 1][c2 + 1] += degree
-        check[r2 + 1][c1] -= degree
-        check[r1][c2 + 1] -= degree
-    # 구간 합(행)
+    for _type, *points, degree in skill:
+        degree *= -1 if _type == 1 else 1
+        x1, y1, x2, y2 = points
+        checked[x1][y1] += degree
+        checked[x2 + 1][y2 + 1] += degree
+        checked[x2 + 1][y1] -= degree
+        checked[x1][y2 + 1] -= degree
+    
     for i in range(1, n + 1):
         for j in range(m):
-            check[i][j] += check[i - 1][j]
-    # 구간 합(열)
+            checked[i][j] += checked[i - 1][j]
+    
     for i in range(n):
         for j in range(1, m + 1):
-            check[i][j] += check[i][j - 1]
-    # 합 계산
-    return sum(1 for i in range(n) for j in range(m) if board[i][j] + check[i][j] > 0)
+            checked[i][j] += checked[i][j - 1]
+    
+    for i in range(n):
+        for j in range(m):
+            if board[i][j] + checked[i][j] > 0:
+                answer += 1
+    
+    return answer
