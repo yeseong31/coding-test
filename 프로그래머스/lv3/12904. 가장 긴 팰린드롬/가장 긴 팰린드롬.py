@@ -1,10 +1,29 @@
-def solution(s):
-    def check(l, r):
-        while l >= 0 and r < len(s) and s[l] == s[r]:
-            l -= 1
-            r += 1
-        return r - l - 1
+def even_palindrome(s, left, right):
+    result = 0
+    i = 0
     
-    if len(s) == 1:
-        return 1
-    return max(max(check(i, i + 1), check(i, i + 2)) for i in range(len(s) - 1))
+    while 0 <= left - i and right + i < len(s) and s[left - i] == s[right + i]:
+        i += 1
+        result += 2
+    
+    return result
+
+
+def odd_palindrome(s, mid):
+    result = 1
+    i = 1
+    
+    while 0 <= mid - i and mid + i < len(s) and s[mid - i] == s[mid + i]:
+        i += 1
+        result += 2
+    
+    return result
+
+
+def solution(s):
+    answer = 1
+
+    for i in range(len(s)):
+        answer = max(answer, odd_palindrome(s, i), even_palindrome(s, i - 1, i))
+
+    return answer
