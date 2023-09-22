@@ -1,6 +1,9 @@
 def solution(n, money):
-    dp = [1] + [0] * n
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    
     for m in money:
-        for x in range(m, n + 1):
-            dp[x] += dp[x - m]
+        for i in range(m, n + 1):
+            dp[i] += dp[i - m]
+    
     return dp[n]
