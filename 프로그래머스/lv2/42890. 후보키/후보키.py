@@ -2,12 +2,9 @@ from itertools import combinations
 
 
 def solution(relation):
-    row = len(relation)
-    col = len(relation[0])
-
     comb = []
-    for i in range(1, col + 1):
-        comb.extend(combinations(range(col), i))
+    for i in range(1, len(relation[0]) + 1):
+        comb.extend(combinations(range(len(relation[0])), i))
 
     unique = []
     for num in comb:
@@ -26,13 +23,15 @@ def solution(relation):
         for target in zip(*res):
             if target not in check:
                 check.add(target)
-        if len(check) == row:
+        
+        if len(check) == len(relation):
             flag = True
 
         for u in unique:
             if set(u).issubset(set(num)):
                 flag = False
                 break
+        
         if flag:
             unique.append(num)
 
