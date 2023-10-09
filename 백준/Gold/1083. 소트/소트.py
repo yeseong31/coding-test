@@ -1,22 +1,25 @@
+import sys
+
 n = int(input())
-answer = list(map(int, input().split()))
+ans = list(map(int, sys.stdin.readline().split()))
 s = int(input())
 
-for i in range(n - 1):
+for x in range(n - 1):
     if s == 0:
         break
+    
+    mx, t = ans[x], 0
+    
+    for y in range(x + 1, n):
+        if mx < ans[y]:
+            mx = ans[y]
+            t = y - x
+        if y - x >= s:
+            break
+    
+    if t:
+        s -= t
+        ans.remove(mx)
+        ans.insert(x, mx)
 
-    _max, _min = answer[i], min(n, i + 1 + s)
-    x = i
-    
-    for j in range(i + 1, _min):
-        if _max < answer[j]:
-            _max = answer[j]
-            x = j
-        
-    s -= x - i
-    for j in range(x, i, -1):
-        answer[j] = answer[j - 1]
-    answer[i] = _max
-    
-print(*answer)
+print(*ans)
