@@ -7,9 +7,7 @@ class Solution {
             if (!Character.isAlphabetic(c)) {
                 index = 1;
             }
-            
-            answer.append(convertAlphabet(c, index));
-            index++;
+            answer.append(convertAlphabet(c, index++));
         }
         
         return answer.toString();
