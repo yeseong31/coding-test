@@ -7,29 +7,29 @@ import java.util.stream.Collectors;
 
 class Solution {
     public int solution(String numbers) {
-        List<Integer> remainNumbers = numbers.chars()
+        Set<Integer> primes = new HashSet<>();
+        int[] remainNumbers = numbers.chars()
             .map(n -> Character.getNumericValue(n))
-            .boxed()
-            .collect(Collectors.toList());
+            .toArray();
         
-        return dfs(0, remainNumbers).size();
+        dfs(0, remainNumbers, new boolean[numbers.length()], primes);
+        return primes.size();
     }
     
-    private Set<Integer> dfs(int number, List<Integer> remainNumbers) {
-        Set<Integer> result = new HashSet<>();
-        
+    private void dfs(int number, int[] remainNumbers, boolean[] visited, Set<Integer> primes) {
         if (isPrime(number)) {
-            result.add(number);
+            primes.add(number);
         }
         
-        for (int i = 0; i < remainNumbers.size(); i++) {
-            int nextNumber = number * 10 + remainNumbers.get(i);
-            List<Integer> nextRemainNumbers = new ArrayList<>(remainNumbers);
-            nextRemainNumbers.remove(i);
-            result.addAll(dfs(nextNumber, nextRemainNumbers));
+        for (int i = 0; i < remainNumbers.length; i++) {
+            if (visited[i]) {
+                continue;
+            }
+            int nextNumber = number * 10 + remainNumbers[i];
+            visited[i] = true;
+            dfs(nextNumber, remainNumbers, visited, primes);
+            visited[i] = false;
         }
-        
-        return result;
     }
     
     private boolean isPrime(int number) {
