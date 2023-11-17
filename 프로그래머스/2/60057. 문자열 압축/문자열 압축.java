@@ -5,11 +5,9 @@ import java.util.List;
 class Solution {
     public int solution(String s) {
         int answer = s.length() + 1;
-        
-        for (int i = 1; i <= s.length(); i++) {
+        for (int i = 1; i <= s.length() / 2 + 1; i++) {
             answer = Math.min(answer, compress(s, i));
         }
-        
         return answer;
     }
     
@@ -40,7 +38,6 @@ class Solution {
     
     private List<String> split(String s, int tokenLength) {
         List<String> tokens = new ArrayList<>();
-        
         for (int startIndex = 0; startIndex < s.length(); startIndex += tokenLength) {
             int endIndex = startIndex + tokenLength;
             if (endIndex > s.length()) {
@@ -49,7 +46,6 @@ class Solution {
             String token = s.substring(startIndex, endIndex);
             tokens.add(token);
         }
-        
         return tokens;
     }
 }
