@@ -1,4 +1,4 @@
-import copy
+from copy import deepcopy
 
 
 def solution(beginning, target):
@@ -12,7 +12,7 @@ def solution(beginning, target):
 
     def check(a, b):
         res = 0
-        board = copy.deepcopy(beginning)
+        board = deepcopy(beginning)
 
         if a:
             res += 1
