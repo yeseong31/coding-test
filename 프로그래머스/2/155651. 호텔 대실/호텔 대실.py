@@ -1,11 +1,15 @@
 from heapq import heappush, heappop
 
 
+def calculate_time(s, e):
+    return int(s[:2]) * 60 + int(s[3:]), int(e[:2]) * 60 + int(e[3:])
+
+
 def solution(book_time):
     answer = 1
     q = []
     
-    reservations = [(int(s[:2]) * 60 + int(s[3:]), int(e[:2]) * 60 + int(e[3:])) for s, e in book_time]
+    reservations = [(calculate_time(s, e)) for s, e in book_time]
     
     for s, e in sorted(reservations):
         if not q:
