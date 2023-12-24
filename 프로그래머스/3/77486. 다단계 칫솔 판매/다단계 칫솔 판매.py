@@ -5,15 +5,15 @@ def solution(enroll, referral, seller, amount):
     graph = defaultdict(str)
     score = defaultdict(int)
     
-    for enr, ref in zip(enroll, referral):
-        graph[enr] = ref
+    for e, r in zip(enroll, referral):
+        graph[e] = r
         
-    for slr, amt in zip(seller, amount):
-        won = amt * 100
+    for s, a in zip(seller, amount):
+        w = a * 100
         
-        while won > 0 and slr != '-':
-            score[slr] += won - won // 10
-            won //= 10
-            slr = graph[slr]
+        while w > 0 and s != '-':
+            score[s] += w - w // 10
+            w //= 10
+            s = graph[s]
     
     return [score[x] for x in enroll]
