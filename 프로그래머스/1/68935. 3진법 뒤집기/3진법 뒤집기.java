@@ -4,6 +4,7 @@ class Solution {
         String reversed = new StringBuilder(converted)
                 .reverse()
                 .toString();
+        
         return Integer.parseInt(reversed, 3);
     }
 }
