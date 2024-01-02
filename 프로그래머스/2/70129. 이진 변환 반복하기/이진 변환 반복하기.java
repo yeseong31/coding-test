@@ -1,25 +1,15 @@
 class Solution {
     public int[] solution(String s) {
-        int count = 0;
-        int removedZero = 0;
-        int target;
-
-        while (!s.equals("1")) {
-            count++;
-            target = countZero(s);
-            removedZero += target;
-            s = Integer.toString(s.length() - target, 2);
-        }
-
-        return new int[]{count, removedZero};
-    }
-
-    private int countZero(String s) {
-        long count = s.chars()
-                .filter(c -> c == '0')
-                .count();
+        int countZero = 0;
+        int repeat = 0;
         
-        return Long.valueOf(count)
-                .intValue();
+        while (!s.equals("1")) {
+            String target = s.replaceAll("0", "");
+            countZero += s.length() - target.length();
+            s = Integer.toString(target.length(), 2);
+            repeat++;
+        }
+        
+        return new int[] {repeat, countZero};
     }
 }
