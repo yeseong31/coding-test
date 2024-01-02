@@ -1,51 +1,39 @@
-import java.util.ArrayList;
-import java.util.List;
-
+import java.lang.StringBuilder;
 
 class Solution {
     public int solution(String s) {
-        int answer = s.length() + 1;
-        for (int i = 1; i <= s.length() / 2 + 1; i++) {
-            answer = Math.min(answer, compress(s, i));
+        int answer = s.length();
+        for (int token = 1; token <= s.length() / 2; token++) {
+            answer = Math.min(answer, compress(s, token));
         }
         return answer;
     }
     
-    private int compress(String s, int tokenLength) {
+    private int compress(final String s, final int token) {
         StringBuilder sb = new StringBuilder();
-        int count = 0;
-        String last = "";
+        String prev = s.substring(0, token);
+        String target;
+        int repeat = 1;
         
-        for (String token : split(s, tokenLength)) {
-            if (token.equals(last)) {
-                count++;
+        for (int index = token; index < s.length(); index += token) {
+            target = s.substring(index, Math.min(index + token, s.length()));
+            if (prev.equals(target)) {
+                repeat += 1;
                 continue;
             }
-            if (count > 1) {
-                sb.append(count);
+            if (repeat > 1) {
+                sb.append(Integer.toString(repeat));
             }
-            count = 1;
-            sb.append(last);
-            last = token;
+            sb.append(prev);
+            prev = target;
+            repeat = 1;
         }
         
-        if (count > 1) {
-            sb.append(count);
+        if (repeat > 1) {
+            sb.append(Integer.toString(repeat));
         }
-        sb.append(last);
+        sb.append(prev);
+        
         return sb.length();
-    }
-    
-    private List<String> split(String s, int tokenLength) {
-        List<String> tokens = new ArrayList<>();
-        for (int startIndex = 0; startIndex < s.length(); startIndex += tokenLength) {
-            int endIndex = startIndex + tokenLength;
-            if (endIndex > s.length()) {
-                endIndex = s.length();
-            }
-            String token = s.substring(startIndex, endIndex);
-            tokens.add(token);
-        }
-        return tokens;
     }
 }
