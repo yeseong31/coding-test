@@ -5,7 +5,10 @@ class Solution {
     
     public int[] solution(int n) {
         int[][] triangle = new int[n][n];
-        int x = -1, y = 0, d = 0;
+        
+        int x = -1;
+        int y = 0;
+        int d = 0;
         int v = 1;
         
         for (int i = 0; i < n; i++) {
@@ -18,11 +21,11 @@ class Solution {
         }
         
         int[] answer = new int[v - 1];
-        int idx = 0;
+        int index = 0;
         
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= i; j++) {
-                answer[idx++] = triangle[i][j];
+                answer[index++] = triangle[i][j];
             }
         }
         
