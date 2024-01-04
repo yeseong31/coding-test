@@ -1,54 +1,56 @@
-class Solution {
+class Count {
     
-    static class Count {
-        
-        private final int zero;
-        private final int one;
-        
-        private Count(int zero, int one) {
-            this.zero = zero;
-            this.one = one;
-        }
-        
-        public static Count of(int zero, int one) {
-            return new Count(zero, one);
-        }
-        
-        public int getZero() {
-            return zero;
-        }
-        
-        public int getOne() {
-            return one;
-        }
-        
-        public Count add(Count other) {
-            return new Count(zero + other.getZero(), one + other.getOne());
-        }
+    private final int zero;
+    private final int one;
+    
+    private Count(final int zero, final int one) {
+        this.zero = zero;
+        this.one = one;
     }
     
-    public int[] solution(int[][] arr) {
-        Count count = calculate(0, 0, arr.length, arr);
-        return new int[] {count.getZero(), count.getOne()};
+    public static Count of(final int zero, final int one) {
+        return new Count(zero, one);
     }
     
-    public Count calculate(int sx, int sy, int size, int[][] arr) {
-        int h = size / 2;
+    public int addZero(final int zero) {
+        return this.zero + zero;
+    }
+    
+    public int addOne(final int one) {
+        return this.one + one;
+    }
+    
+    public Count add(final Count other) {
+        return new Count(other.addZero(zero), other.addOne(one));
+    }
+    
+    public int[] receiveResult() {
+        return new int[] {zero, one};
+    }
+}
 
-        for (int x = sx; x < sx + size; x++) {
-            for (int y = sy; y < sy + size; y++) {
-                if (arr[x][y] != arr[sx][sy]) {
-                    return calculate(sx, sy, h, arr)
-                            .add(calculate(sx, sy + h, h, arr))
-                            .add(calculate(sx + h, sy, h, arr))
-                            .add(calculate(sx + h, sy + h, h, arr));
+
+class Solution {
+    public int[] solution(int[][] arr) {
+        return count(0, 0, arr.length, arr).receiveResult();
+    }
+    
+    private Count count(final int x, final int y, final int size, final int[][] arr) {
+        for (int i = x; i < x + size; i++) {
+            for (int j = y; j < y + size; j++) {
+                if (arr[i][j] != arr[x][y]) {
+                    int h = size / 2;
+                    return count(x, y, h, arr)
+                            .add(count(x + h, y, h, arr))
+                            .add(count(x, y + h, h, arr))
+                            .add(count(x + h, y + h, h, arr));
                 }
             }
         }
-
-        if (arr[sx][sy] == 0) {
-            return Count.of(1, 0);
+        
+        if (arr[x][y] == 1) {
+            return Count.of(0, 1);
         }
-        return Count.of(0, 1);
+        return Count.of(1, 0);
     }
 }
