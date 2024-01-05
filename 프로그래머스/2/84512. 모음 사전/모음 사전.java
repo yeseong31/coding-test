@@ -4,23 +4,23 @@ import java.util.List;
 
 class Solution {
     
-    private static final char[] vowels = "AEIOU".toCharArray();
+    private static final char[] vowels = new char[] {'A', 'E', 'I', 'O', 'U'};
     
     public int solution(String word) {
-        List<String> answer = new ArrayList<>();
-        generate("", answer);
-        return answer.indexOf(word);
+        List<String> result = new ArrayList<>();
+        makeDictionary("", result);
+        return result.indexOf(word);
     }
     
-    private void generate(String word, List<String> answer) {
-        answer.add(word);
+    private void makeDictionary(final String currentWord, final List<String> result) {
+        result.add(currentWord);
         
-        if (word.length() == 5) {
+        if (currentWord.length() == 5) {
             return;
         }
         
         for (char vowel : vowels) {
-            generate(word + vowel, answer);
+            makeDictionary(currentWord + vowel, result);
         }
     }
 }
