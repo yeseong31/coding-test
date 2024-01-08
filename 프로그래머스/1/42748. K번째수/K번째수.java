@@ -1,24 +1,24 @@
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 
 class Solution {
     public int[] solution(int[] array, int[][] commands) {
         List<Integer> answer = new ArrayList<>();
         
         for (int[] command : commands) {
-            int startIndex = command[0] - 1;
-            int endIndex = command[1];
-            int targetIndex = command[2] - 1;
+            int i = command[0];
+            int j = command[1];
+            int k = command[2];
             
-            int[] subArray = Arrays.copyOfRange(array, startIndex, endIndex);
-            Arrays.sort(subArray);
-            answer.add(subArray[targetIndex]);
+            int[] copiedArray = Arrays.copyOfRange(array, i - 1, j);
+            Arrays.sort(copiedArray);
+            
+            answer.add(copiedArray[k - 1]);
         }
         
         return answer.stream()
-                .mapToInt(Integer::intValue)
+                .mapToInt(n -> n)
                 .toArray();
     }
 }
