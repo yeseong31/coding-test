@@ -2,36 +2,38 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-
 class Solution {
     public int solution(String[] user_id, String[] banned_id) {
         int answer = 0;
         
-        String[][] bans = Arrays.stream(banned_id)
+        String[][] bannedList = Arrays.stream(banned_id)
                 .map(bid -> bid.replace("*", "."))
                 .map(bid -> Arrays.stream(user_id)
                         .filter(uid -> uid.matches(bid))
                         .toArray(String[]::new))
                 .toArray(String[][]::new);
         
-        Set<Set<String>> checkedBan = new HashSet<>();
-        count(0, new HashSet<>(), bans, checkedBan);
-        return checkedBan.size();
+        Set<Set<String>> result = new HashSet<>();
+        
+        dfs(0, new HashSet<>(), bannedList, result);
+        
+        return result.size();
     }
     
-    private void count(int index, Set<String> banned, String[][] bans, Set<Set<String>> checkedBan) {
-        if (index == bans.length) {
-            checkedBan.add(new HashSet<>(banned));
+    private void dfs(int currentIndex, Set<String> currentBanned, String[][] bannedList, Set<Set<String>> result) {
+        if (currentIndex == bannedList.length) {
+            result.add(new HashSet<>(currentBanned));
             return;
         }
         
-        for (String id : bans[index]) {
-            if (banned.contains(id)) {
+        for (String bid : bannedList[currentIndex]) {
+            if (currentBanned.contains(bid)) {
                 continue;
             }
-            banned.add(id);
-            count(index + 1, banned, bans, checkedBan);
-            banned.remove(id);
+            
+            currentBanned.add(bid);
+            dfs(currentIndex + 1, currentBanned, bannedList, result);
+            currentBanned.remove(bid);
         }
     }
 }
