@@ -4,43 +4,56 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 class Solution {
     public int solution(String numbers) {
-        Set<Integer> primes = new HashSet<>();
-        int[] remainNumbers = numbers.chars()
-            .map(n -> Character.getNumericValue(n))
-            .toArray();
+        List<Integer> remainNumbers = numbers.chars()
+                .map(c -> c - '0')
+                .boxed()
+                .collect(Collectors.toList());
         
-        dfs(0, remainNumbers, new boolean[numbers.length()], primes);
-        return primes.size();
+        Set<Integer> combinations = new HashSet<>();
+        makeCombinations(0, remainNumbers, new boolean[numbers.length()], combinations);
+        
+        return countPrimeNumbers(combinations);
     }
     
-    private void dfs(int number, int[] remainNumbers, boolean[] visited, Set<Integer> primes) {
-        if (isPrime(number)) {
-            primes.add(number);
-        }
+    private int countPrimeNumbers(Set<Integer> combinations) {
+        long result = combinations.stream()
+            .filter(n -> isPrimeNumber(n))
+            .count();
         
-        for (int i = 0; i < remainNumbers.length; i++) {
-            if (visited[i]) {
-                continue;
-            }
-            int nextNumber = number * 10 + remainNumbers[i];
-            visited[i] = true;
-            dfs(nextNumber, remainNumbers, visited, primes);
-            visited[i] = false;
-        }
+        return Long.valueOf(result).intValue();
     }
     
-    private boolean isPrime(int number) {
-        if (number <= 1) {
+    private boolean isPrimeNumber(Integer number) {
+        if (number < 2) {
             return false;
         }
-        for (int i = 2; i <= Math.sqrt(number); i++) {
-            if (number % i == 0) {
+        
+        for (int x = 2; x <= (int) Math.sqrt(number); x++) {
+            if (number % x == 0) {
                 return false;
             }
         }
+        
         return true;
+    }
+    
+    private void makeCombinations(int target, List<Integer> remainNumbers, boolean[] used, Set<Integer> combinations) {
+        if (isPrimeNumber(target)) {
+            combinations.add(target);
+        }
+        
+        for (int index = 0; index < remainNumbers.size(); index++) {
+            if (used[index]) {
+                continue;
+            }
+            
+            int nextTarget = target * 10 + remainNumbers.get(index);
+            
+            used[index] = true;
+            makeCombinations(nextTarget, remainNumbers, used, combinations);
+            used[index] = false;
+        }
     }
 }
