@@ -1,21 +1,19 @@
 import java.util.Arrays;
-import java.util.Collections;
-
 
 class Solution {
     public int solution(int[] citations) {
-        Integer[] numbers = Arrays.stream(citations)
-                .boxed()
-                .toArray(Integer[]::new);
+        Arrays.sort(citations);
         
-        Arrays.sort(numbers, Collections.reverseOrder());
-        
-        for (int i = 0; i < numbers.length; i++) {
-            if (i >= numbers[i]) {
-                return i;
+        for (int h = citations.length; h >= 1; h--) {
+            if (check(citations, h)) {
+                return h;
             }
         }
         
-        return numbers.length;
+        return 0;
+    }
+    
+    private boolean check(int[] citations, int h) {
+        return citations[citations.length - h] >= h;
     }
 }
