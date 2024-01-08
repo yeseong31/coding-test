@@ -1,86 +1,70 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Stack;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 class Solution {
+    
+    private static final String[][] PRIORITY_OPERATORS = {
+        "+-*".split(""), "+*-".split(""), "-+*".split(""),
+        "-*+".split(""), "*+-".split(""), "*-+".split(""),
+    };
+    
     public long solution(String expression) {
-        List<String> separateExpression = separateExpression(expression);
-        List<String> priorityOps = receivePriorityOps();
-
-        return receiveResult(separateExpression, priorityOps);
-    }
-
-    private long receiveResult(List<String> separateExpression, List<String> priorityOps) {
-        long result = 0;
-        for (String priorityOp : priorityOps) {
-            long tmp = calculate(
-                    new ArrayList<>(separateExpression), 
-                    priorityOp);
-            result = Math.max(
-                    result, 
-                    Math.abs(tmp));
+        long answer = 0;
+        List<String> tokens = split(expression);
+        
+        for (String[] operators : PRIORITY_OPERATORS) {
+            long result = calculate(expression, operators, tokens);
+            answer = Math.max(answer, result);
         }
-        return result;
+        
+        return answer;
     }
+    
+    private long calculate(String expression, String[] operators, List<String> tokens) {
+        Stack<String> stack = new Stack<>();
+        
+        for (String operator : operators) {
+            for (String token : tokens) {
+                if (!stack.empty() && stack.peek().equals(operator)) {
+                    String targetOperator = stack.pop();
+                    long leftNumber = Long.parseLong(stack.pop());
+                    long rightNumber = Long.parseLong(token);
 
-    private long calculate(List<String> exp, String priorityOp) {
-        for (char op : priorityOp.toCharArray()) {
-            for (int index = 0; index < exp.size(); index++) {
-                if (!exp.get(index).equals(String.valueOf(op))) {
+                    long result = calculate(leftNumber, rightNumber, targetOperator);
+                    stack.push(String.valueOf(result));
                     continue;
                 }
-                long leftNumber = Long.parseLong(exp.get(index - 1));
-                long rightNumber = Long.parseLong(exp.get(index + 1));
-                long result = compute(leftNumber, rightNumber, op);
-                exp.remove(index - 1);
-                exp.remove(index - 1);
-                exp.remove(index - 1);
-                exp.add(index - 1, String.valueOf(result));
-                index -= 2;
+                
+                stack.push(token);
             }
+            
+            tokens = new ArrayList<>(stack);
         }
-        return Long.parseLong(exp.get(0));
+        
+        long result = Long.parseLong(stack.pop());
+        return Math.abs(result);
     }
-
-    private long compute(long num1, long num2, char op) {
-        if (op == '+') {
-            return num1 + num2;
+    
+    private long calculate(long leftNumber, long rightNumber, String targetOperator) {
+        if (targetOperator.equals("+")) {
+            return leftNumber + rightNumber;
         }
-        if (op == '-') {
-            return num1 - num2;
+        if (targetOperator.equals("-")) {
+            return leftNumber - rightNumber;
         }
-        if (op == '*') {
-            return num1 * num2;
-        }
-        return 0;
+        return leftNumber * rightNumber;
     }
-
-    private List<String> separateExpression(String expression) {
-        List<String> result = new ArrayList<>();
-        Matcher matcher = Pattern.compile("[+\\-*/]").matcher(expression);
-
-        int prevIndex = 0;
-        while (matcher.find()) {
-            int currentIndex = matcher.start();
-            if (currentIndex > 0) {
-                result.add(expression.substring(prevIndex, currentIndex).trim());
-            }
-            result.add(matcher.group().trim());
-            prevIndex = matcher.end();
+    
+    private List<String> split(final String expression) {
+        StringTokenizer tokenizer = new StringTokenizer(expression, "+-*", true);
+        List<String> tokens = new ArrayList<>();
+        
+        while (tokenizer.hasMoreTokens()) {
+            tokens.add(tokenizer.nextToken());
         }
-
-        if (prevIndex < expression.length()) {
-            result.add(expression.substring(prevIndex).trim());
-        }
-
-        return result;
-    }
-
-    private List<String> receivePriorityOps() {
-        return List.of("+-*", "+*-", "-+*", "-*+", "*+-", "*-+");
+        
+        return tokens;
     }
 }
