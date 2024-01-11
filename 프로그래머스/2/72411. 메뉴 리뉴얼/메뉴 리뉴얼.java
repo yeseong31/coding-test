@@ -1,100 +1,122 @@
-import java.lang.StringBuilder;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
+class Course {
+    
+    private int maxValue;
+    private final List<String> menus = new ArrayList<>();
+    
+    private Course() {
+        maxValue = 0;
+    }
+    
+    public static Course create() {
+        return new Course();
+    }
+    
+    public void update(Map.Entry<String, Integer> entry) {
+        if (entry.getValue() < maxValue) {
+            return;
+        }
+        if (entry.getValue() > maxValue) {
+            maxValue = entry.getValue();
+            menus.clear();
+        }
+        menus.add(entry.getKey());
+    }
+    
+    public void addAll(List<String> result) {
+        result.addAll(menus);
+    }
+}
 
 class Solution {
-
-    static class Menu {
-
-        private final List<String> menus;
-        private int maxValue;
-
-        public Menu() {
-            menus = new ArrayList<>();
-            maxValue = 0;
+    
+    public String[] solution(String[] orders, int[] course) {
+        Map<String, Integer> result = new HashMap<>();
+        
+        for (String order : orders) {
+            String target = orderCourseName(order);
+            List<String> combinations = createCombinations(target);
+            count(combinations, result);
         }
-
-        public void add(Entry<String, Integer> entry) {
-            if (entry.getValue() < maxValue) {
-                return;
+        
+        return select(check(result), course).stream()
+                .sorted()
+                .toArray(String[]::new);
+    }
+    
+    private List<String> select(Course[] courses, int[] course) {
+        List<String> result = new ArrayList<>();
+        
+        for (int n : course) {
+            if (courses[n] != null) {
+                courses[n].addAll(result);
             }
-            if (entry.getValue() > maxValue) {
-                maxValue = entry.getValue();
-                menus.clear();
-            }
-            menus.add(entry.getKey());
         }
-
-        public void receive(List<String> answer) {
-            answer.addAll(menus);
+        
+        return result;
+    }
+    
+    private Course[] check(Map<String, Integer> countCourses) {
+        Course[] courses = new Course[11];
+        
+        for (Map.Entry<String, Integer> entry : countCourses.entrySet()) {
+            int length = entry.getKey().length();
+            
+            if (entry.getValue().intValue() <= 1) {
+                continue;
+            }
+            if (courses[length] == null) {
+                courses[length] = Course.create();
+            }
+            
+            courses[length].update(entry);
+        }
+        
+        return courses;
+    }
+    
+    private void count(List<String> combinations, Map<String, Integer> result) {
+        for (String combination : combinations) {
+            result.merge(combination, 1, (a, b) -> a + b);
         }
     }
     
-    public static String[] solution(String[] orders, int[] course) {
-        Map<String, Integer> counter = new TreeMap<>();
-
-        for (String order : orders) {
-            String newOrder = receiveSortedOrder(order);
-            generateSubOrder(newOrder, counter);
+    private List<String> createCombinations(String order) {
+        List<String> result = new ArrayList<>();
+        boolean[] visited = new boolean[order.length()];
+        
+        dfs("", 0, visited, order, result);
+        
+        return result;
+    }
+    
+    private void dfs(String currentCombinations, int currentIndex, boolean[] visited, String order, List<String> result) {
+        if (currentCombinations.length() >= 2) {
+            result.add(currentCombinations);
         }
-
-        List<Map.Entry<String, Integer>> entries = new ArrayList<>(counter.entrySet());
-        entries.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
-
-        Menu[] target = new Menu[11];
-
-        for (Entry<String, Integer> entry : entries) {
-            int count = entry.getValue();
-            int length = entry.getKey().length();
-
-            if (count <= 1) {
+        
+        for (int index = currentIndex; index < order.length(); index++) {
+            if (visited[index]) {
                 continue;
             }
-            if (target[length] == null) {
-                target[length] = new Menu();
-            }
-            target[length].add(entry);
+            
+            visited[index] = true;
+            dfs(currentCombinations + order.charAt(index), index, visited, order, result);
+            visited[index] = false;
         }
-
-        List<String> answer = new ArrayList<>();
-        for (int number : course) {
-            if (target[number] != null) {
-                target[number].receive(answer);
-            }
-        }
-
-        Collections.sort(answer);
-        return answer.toArray(String[]::new);
     }
-
-    private static String receiveSortedOrder(String order) {
-        char[] chars = order.toCharArray();
-        Arrays.sort(chars);
-        return new String(chars);
-    }
-
-    private static void generateSubOrder(String order, Map<String, Integer> answer) {
-        int n = order.length();
-
-        for (int mask = 0; mask < (1 << n); mask++) {
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) > 0) {
-                    sb.append(order.charAt(i));
-                }
-            }
-
-            String key = sb.toString();
-            answer.put(
-                    key,
-                    answer.getOrDefault(key, 0) + 1);
-        }
+    
+    private String orderCourseName(String courseName) {
+        return courseName.chars()
+                    .sorted()
+                    .collect(
+                            StringBuilder::new,
+                            StringBuilder::appendCodePoint,
+                            StringBuilder::append)
+                    .toString();
     }
 }
