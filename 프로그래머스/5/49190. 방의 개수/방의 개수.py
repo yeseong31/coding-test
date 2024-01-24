@@ -2,12 +2,8 @@ class Vertex:
     def __init__(self, x, y):
         self.x = x;
         self.y = y;
-        self.id = self.generate_id(x, y)
+        self.id = (x, y)
         self.connects = set()
-        
-    @staticmethod
-    def generate_id(x, y):
-        return f'{x}-{y}'
 
 
 def solution(arrows):
@@ -22,14 +18,13 @@ def solution(arrows):
     for arrow in arrows:
         for _ in range(2):
             x, y = v.x + dx[arrow], v.y + dy[arrow]
-            id = Vertex.generate_id(x, y)
             
-            if id not in vertices:
-                vertices[id] = Vertex(x, y)
-            elif id not in v.connects:
+            if (x, y) not in vertices:
+                vertices[(x, y)] = Vertex(x, y)
+            elif (x, y) not in v.connects:
                 answer += 1
             
-            next_v = vertices[id]
+            next_v = vertices[(x, y)]
             
             v.connects.add(next_v.id)
             next_v.connects.add(v.id)
