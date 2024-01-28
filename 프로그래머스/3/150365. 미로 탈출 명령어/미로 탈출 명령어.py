@@ -17,10 +17,9 @@ def solution(n, m, x, y, r, c, k):
         
         for i in range(4):
             nx, ny = x + dx[i], y + dy[i]
-            if nx <= 0 or nx > n or ny <= 0 or ny > m or len(result) + abs(nx - r) + abs(ny - c) >= k:
-                continue
             
-            q.append((nx, ny, result + dz[i]))
-            break
+            if 0 < nx <= n and 0 < ny <= m and len(result) + abs(nx - r) + abs(ny - c) < k:
+                q.append((nx, ny, result + dz[i]))
+                break
                 
     return 'impossible'
