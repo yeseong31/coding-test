@@ -5,19 +5,43 @@ import java.util.Set;
 
 class Vertex {
     
-    public final int x;
-    public final int y;
-    public final String id; 
-    public final Set<String> connects = new HashSet<>();
+    private final int x;
+    private final int y;
+    private final String id; 
+    private final Set<String> connects = new HashSet<>();
     
-    public Vertex(int x, int y) {
+    private Vertex(int x, int y) {
         this.x = x;
         this.y = y;
         this.id = generateId(x, y);
     }
     
+    public static Vertex of(int x, int y) {
+        return new Vertex(x, y);
+    }
+    
     public static String generateId(int x, int y) {
-        return String.format("ID-%d-%d", x, y);
+        return String.format("(%d, %d)", x, y);
+    }
+    
+    public String getId() {
+        return id;
+    }
+    
+    public int getNextX(int dx) {
+        return x + dx;
+    }
+    
+    public int getNextY(int dy) {
+        return y + dy;
+    }
+    
+    public boolean isConnected(String id) {
+        return connects.contains(id);
+    }
+    
+    public void connect(String id) {
+        connects.add(id);
     }
 }
 
@@ -29,8 +53,8 @@ class Solution {
     public int solution(int[] arrows) {
         Map<String, Vertex> vertices = new HashMap<>();
         
-        Vertex v = new Vertex(0, 0);
-        vertices.put(v.id, v);
+        Vertex v = Vertex.of(0, 0);
+        vertices.put(v.getId(), v);
         
         return findRooms(arrows, v, vertices);
     }
@@ -40,20 +64,20 @@ class Solution {
         
         for (int arrow : arrows) {
             for (int i = 0; i < 2; i++) {
-                int x = v.x + dx[arrow];
-                int y = v.y + dy[arrow];
+                int x = v.getNextX(dx[arrow]);
+                int y = v.getNextY(dy[arrow]);
 
                 String id = Vertex.generateId(x, y);
 
                 if (!vertices.containsKey(id)) {
-                    vertices.put(id, new Vertex(x, y));
-                } else if (!v.connects.contains(id)) {
+                    vertices.put(id, Vertex.of(x, y));
+                } else if (!v.isConnected(id)) {
                     result++;
                 }
 
                 Vertex nv = vertices.get(id);
-                v.connects.add(nv.id);
-                nv.connects.add(v.id);
+                v.connect(nv.getId());
+                nv.connect(v.getId());
 
                 v = nv;
             }
