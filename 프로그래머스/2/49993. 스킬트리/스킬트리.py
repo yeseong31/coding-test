@@ -2,4 +2,10 @@ from re import sub
 
 
 def solution(skill, skill_trees):
-    return sum(skill.startswith(sub(f'[^{skill}]', '', skill_tree)) for skill_tree in skill_trees)
+    answer = 0
+    
+    for tree in skill_trees:
+        if skill.startswith(sub(f'[^{skill}]', '', tree)):
+            answer += 1
+    
+    return answer
