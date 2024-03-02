@@ -1,41 +1,58 @@
-from copy import deepcopy
+import re
+from itertools import permutations
 
 
-def split(expression):
+def toPostFix(tokens, priority):
+    stack = []
     result = []
-    prev = ''
-
-    for c in expression:
-        if c.isdigit():
-            prev += c
+    
+    for token in tokens:
+        if token.isdigit():
+            result.append(token)
             continue
         
-        result.append(int(prev))
-        result.append(c)
-        prev = ''
-
-    result.append(prev)
+        if not stack:
+            stack.append(token)
+            continue
+        
+        while stack and priority[token] <= priority[stack[-1]]:
+            result.append(stack.pop())
+        
+        stack.append(token)
+        
+    while stack:
+        result.append(stack.pop())
+    
     return result
 
 
-def calculate(tokens, operator):
+def calculate(tokens):
     stack = []
-
-    for op in operator:
-        for token in tokens:
-            if stack and stack[-1] == op:
-                target_op = stack.pop()
-                left_number = stack.pop()
-                stack.append(eval(f'{left_number}{target_op}{token}'))
-            else:
-                stack.append(token)
-
-        tokens = deepcopy(stack)
-
-    return abs(int(stack.pop()))
+    
+    for token in tokens:
+        if token.isdigit():
+            stack.append(int(token))
+            continue
+            
+        num2, num1 = stack.pop(), stack.pop()
+        if token == '+':
+            stack.append(num1 + num2)
+        elif token == '-':
+            stack.append(num1 - num2)
+        else:
+            stack.append(num1 * num2)
+    
+    return stack.pop()
 
 
 def solution(expression):
-    operators = (('+', '-', '*'), ('+', '*', '-'), ('-', '+', '*'), ('-', '*', '+'), ('*', '+', '-'), ('*', '-', '+'))
-    tokens = split(expression)
-    return max(calculate(tokens, operator) for operator in operators)
+    answer = 0
+    tokens = re.split(r'([-+*])|\s+', expression)
+    operators = ('+', '-', '*')
+    
+    for _case in map(list, permutations(operators)):
+        priority = {o: p for p, o in enumerate(list(_case))}
+        postfix = toPostFix(tokens, priority)
+        answer = max(answer, abs(calculate(postfix)))
+    
+    return answer
