@@ -1,7 +1,11 @@
+def cond(s, i, left, right):
+    return 0 <= left - i and right + i < len(s) and s[left - i] == s[right + i]
+
+
 def palindrome(s, left, right):
     result = i = not right - left
     
-    while 0 <= left - i and right + i < len(s) and s[left - i] == s[right + i]:
+    while cond(s, i, left, right):
         i += 1
         result += 2
     
