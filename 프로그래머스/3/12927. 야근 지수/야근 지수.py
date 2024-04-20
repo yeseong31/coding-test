@@ -3,7 +3,7 @@ def solution(n: int, works: list):
     length = len(works)
 
     while n > 0:
-        for i in range(length):
+        for i in range(len(works)):
             works[i] -= 1
             n -= 1
             if n == 0:
