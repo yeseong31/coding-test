@@ -8,7 +8,6 @@ def solution(m, n, startX, startY, balls):
             nx, ny = x + dx[i], y + dy[i]
             ns = (abs(x - nx) ** 2) + (abs(y - ny) ** 2)
             ne = (abs(startX - nx) ** 2) + (abs(startY - ny) ** 2)
-            
             if not (startX == nx == x or startY == ny == y) or ns > ne:
                 dist = min(dist, ne)
                 
