@@ -6,13 +6,11 @@ def solution(k, ranges):
     for _ in range(MAX_LEN):
         if k == 1:
             break
-        
         prev = k
         if k % 2 == 0:
             k //= 2
         else:
             k = 3 * k + 1
-        
         areas.append((prev + k) / 2)
 
     length = len(areas)
@@ -21,14 +19,11 @@ def solution(k, ranges):
 
     for a, b in ranges:
         b += length - 1
-        
         if b >= length or a > b:
             answer.append(-1)
-            continue
-        if a == b:
+        elif a == b:
             answer.append(0)
-            continue
-        
-        answer.append(areas[b] - areas[a])
+        else:
+            answer.append(areas[b] - areas[a])
     
     return answer
