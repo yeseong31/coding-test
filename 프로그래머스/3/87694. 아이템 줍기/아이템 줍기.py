@@ -9,7 +9,6 @@ def solution(rectangle, characterX, characterY, itemX, itemY):
     
     for r in rectangle:
         lx, ly, rx, ry = map(lambda x: x * 2, r)
-        
         for x in range(lx, rx + 1):
             for y in range(ly, ry + 1):
                 if lx < x < rx and ly < y < ry:
@@ -21,13 +20,11 @@ def solution(rectangle, characterX, characterY, itemX, itemY):
     
     while q:
         x, y, d = q.popleft()
-        
         if x == itemX * 2 and y == itemY * 2:
             return d // 2
         
         for k in range(4):
             nx, ny = x + dx[k], y + dy[k]
-            
             if board[nx][ny] == 1 and not visited[nx][ny]:
                 q.append((nx, ny, d + 1))
                 visited[nx][ny] = True
