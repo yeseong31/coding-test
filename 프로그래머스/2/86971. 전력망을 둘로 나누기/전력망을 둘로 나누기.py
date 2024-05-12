@@ -6,8 +6,8 @@ def solution(n, wires):
         q = deque([start])
         visited = [0] * (n + 1)
         visited[b] = visited[start] = 1
-        res = 1
         
+        res = 1
         while q:
             v = q.popleft()
             for i in graph[v]:
@@ -29,5 +29,4 @@ def solution(n, wires):
 
     for a, b in wires:
         answer = min(answer, abs(2 * bfs(a) - n))
-    
     return answer
