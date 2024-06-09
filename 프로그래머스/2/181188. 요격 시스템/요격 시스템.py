@@ -8,6 +8,5 @@ def solution(targets):
         
         while targets and start < targets[-1][1]:
             targets.pop()
-        
     
     return answer
