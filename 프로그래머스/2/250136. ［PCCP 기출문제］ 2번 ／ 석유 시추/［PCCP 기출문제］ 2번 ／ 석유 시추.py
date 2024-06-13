@@ -15,21 +15,17 @@ def solution(land):
             for i in range(4):
                 nx, ny = x + dx[i], y + dy[i]
                 
-                if nx < 0 or nx >= n or ny < 0 or ny >= m or land[nx][ny] == 0 or visited[nx][ny]:
-                    continue
-
-                result += 1
-                visited[nx][ny] = True
-                q.append((nx, ny))
+                if 0 <= nx < n and 0 <= ny < m and land[nx][ny] != 0 and not visited[nx][ny]:
+                    result += 1
+                    visited[nx][ny] = True
+                    q.append((nx, ny))
 
         for i in range(left, right + 1):
             answer[i] += result
 
     dx, dy = (1, 0, -1, 0), (0, 1, 0, -1)
-    
     n, m = len(land), len(land[0])
     answer = [0] * m
-    
     visited = [[False] * m for _ in range(n)]
 
     for j in range(m):
