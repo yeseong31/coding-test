@@ -4,9 +4,7 @@ import java.util.Arrays;
 class Solution {
     
     public int solution(int n, int k) {
-        String converted = convertToK(n, k);
-        String[] target = converted.split("0");
-        
+        String[] target = convertToK(n, k).split("0");
         return countPrimeNumber(target);
     }
     
@@ -14,7 +12,7 @@ class Solution {
         return (int) Arrays.stream(target)
                 .filter(s -> !s.isEmpty())
                 .mapToLong(Long::parseLong)
-                .filter(number -> isPrimeNumber(number))
+                .filter(this::isPrimeNumber)
                 .count();
     }
     
@@ -25,12 +23,11 @@ class Solution {
             }
         }
         
-        return !(number <= 1);
+        return number > 1;
     }
     
     private String convertToK(int n, int k) {
         StringBuilder sb = new StringBuilder();
-        int mod;
         
         while (n != 0) {
             sb.append(n % k);
