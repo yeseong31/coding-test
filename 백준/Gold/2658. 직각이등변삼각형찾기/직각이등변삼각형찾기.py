@@ -1,19 +1,29 @@
 def solution():
+    def dfs(x, y, v):
+        if x < 0 or x >= 10 or y < 0 or y >= 10 or visited[x][y] or board[x][y] != v:
+            return
+        visited[x][y] = True
+        dfs(x, y - 1, v)
+        dfs(x, y + 1, v)
+        dfs(x - 1, y, v)
+        dfs(x + 1, y, v)
+
     def check(arr):
         if len(arr) < 2 or len(arr) > 10:
             return False
 
         length = [len(x) for x in arr]
         if length[0] == length[-1]:
-            l, r = 0, len(length) - 1
-            c = 1
-            while l < r:
-                if not length[l] == length[r] == c:
+            left, right = 0, len(length) - 1
+            c = 0
+            while left < right:
+                l, r = length[left], length[right]
+                if not (l == r == c + 1):
                     return False
-                l += 1
-                r -= 1
+                left += 1
+                right -= 1
                 c += 1
-            if l == r and length[l] == length[r] == c:
+            if left == right and length[left] == length[right] == c + 1:
                 return True
             return False
 
@@ -22,31 +32,43 @@ def solution():
             return True
         return False
 
-    target = []
+    board = [[0] * 10 for _ in range(10)]
+    one = []
     for i in range(10):
         tmp = []
         for j, k in enumerate(input()):
             if k == '1':
                 tmp.append((i, j))
+                board[i][j] = int(k)
         if tmp:
-            target.append(tmp)
+            one.append(tmp)
+    visited = [[False] * 10 for _ in range(10)]
 
-    if not check(target):
+    count = 0
+    for i in range(10):
+        for j in range(10):
+            if not visited[i][j]:
+                dfs(i, j, board[i][j])
+                if board[i][j] == 1:
+                    count += 1
+
+    if not count == 1 or not check(one):
         print(0)
         return
 
-    p = sorted(target, key=lambda x: len(x), reverse=True)
-    answer = [p.pop()[0]]
+    point = sorted(one, key=lambda x: len(x), reverse=True)
+    answer = [point.pop()[0]]
 
-    if len(p[-1]) == 1:
-        answer.append(p.pop()[0])
-        if answer[0][1] == p[0][0][1]:
-            answer.append(p[0][-1])
+    if len(point[-1]) == 1:
+        answer.append(point.pop()[0])
+        tmp = point[0]
+        if answer[0][1] == tmp[0][1]:
+            answer.append(tmp[-1])
         else:
-            answer.append(p[0][0])
+            answer.append(tmp[0])
     else:
-        answer.append(p[0][0])
-        answer.append(p[0][-1])
+        answer.append(point[0][0])
+        answer.append(point[0][-1])
 
     for a, b in sorted(answer):
         print(a + 1, b + 1)
