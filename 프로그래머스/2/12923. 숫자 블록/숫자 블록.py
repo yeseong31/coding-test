@@ -5,12 +5,10 @@ def find(n):
     result = 1
     
     for x in range(2, int(n ** 0.5) + 1):
-        if n % x != 0:
-            continue
-
-        result = x
-        if n // x <= 1e7:
-            return n // x
+        if n % x == 0:
+            result = x
+            if n // x <= 1e7:
+                return n // x
 
     return result
 
