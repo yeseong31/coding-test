@@ -1,6 +1,6 @@
 def solution(plans):
     answer, stack = [], []
-    plans = sorted([(int(s[:2]) * 60 + int(s[3:]), int(p), n) for n, s, p in plans])
+    plans = sorted((int(s[:2]) * 60 + int(s[3:]), int(p), n) for n, s, p in plans)
     
     for i, (start, playing, name) in enumerate(plans):
         if i == len(plans) - 1:
