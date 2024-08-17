@@ -26,14 +26,12 @@ def solution(fees, records):
 
         if condition == 'IN':
             history[car_number] = time
-            continue
-
-        accumulate_time[car_number] += time - history[car_number]
-        del history[car_number]
+        else:
+            accumulate_time[car_number] += time - history[car_number]
+            del history[car_number]
     
     for car_number in history:
         accumulate_time[car_number] += close_time - history[car_number]
-        
     for car_number in accumulate_time:
         total_fee[car_number] = calculate_fee(accumulate_time[car_number], fees)
 
