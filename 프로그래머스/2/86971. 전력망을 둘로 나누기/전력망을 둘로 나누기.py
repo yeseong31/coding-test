@@ -11,22 +11,18 @@ def solution(n, wires):
         while q:
             v = q.popleft()
             for i in graph[v]:
-                if visited[i]:
-                    continue
-                    
-                visited[i] = 1
-                q.append(i)
-                res += 1
-        
+                if not visited[i]:
+                    visited[i] = 1
+                    q.append(i)
+                    res += 1 
         return res
 
-    answer = n
     graph = [[] for _ in range(n + 1)]
-
     for a, b in wires:
         graph[a].append(b)
         graph[b].append(a)
 
+    answer = n
     for a, b in wires:
         answer = min(answer, abs(2 * bfs(a) - n))
     return answer
