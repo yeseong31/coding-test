@@ -8,7 +8,8 @@ def is_available_seat(place: list, x: int, y: int, dx: tuple, dy: tuple) -> bool
         if i % 2 == 0:
             if place[nx][ny] == 'P':
                 return False
-            continue
+            else:
+                continue
 
         if place[nx][ny] != 'P':
             continue
