@@ -20,16 +20,14 @@ def solution(cap, n, deliveries, pickups):
     
     
     answer = 0
-    
     delivery_index = find_last_index(deliveries)
     pickup_index = find_last_index(pickups)
     
     answer += calculate_distance(delivery_index, pickup_index)
     
-    while (delivery_index >= 0 or pickup_index >= 0):
+    while delivery_index >= 0 or pickup_index >= 0:
         delivery_index = find_next_index(deliveries, delivery_index)
         pickup_index = find_next_index(pickups, pickup_index)
-
         answer += calculate_distance(delivery_index, pickup_index)
     
     return answer
