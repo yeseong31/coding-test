@@ -11,9 +11,8 @@ def solution(numbers, target):
         if index == len(numbers):
             if result == target:
                 answer += 1
-            continue
-        
-        q.append((index + 1, result + numbers[index]))
-        q.append((index + 1, result - numbers[index]))
+        else:
+            q.append((index + 1, result + numbers[index]))
+            q.append((index + 1, result - numbers[index]))
     
     return answer
