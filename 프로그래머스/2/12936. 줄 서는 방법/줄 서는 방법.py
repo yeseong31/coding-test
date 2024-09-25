@@ -7,7 +7,7 @@ def solution(n, k):
     k -= 1
     
     while nums:
-        i, k = divmod(k, factorial(len(nums) - 1))
-        answer.append(nums.pop(i))
+        div, k = divmod(k, factorial(len(nums) - 1))
+        answer.append(nums.pop(div))
     
     return answer
