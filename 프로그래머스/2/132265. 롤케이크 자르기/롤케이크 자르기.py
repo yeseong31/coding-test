@@ -13,7 +13,6 @@ def solution(topping):
             cnt.pop(t)
         
         check.add(t)
-        if len(check) == len(cnt):
-            answer += 1
+        answer += len(check) == len(cnt)
     
     return answer
