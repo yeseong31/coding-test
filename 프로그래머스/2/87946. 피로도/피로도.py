@@ -8,10 +8,12 @@ def solution(k, dungeons):
         count = 0
         current_k = k
 
-        for i in check:
-            cond, cost = dungeons[i]
-            if current_k < cond:
+        for seq in check:
+            condition, cost = dungeons[seq]
+            
+            if current_k < condition:
                 break
+                
             current_k -= cost
             count += 1
 
