@@ -25,10 +25,8 @@ def solution(maps: list):
         
         return count
     
-    answer = []
-    for i in range(len(maps)):
-        for j in range(len(maps[0])):
-            if maps[i][j] != 'X' and not visited[i][j]:
-                answer.append(bfs(i, j))
+    answer = [bfs(i, j) 
+              for i in range(len(maps)) for j in range(len(maps[0])) 
+              if maps[i][j] != 'X' and not visited[i][j]]
         
     return sorted(answer) if answer else [-1]
