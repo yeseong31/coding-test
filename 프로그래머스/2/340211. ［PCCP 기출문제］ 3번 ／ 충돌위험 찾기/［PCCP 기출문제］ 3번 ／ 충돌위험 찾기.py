@@ -4,8 +4,6 @@ from itertools import zip_longest
 
 def move_point(x, y, nx, ny):
     result = []
-    if (x, y) == (nx, ny):
-        return result
     
     step = 1 if x <= nx else -1
     for x in range(x + step, nx + step, step):
@@ -19,10 +17,8 @@ def move_point(x, y, nx, ny):
 
 
 def get_footprints(points, via_routes):
-    result = []
-    
     x, y = points[via_routes[0] - 1]
-    result.append((x, y))
+    result = [(x, y)]
     
     for index in range(1, len(via_routes)):
         x, y = points[via_routes[index - 1] - 1]
