@@ -10,6 +10,6 @@ def solution(k, tangerine):
         k -= count[c]
         
         if k <= 0:
-            break
+            return answer
     
     return answer
