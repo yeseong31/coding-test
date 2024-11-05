@@ -1,12 +1,15 @@
+from collections import deque
+
+
 def solution(n):
-    answer = ''
+    answer = deque()
 
     while n:
         if n % 3 == 0:
-            answer += '4'
+            answer.appendleft('4')
             n = n // 3 - 1
         else:
-            answer += str(n % 3)
+            answer.appendleft(str(n % 3))
             n //= 3
 
-    return answer[::-1]
+    return ''.join(answer)
