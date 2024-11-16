@@ -2,7 +2,12 @@ from collections import defaultdict
 
 
 def solution(survey, choices):
-    indicators = [['R', 'T'], ['C', 'F'], ['J', 'M'], ['A', 'N']]
+    indicators = [
+        ['R', 'T'], 
+        ['C', 'F'], 
+        ['J', 'M'], 
+        ['A', 'N']
+    ]
     dic = defaultdict(int)
 
     for s, c in zip(survey, choices):
