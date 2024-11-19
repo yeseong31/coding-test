@@ -55,11 +55,11 @@ def solution(n, k, cmd):
     for target in cmd:
         if target[0] == 'C':
             t.delete()
-        elif target[0] == 'Z':
+        if target[0] == 'Z':
             t.restore()
-        elif target[0] == 'U':
+        if target[0] == 'U':
             t.up(int(target[2:]))
-        elif target[0] == 'D':
+        if target[0] == 'D':
             t.down(int(target[2:]))
     
     return t.get_result()
