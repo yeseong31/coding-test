@@ -5,11 +5,7 @@ def solution(stones, k):
         for stone in stones:
             if stone - n >= 0:
                 jump = 0
-                continue
-                
-            jump += 1
-            
-            if jump >= k:
+            elif (jump := jump + 1) >= k:
                 return False
         
         return True
