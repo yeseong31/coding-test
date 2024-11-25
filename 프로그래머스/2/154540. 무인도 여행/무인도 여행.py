@@ -16,17 +16,19 @@ def solution(maps: list):
             
             for k in range(4):
                 nx, ny = x + dx[k], y + dy[k]
-                if nx < 0 or nx >= len(maps) or ny < 0 or ny >= len(maps[0]):
-                    continue
-                if maps[nx][ny] != 'X' and not visited[nx][ny]:
-                    visited[nx][ny] = True
-                    count += int(maps[nx][ny])
-                    q.append((nx, ny))
+                if 0 <= nx < len(maps) and 0 <= ny < len(maps[0]):
+                    if maps[nx][ny] != 'X' and not visited[nx][ny]:
+                        visited[nx][ny] = True
+                        count += int(maps[nx][ny])
+                        q.append((nx, ny))
         
         return count
     
-    answer = [bfs(i, j) 
-              for i in range(len(maps)) for j in range(len(maps[0])) 
-              if maps[i][j] != 'X' and not visited[i][j]]
+    answer = []
+    
+    for i in range(len(maps)):
+        for j in range(len(maps[0])):
+            if maps[i][j] != 'X' and not visited[i][j]:
+                answer.append(bfs(i, j))
         
     return sorted(answer) if answer else [-1]
