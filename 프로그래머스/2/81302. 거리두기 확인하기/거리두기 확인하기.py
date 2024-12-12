@@ -8,8 +8,6 @@ def is_available_seat(place: list, x: int, y: int, dx: tuple, dy: tuple) -> bool
         if i % 2 == 0:
             if place[nx][ny] == 'P':
                 return False
-            else:
-                continue
 
         if place[nx][ny] != 'P':
             continue
@@ -17,9 +15,7 @@ def is_available_seat(place: list, x: int, y: int, dx: tuple, dy: tuple) -> bool
         lnx, lny = x + dx[i - 1], y + dy[i - 1]
         rnx, rny = x + dx[(i + 1) % 8], y + dy[(i + 1) % 8]
 
-        if place[lnx][lny] in ('O', 'P'):
-            return False
-        if place[rnx][rny] in ('O', 'P'):
+        if place[lnx][lny] in ('O', 'P') or place[rnx][rny] in ('O', 'P'):
             return False
 
     for i in range(0, 8, 2):
