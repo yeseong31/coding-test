@@ -1,6 +1,8 @@
 def solution(n):
-    cnt = bin(n)[2:].count('1')
+    def get_count(x):
+        return bin(x)[2:].count('1')
     
+    cnt = get_count(n)
     for x in range(n + 1, 1_000_001):
-        if bin(x)[2:].count('1') == cnt:
+        if get_count(x) == cnt:
             return x
