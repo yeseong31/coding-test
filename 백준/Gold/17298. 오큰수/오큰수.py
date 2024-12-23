@@ -3,10 +3,13 @@ nums = list(map(int, input().split()))
 answer = [-1] * n
 stack = []
 
-for i, v in enumerate(nums):
-    while stack and stack[-1][0] < nums[i]:
-        answer[stack.pop()[1]] = nums[i]
-    
-    stack.append((nums[i], i))
-        
+for i in range(n - 2, -1, -1):
+    if nums[i] >= nums[i + 1]:
+        while stack and nums[i] >= stack[-1]:
+            stack.pop()
+    else:
+        stack.append(nums[i + 1])
+    if stack:
+        answer[i] = stack[-1]
+
 print(*answer)
