@@ -5,9 +5,6 @@ def solution(data, col, row_begin, row_end):
     for row in range(row_begin, row_end + 1):    
         row_sum = sum(x % row for x in data[row - 1])
         target = int(bin(row_sum), 2)
-        if answer == -1:
-            answer = target
-        else:
-            answer ^= target
+        answer = target if answer == -1 else answer ^ target
             
     return answer
