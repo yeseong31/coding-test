@@ -1,11 +1,14 @@
 def solution(s):
-    answer = dict()
-    s = sorted(s[2:-2].split("},{"), key=len)
+    answer = list()
+    checked = set()
+    
+    s = sorted(s[2:-2].split('},{'), key=len)
     
     for target in s:
         for v in target.split(','):
-            if v not in answer:
-                answer[v] = 1
+            if v not in checked:
+                answer.append(int(v))
+                checked.add(v)
     
-    return list(map(int, answer))
+    return answer
     
