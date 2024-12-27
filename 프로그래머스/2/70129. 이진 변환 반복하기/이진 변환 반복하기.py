@@ -1,6 +1,5 @@
 def solution(s):
-    count_zero = 0
-    repeat = 0
+    count_zero = repeat = 0
     
     while s != '1':
         target = s.replace('0', '')
