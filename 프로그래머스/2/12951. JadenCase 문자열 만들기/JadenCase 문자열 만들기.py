@@ -1,19 +1,16 @@
 def solution(s):
-    answer = ''
-    i = 0
+    answer = []
     start = False
     
-    while i < len(s):
-        c = s[i]
-        
+    for c in s:
         if c == ' ':
-            answer += c
             start = False
-        elif not start:
-            answer += c.upper()
-            start = True
+        elif start:
+            c = c.lower()
         else:
-            answer += c.lower()
-        i += 1
+            c = c.upper()
+            start = True
         
-    return answer
+        answer.append(c)
+        
+    return ''.join(answer)
