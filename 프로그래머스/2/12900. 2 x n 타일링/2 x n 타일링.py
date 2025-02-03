@@ -1,5 +1,5 @@
 def solution(n):
-    mod = 1000000007
+    mod = 1_000_000_007
     dp = list(range(n + 1))
 
     for i in range(3, n + 1):
