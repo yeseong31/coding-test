@@ -7,10 +7,12 @@ def convert_time(time):
 
 
 def calculate_fee(duration, fees):
+    answer = fees[1]
+    
     if duration <= fees[0]:
-        return fees[1]
+        return answer
 
-    return fees[1] + ceil((duration - fees[0]) / fees[2]) * fees[3]
+    return answer + ceil((duration - fees[0]) / fees[2]) * fees[3]
 
 
 def solution(fees, records):
@@ -18,7 +20,7 @@ def solution(fees, records):
     accumulate_time = defaultdict(int)
     total_fee = defaultdict(int)
     
-    close_time = convert_time("23:59")
+    close_time = convert_time('23:59')
 
     for record in records:
         time, car_number, condition = record.split(' ')
