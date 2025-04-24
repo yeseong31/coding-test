@@ -1,6 +1,3 @@
-from collections import deque
-
-
 def solution(info, n, m):
     answer = [n]
     visited = set()
