@@ -1,47 +1,35 @@
-def is_available_seat(place: list, x: int, y: int, dx: tuple, dy: tuple) -> bool:
-    for i in range(8):
-        nx, ny = x + dx[i], y + dy[i]
-
-        if nx < 0 or nx >= 5 or ny < 0 or ny >= 5:
-            continue
-
-        if i % 2 == 0:
-            if place[nx][ny] == 'P':
-                return False
-
-        if place[nx][ny] != 'P':
-            continue
-
-        lnx, lny = x + dx[i - 1], y + dy[i - 1]
-        rnx, rny = x + dx[(i + 1) % 8], y + dy[(i + 1) % 8]
-
-        if place[lnx][lny] in ('O', 'P') or place[rnx][rny] in ('O', 'P'):
-            return False
-
-    for i in range(0, 8, 2):
-        nx, ny = x + dx[i], y + dy[i]
-        dnx, dny = x + dx[i] * 2, y + dy[i] * 2
-
-        if dnx < 0 or dnx >= 5 or dny < 0 or dny >= 5 or place[dnx][dny] != 'P':
-            continue
-
-        if place[nx][ny] != 'X':
-            return False
-
-    return True
-
-
-def check(place: list, dx: tuple, dy: tuple) -> int:
-    for i in range(5):
-        for j in range(5):
-            if place[i][j] != 'P':
-                continue
-            if not is_available_seat(place, i, j, dx, dy):
-                return False
-
-    return True
-
-
 def solution(places):
-    dx, dy = (-1, -1, 0, 1, 1, 1, 0, -1), (0, 1, 1, 1, 0, -1, -1, -1)
-    return [int(check(place, dx, dy)) for place in places]
+    dx = (-1, 0, 1, 0, -1, 1, 1, -1, -2, 0, 2, 0)  
+    dy = (0, 1, 0, -1, 1, 1, -1, -1, 0, 2, 0, -2)
+    
+    return [check_place(p, dx, dy) for p in places]
+
+
+def check_place(place, dx, dy):
+    p_points = [(x, y) for x in range(5) for y in range(5) if place[x][y] == 'P']
+    
+    for x, y in p_points:
+        for i in range(12):
+            nx, ny = x + dx[i], y + dy[i]
+            if nx < 0 or nx >= 5 or ny < 0 or ny >= 5 or place[nx][ny] != 'P':
+                continue
+
+            dist_x, dist_y = abs(nx - x), abs(ny - y)
+
+            # x축으로 두 칸 이동
+            if dist_x == 2:
+                if place[x - 1 if nx < x else x + 1][ny] == 'O':
+                    return 0
+            # y축으로 두 칸 이동
+            elif dist_y == 2:
+                if place[nx][y - 1 if ny < y else y + 1] == 'O':
+                    return 0
+            # 대각선으로 한 칸 이동
+            elif dist_x == dist_y == 1:
+                if not place[nx][y] == place[x][ny] == 'X':
+                    return 0
+            # 한 칸 이동 시
+            elif place[nx][ny] == 'P':
+                return 0
+            
+    return 1
