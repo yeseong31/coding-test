@@ -1,7 +1,15 @@
-import java.lang.StringBuilder;
-
-
 class Solution {
+    private char push(char c, int n) {
+        if (!Character.isAlphabetic(c)) {
+            return c;
+        }
+        
+        int offset = Character.isLowerCase(c) ? 'a' : 'A';
+        int position = (c - offset + n) % 26;
+        
+        return (char) (offset + position);
+    }
+    
     public String solution(String s, int n) {
         StringBuilder sb = new StringBuilder();
         
@@ -10,14 +18,5 @@ class Solution {
         }
         
         return sb.toString();
-    }
-    
-    private char push(final char c, final int n) {
-        if (c == ' ') {
-            return c;
-        }
-        int offset = Character.isUpperCase(c) ? 'A' : 'a';
-        int position = (c - offset + n) % ('z' - 'a' + 1);
-        return (char) (offset + position);
     }
 }
