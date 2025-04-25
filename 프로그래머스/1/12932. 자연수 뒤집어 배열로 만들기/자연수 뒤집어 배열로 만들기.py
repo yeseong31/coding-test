@@ -1,2 +1,2 @@
 def solution(n):
-    return [int(c) for c in str(n)[::-1]]
+    return list(map(int, reversed(str(n))))
