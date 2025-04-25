@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 class Solution {
     private static final int[] dx = {-1, 0, 1, 0, -1, 1, 1, -1, -2, 0, 2, 0};
     private static final int[] dy = {0, 1, 0, -1, 1, 1, -1, -1, 0, 2, 0, -2};
@@ -23,6 +22,7 @@ class Solution {
             return y;
         }
     }
+    
     private boolean isDistanced(char[][] place, Point p) {
         int x = p.getX();
         int y = p.getY();
@@ -38,24 +38,14 @@ class Solution {
             int distX = Math.abs(nx - x);
             int distY = Math.abs(ny - y);
 
-            int mx;
-            int my;
+            int mx = (nx < x) ? x - 1 : x + 1;
+            int my = (ny < y) ? y - 1 : y + 1;
 
             if (distX == 2) {
-                if (nx < x) {
-                    mx = x - 1;
-                } else {
-                    mx = x + 1;
-                }
                 if (place[mx][ny] == 'O') {
                     return false;
                 }
             } else if (distY == 2) {
-                if (ny < y) {
-                    my = y - 1;
-                } else {
-                    my = y + 1;
-                }
                 if (place[nx][my] == 'O') {
                     return false;
                 }
