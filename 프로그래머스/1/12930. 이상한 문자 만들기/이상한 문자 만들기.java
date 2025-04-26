@@ -1,22 +1,25 @@
 class Solution {
     public String solution(String s) {
-        StringBuilder answer = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         int index = 0;
         
         for (char c : s.toCharArray()) {
-            if (!Character.isAlphabetic(c)) {
-                index = 1;
+            if (c == ' ') {
+                index = 0;
+                sb.append(c);
+                continue;
             }
-            answer.append(convertAlphabet(c, index++));
+            
+            if (index % 2 == 0) {
+                c = Character.toUpperCase(c);
+            } else {
+                c = Character.toLowerCase(c);
+            }
+            
+            sb.append(c);
+            index++;
         }
         
-        return answer.toString();
-    }
-    
-    private char convertAlphabet(char c, int idx) {
-        if (idx % 2 == 0) {
-            return Character.toUpperCase(c);
-        }
-        return Character.toLowerCase(c);
+        return sb.toString();
     }
 }
