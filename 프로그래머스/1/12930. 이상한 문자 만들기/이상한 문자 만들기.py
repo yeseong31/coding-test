@@ -1,13 +1,15 @@
 def solution(s):
-    answer = ''
-    idx = 0
+    answer = []
+    i = 0
     
     for c in s:
         if c == ' ':
-            answer += c
-            idx = 0
-        else:
-            answer += c.upper() if idx % 2 == 0 else c.lower()
-            idx += 1
+            i = 0
+            answer.append(c)
+            continue
+        
+        c = c.upper() if i % 2 == 0 else c.lower()
+        answer.append(c)
+        i += 1
     
-    return answer
+    return ''.join(answer)
