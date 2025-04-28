@@ -1,8 +1,8 @@
 def solution(n):
-    answer = []
+    answer = ''
     
-    while n > 0:
+    while n >= 1:
         n, mod = divmod(n, 3)
-        answer.append(str(mod))
-        
-    return int(''.join(answer), 3)
+        answer += str(mod)
+    
+    return int(answer, 3)
