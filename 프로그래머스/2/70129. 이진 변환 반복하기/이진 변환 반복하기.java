@@ -1,15 +1,29 @@
 class Solution {
-    public int[] solution(String s) {
-        int countZero = 0;
-        int repeat = 0;
+    private int countZero(String s) {
+        int count = 0;
         
-        while (!s.equals("1")) {
-            String target = s.replaceAll("0", "");
-            countZero += s.length() - target.length();
-            s = Integer.toString(target.length(), 2);
-            repeat++;
+        for (char c : s.toCharArray()) {
+            if (c == '0') {
+                count++;
+            }
         }
         
-        return new int[] {repeat, countZero};
+        return count;
+    }
+    
+    public int[] solution(String s) {
+        int seq = 0;
+        int total_zero_count = 0;
+        
+        while (!s.equals("1")) {
+            int zero_count = countZero(s);
+            total_zero_count += zero_count;
+            
+            int next_s_length = s.length() - zero_count;
+            s = Integer.toString(next_s_length, 2);
+            seq++;
+        }
+        
+        return new int[] {seq, total_zero_count};
     }
 }
