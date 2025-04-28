@@ -1,5 +1,5 @@
 def solution(s):
-    numbers = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-    for i in range(10):
-        s = s.replace(numbers[i], str(i))
+    numbers = ('zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine')
+    for seq, number in enumerate(numbers):
+        s = s.replace(number, str(seq))
     return int(s)
