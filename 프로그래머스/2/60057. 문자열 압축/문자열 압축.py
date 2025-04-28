@@ -1,35 +1,37 @@
-def compress(s: str, token: int) -> int:
-    result = []
-    prev = s[:token]
-    count = 1
-    
-    for start in range(token, len(s), token):
-        end = min(len(s), start + token)
-        target = s[start:end]
-        
-        if prev == target:
-            count += 1
-            continue
-        
-        if count > 1:
-            result.append(str(count))
-        
-        result.append(prev)
-        prev = target
-        count = 1
-    
-    if count > 1:
-        result.append(str(count))
-
-    result.append(prev)
-    return len(''.join(result))
-        
+from collections import deque
 
 
 def solution(s):
     answer = len(s)
     
-    for token in range(1, len(s) // 2 + 1):
-        answer = min(answer, compress(s, token))
+    for n in range(1, len(s) // 2 + 1):
+        answer = min(answer, compress(s, n))
     
     return answer
+
+
+def compress(s, n):
+    q = deque()
+    index = 0
+    
+    while index < len(s):
+        q.append(s[index:index+n])
+        index += n
+    
+    result = []
+    prev = q.popleft()
+    count = 1
+    
+    while q:
+        cur = q.popleft()
+        
+        if prev == cur:
+            count += 1
+            continue
+        
+        result.append(prev if count == 1 else f'{count}{prev}')
+        prev = cur
+        count = 1
+
+    result.append(prev if count == 1 else f'{count}{prev}')
+    return len(''.join(result))
