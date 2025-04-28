@@ -2,16 +2,18 @@ import re
 
 
 def solution(new_id):
-    answer = re.sub(r'[^a-z0-9._-]', '', new_id.lower())
-    answer = re.sub('\.\.+', '.', answer)
-    answer = answer.strip('.')
+    new_id = new_id.lower()
+    new_id = re.sub('[^a-z0-9\_\-\.]', '', new_id)
+    new_id = re.sub('[.]+', '.', new_id)
+    new_id = new_id.strip('.')
     
-    if answer == '':
-        answer = 'a'
-        
-    answer = answer[:15].strip('.')
+    if not new_id:
+        new_id = 'a'
     
-    while len(answer) < 3:
-        answer += answer[-1]
+    new_id = new_id[:15]
+    new_id = new_id.strip('.')
     
-    return answer
+    while len(new_id) < 3:
+        new_id += new_id[-1]
+    
+    return new_id
