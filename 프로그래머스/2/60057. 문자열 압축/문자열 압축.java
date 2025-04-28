@@ -1,39 +1,60 @@
-import java.lang.StringBuilder;
+import java.util.ArrayList;
+import java.util.List;
+
+
 
 class Solution {
-    public int solution(String s) {
-        int answer = s.length();
-        for (int token = 1; token <= s.length() / 2; token++) {
-            answer = Math.min(answer, compress(s, token));
-        }
-        return answer;
-    }
-    
-    private int compress(final String s, final int token) {
-        StringBuilder sb = new StringBuilder();
-        String prev = s.substring(0, token);
-        String target;
-        int repeat = 1;
+    private int compress(String s, int n) {
+        List<String> tokens = new ArrayList<>();
+        int index = 0;
         
-        for (int index = token; index < s.length(); index += token) {
-            target = s.substring(index, Math.min(index + token, s.length()));
-            if (prev.equals(target)) {
-                repeat += 1;
+        while (index < s.length()) {
+            int endIndex = (index + n) < s.length() ? (index + n) : s.length();
+            String token = s.substring(index, endIndex);
+            
+            tokens.add(token);
+            index += n;
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        String prev = null;
+        int count = 1;
+        
+        for (String cur : tokens) {
+            if (prev == null) {
+                prev = cur;
                 continue;
             }
-            if (repeat > 1) {
-                sb.append(Integer.toString(repeat));
+            
+            if (prev.equals(cur)) {
+                count++;
+                continue;
             }
+            
+            if (count != 1) {
+                sb.append(Integer.toString(count));
+            }
+            
             sb.append(prev);
-            prev = target;
-            repeat = 1;
+            prev = cur;
+            count = 1;
+        }
+            
+        if (count != 1) {
+            sb.append(Integer.toString(count));
         }
         
-        if (repeat > 1) {
-            sb.append(Integer.toString(repeat));
-        }
         sb.append(prev);
+        return sb.toString().length();
+    }
+    
+    public int solution(String s) {
+        int answer = s.length();
         
-        return sb.length();
+        for (int n = 1; n < s.length() / 2 + 1; n++) {
+            answer = Math.min(answer, compress(s, n));
+        }
+        
+        return answer;
     }
 }
