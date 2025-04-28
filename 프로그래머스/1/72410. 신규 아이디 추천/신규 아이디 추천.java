@@ -1,21 +1,23 @@
 class Solution {
     public String solution(String new_id) {
-        String answer = new_id.toLowerCase()
-                .replaceAll("[^a-z0-9\\-_.]", "")
-                .replaceAll("\\.+", ".")
-                .replaceAll("^\\.+|\\.+$", "");
+        new_id = new_id.toLowerCase();
+        new_id = new_id.replaceAll("[^\\w\\d\\-_.]", "");
+        new_id = new_id.replaceAll("\\.+", ".");
+        new_id = new_id.replaceAll("^\\.+|\\.+$", "");
         
-        if (answer.isEmpty()) {
-            answer = "a";
+        if (new_id.isEmpty()) {
+            new_id = "a";
         }
-        if (answer.length() >= 16) {
-            answer = answer.substring(0, 15)
-                    .replaceAll("\\.+$", "");
-        }
-        while (answer.length() <= 2) {
-            answer += answer.charAt(answer.length() - 1);
+        if (new_id.length() >= 16) {
+            new_id = new_id.substring(0, 15);
         }
         
-        return answer;
+        new_id = new_id.replaceAll("\\.$", "");
+        
+        while (new_id.length() < 3) {
+            new_id += new_id.charAt(new_id.length() - 1);
+        }
+        
+        return new_id;
     }
 }
