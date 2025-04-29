@@ -1,10 +1,10 @@
 # [level 2] 카펫 - 42842 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42842) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42842?language=python3) 
 
 ### 성능 요약
 
-메모리: 71.9 MB, 시간: 0.03 ms
+메모리: 9.16 MB, 시간: 0.17 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 1월 1일 11:31:26
+2025년 04월 29일 21:19:54
 
 ### 문제 설명
 
