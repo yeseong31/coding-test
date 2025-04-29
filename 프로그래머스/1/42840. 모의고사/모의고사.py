@@ -1,15 +1,18 @@
+from collections import defaultdict
+
+
 def solution(answers):
     persons = (
         (1, 2, 3, 4, 5),
         (2, 1, 2, 3, 2, 4, 2, 5),
         (3, 3, 1, 1, 2, 2, 4, 4, 5, 5)
     )
+    count = defaultdict(int)
     
-    count = [0, 0, 0]
+    for i in range(3):
+        for j, answer in enumerate(answers):
+            if persons[i][j % len(persons[i])] == answer:
+                count[i + 1] += 1
     
-    for i in range(len(answers)):
-        for j in range(len(persons)):
-            if persons[j][i % len(persons[j])] == answers[i]:
-                count[j] += 1
-    
-    return [i + 1 for i in range(len(count)) if count[i] == max(count)]
+    max_count = max(value for value in count.values())
+    return [int(key) for key, value in count.items() if value == max_count]
