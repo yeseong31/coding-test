@@ -6,15 +6,15 @@ from math import inf
 
 
 def solution(expression):
-    numbers = list(re.sub('[^\d]', '|', expression).split('|'))
-    ops = list(re.sub('[\d]', '', expression))
+    answer = -inf
+    numbers = list(re.sub('\D', '|', expression).split('|'))
+    ops = list(re.sub('\d', '', expression))
     
     exp = [numbers[0]]
     for i, op in enumerate(ops):
         exp.append(op)
         exp.append(numbers[i + 1])
     
-    answer = -inf
     for priority_ops in permutations('+-*', 3):
         result = calculate_result(exp, priority_ops)
         answer = max(answer, abs(result))
