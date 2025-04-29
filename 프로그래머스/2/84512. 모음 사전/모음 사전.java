@@ -3,24 +3,29 @@ import java.util.List;
 
 
 class Solution {
-    
     private static final char[] vowels = new char[] {'A', 'E', 'I', 'O', 'U'};
     
-    public int solution(String word) {
-        List<String> result = new ArrayList<>();
-        makeDictionary("", result);
-        return result.indexOf(word);
-    }
-    
-    private void makeDictionary(final String currentWord, final List<String> result) {
-        result.add(currentWord);
-        
-        if (currentWord.length() == 5) {
+    private void makeDictionary(StringBuilder sb, List<String> dic) {
+        if (sb.toString().length() == 5) {
             return;
         }
         
-        for (char vowel : vowels) {
-            makeDictionary(currentWord + vowel, result);
+        for (int i = 0; i < 5; i++) {
+            sb.append(vowels[i]);
+            dic.add(sb.toString());
+            
+            makeDictionary(sb, dic);
+            
+            sb.deleteCharAt(sb.toString().length() - 1);
         }
+    }
+    
+    public int solution(String word) {
+        List<String> dic = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        
+        makeDictionary(sb, dic);
+        
+        return dic.indexOf(word) + 1;
     }
 }
