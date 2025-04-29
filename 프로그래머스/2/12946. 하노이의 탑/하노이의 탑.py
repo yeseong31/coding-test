@@ -1,14 +1,14 @@
-def hanoi(n, start, mid, end, result):
-    if n == 1:
-        result.append([start, end])
-        return
-    
-    hanoi(n - 1, start, end, mid, result)
-    hanoi(1, start, mid, end, result)
-    hanoi(n - 1, mid, start, end, result)
-
-
 def solution(n):
-    result = []
-    hanoi(n, 1, 2, 3, result)
-    return result
+    answer = []
+    hanoi(1, 2, 3, n, answer)
+    return answer
+
+
+def hanoi(start, mid, end, n, answer):
+    if n == 1:
+        answer.append([start, end])
+        return 
+
+    hanoi(start, end, mid, n - 1, answer)
+    hanoi(start, mid, end, 1, answer)
+    hanoi(mid, start, end, n - 1, answer)
