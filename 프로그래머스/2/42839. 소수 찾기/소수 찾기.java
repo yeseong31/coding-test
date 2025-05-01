@@ -1,37 +1,15 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
 
 class Solution {
-    public int solution(String numbers) {
-        List<Integer> remainNumbers = numbers.chars()
-                .map(c -> c - '0')
-                .boxed()
-                .collect(Collectors.toList());
-        
-        Set<Integer> combinations = new HashSet<>();
-        makeCombinations(0, remainNumbers, new boolean[numbers.length()], combinations);
-        
-        return countPrimeNumbers(combinations);
-    }
-    
-    private int countPrimeNumbers(Set<Integer> combinations) {
-        long result = combinations.stream()
-            .filter(n -> isPrimeNumber(n))
-            .count();
-        
-        return Long.valueOf(result).intValue();
-    }
-    
-    private boolean isPrimeNumber(Integer number) {
-        if (number < 2) {
+    private boolean isPrimeNumber(int x) {
+        if (x <= 1) {
             return false;
         }
         
-        for (int x = 2; x <= (int) Math.sqrt(number); x++) {
-            if (number % x == 0) {
+        for (int i = 2; i <= Math.sqrt(x); i++) {
+            if (x % i == 0) {
                 return false;
             }
         }
@@ -39,21 +17,32 @@ class Solution {
         return true;
     }
     
-    private void makeCombinations(int target, List<Integer> remainNumbers, boolean[] used, Set<Integer> combinations) {
-        if (isPrimeNumber(target)) {
-            combinations.add(target);
+    private void getPrimeNums(int acc, int[] nums, boolean[] isUsed, Set<Integer> result) {
+        if (isPrimeNumber(acc)) {
+            result.add(acc);
         }
         
-        for (int index = 0; index < remainNumbers.size(); index++) {
-            if (used[index]) {
+        for (int i = 0; i < nums.length; i++) {
+            if (isUsed[i]) {
                 continue;
             }
             
-            int nextTarget = target * 10 + remainNumbers.get(index);
+            int newAcc = acc * 10 + nums[i];
             
-            used[index] = true;
-            makeCombinations(nextTarget, remainNumbers, used, combinations);
-            used[index] = false;
+            isUsed[i] = true;
+            getPrimeNums(newAcc, nums, isUsed, result);
+            isUsed[i] = false;
         }
+    }
+    
+    public int solution(String numbers) {
+        Set<Integer> result = new HashSet<>();
+        
+        int[] nums = numbers.chars()
+                .map(c -> Character.getNumericValue(c))
+                .toArray();
+        
+        getPrimeNums(0, nums, new boolean[nums.length], result);
+        return result.size();
     }
 }
