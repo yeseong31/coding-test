@@ -1,70 +1,69 @@
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
+
 class Solution {
-    
-    private static final String[][] PRIORITY_OPERATORS = {
-        "+-*".split(""), "+*-".split(""), "-+*".split(""),
-        "-*+".split(""), "*+-".split(""), "*-+".split(""),
+    private static final String[][] priorityOps = {
+        "+-*".split(""),
+        "+*-".split(""),
+        "-+*".split(""),
+        "-*+".split(""),
+        "*+-".split(""),
+        "*-+".split(""),
     };
     
-    public long solution(String expression) {
-        long answer = 0;
-        List<String> tokens = split(expression);
-        
-        for (String[] operators : PRIORITY_OPERATORS) {
-            long result = calculate(expression, operators, tokens);
-            answer = Math.max(answer, result);
-        }
-        
-        return answer;
+    private long calculate(long n1, long n2, String op) {
+        return switch (op) {
+                case "+" -> n1 + n2;
+                case "-" -> n1 - n2;
+                case "*" -> n1 * n2;
+                default -> 0;
+        };
     }
     
-    private long calculate(String expression, String[] operators, List<String> tokens) {
-        Stack<String> stack = new Stack<>();
+    private long calculate(Deque<String> tokens, String[] ops) {
+        Deque<String> queue = new ArrayDeque<>(tokens);
         
-        for (String operator : operators) {
-            for (String token : tokens) {
-                if (!stack.empty() && stack.peek().equals(operator)) {
-                    String targetOperator = stack.pop();
-                    long leftNumber = Long.parseLong(stack.pop());
-                    long rightNumber = Long.parseLong(token);
-
-                    long result = calculate(leftNumber, rightNumber, targetOperator);
-                    stack.push(String.valueOf(result));
-                    continue;
-                }
+        for (String op : ops) {
+            Deque<String> tmpQueue = new ArrayDeque<>();
+            
+            while (!queue.isEmpty()) {
+                String token = queue.pollFirst();
                 
-                stack.push(token);
+                if (token.equals(op)) {
+                    long n1 = Long.parseLong(tmpQueue.pollLast());
+                    long n2 = Long.parseLong(queue.pollFirst());
+                    long result = calculate(n1, n2, op);
+                    tmpQueue.add(Long.toString(result));
+                } else {
+                    tmpQueue.add(token);
+                }
             }
             
-            tokens = new ArrayList<>(stack);
+            queue = new ArrayDeque<>(tmpQueue);
         }
         
-        long result = Long.parseLong(stack.pop());
-        return Math.abs(result);
+        return Long.parseLong(queue.pollFirst());
     }
     
-    private long calculate(long leftNumber, long rightNumber, String targetOperator) {
-        if (targetOperator.equals("+")) {
-            return leftNumber + rightNumber;
-        }
-        if (targetOperator.equals("-")) {
-            return leftNumber - rightNumber;
-        }
-        return leftNumber * rightNumber;
-    }
-    
-    private List<String> split(final String expression) {
+    public long solution(String expression) {
+        long answer = Long.MIN_VALUE;
+        
         StringTokenizer tokenizer = new StringTokenizer(expression, "+-*", true);
-        List<String> tokens = new ArrayList<>();
+        Deque<String> tokens = new ArrayDeque<>();
         
         while (tokenizer.hasMoreTokens()) {
             tokens.add(tokenizer.nextToken());
         }
         
-        return tokens;
+        for (String[] ops : priorityOps) {
+            long absValue = Math.abs(calculate(tokens, ops));
+            answer = Math.max(answer, absValue);
+        }
+        
+        return answer;
     }
 }
