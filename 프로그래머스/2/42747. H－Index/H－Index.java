@@ -5,15 +5,11 @@ class Solution {
         Arrays.sort(citations);
         
         for (int h = citations.length; h >= 1; h--) {
-            if (check(citations, h)) {
+            if (citations[citations.length - h] >= h) {
                 return h;
             }
         }
         
         return 0;
-    }
-    
-    private boolean check(int[] citations, int h) {
-        return citations[citations.length - h] >= h;
     }
 }
