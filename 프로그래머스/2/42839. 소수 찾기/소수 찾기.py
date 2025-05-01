@@ -1,34 +1,23 @@
-def is_prime_number(n):
-    if n < 2:
-        return False
-    
-    for x in range(2, int(n ** 0.5) + 1):
-        if n % x == 0:
-            return False
-    
-    return True
-
-
-def make_combinations(target, numbers, used, combinations):
-    if is_prime_number(target):
-        combinations.add(target)
-    
-    for index, number in enumerate(numbers):
-        if used[index]:
-            continue
-        
-        next_target = target * 10 + number
-        
-        used[index] = True
-        make_combinations(next_target, numbers, used, combinations)
-        used[index] = False
+from itertools import permutations
 
 
 def solution(numbers):
-    combinations = set()
-    used = [False] * len(numbers)
-    numbers = [int(n) for n in numbers]
+    result = set()
     
-    make_combinations(0, numbers, used, combinations)
+    for i in range(1, len(numbers) + 1):
+        for x in permutations(numbers, i):
+            number = int(''.join(x))
+            result.add(number)
     
-    return len(combinations)
+    return sum(is_prime_number(x) for x in result)
+
+
+def is_prime_number(x):
+    if x <= 1:
+        return False
+    
+    for i in range(2, int(x ** 0.5) + 1):
+        if x % i == 0:
+            return False
+        
+    return True
