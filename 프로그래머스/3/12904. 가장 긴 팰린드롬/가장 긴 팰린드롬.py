@@ -1,5 +1,5 @@
 def cond(s, i, left, right):
-    return 0 <= left - i and right + i < len(s) and s[left - i] == s[right + i]
+    return (0 <= left - i) and (right + i < len(s)) and (s[left - i] == s[right + i])
 
 
 def palindrome(s, left, right):
@@ -15,7 +15,7 @@ def palindrome(s, left, right):
 def solution(s):
     answer = 1
     
-    for i in range(len(s)):
+    for i, _ in enumerate(s):
         answer = max(answer, palindrome(s, i, i), palindrome(s, i - 1, i))
     
     return answer
