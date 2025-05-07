@@ -4,8 +4,8 @@ class Solution {
                 .boxed()
                 .sorted((v1, v2) -> v2 - v1)
                 .collect(StringBuilder::new,
-                        StringBuilder::appendCodePoint,
-                        StringBuilder::append)
+                         StringBuilder::appendCodePoint,
+                         StringBuilder::append)
                 .toString();
     }
 }
