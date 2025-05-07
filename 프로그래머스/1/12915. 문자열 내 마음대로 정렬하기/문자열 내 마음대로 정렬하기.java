@@ -1,12 +1,13 @@
 import java.util.Arrays;
 
+
 class Solution {
     public String[] solution(String[] strings, int n) {
-        Arrays.sort(strings, (v1, v2) -> {
-            if (v1.charAt(n) != v2.charAt(n)) {
-                return v1.charAt(n) - v2.charAt(n);
+        Arrays.sort(strings, (s1, s2) -> {
+            if (s1.charAt(n) != s2.charAt(n)) {
+                return s1.charAt(n) - s2.charAt(n);
             }
-            return v1.compareTo(v2);
+            return s1.compareTo(s2);
         });
         
         return strings;
