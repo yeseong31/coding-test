@@ -6,11 +6,11 @@ class Solution {
         return Arrays.stream(numbers)
                 .mapToObj(String::valueOf)
                 .sorted((v1, v2) -> {
-                    int n1 = Integer.parseInt(v1 + v2);
-                    int n2 = Integer.parseInt(v2 + v1);
-                    return n2 - n1;
+                    int original = Integer.parseInt(v1 + v2);
+                    int reversed = Integer.parseInt(v2 + v1);
+                    return reversed - original;
                 })
                 .collect(Collectors.joining(""))
-                .replaceAll("^0+", "0");
+                .replaceAll("^0+$", "0");
     }
 }
