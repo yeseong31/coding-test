@@ -1,122 +1,69 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-class Course {
-    
-    private int maxValue;
-    private final List<String> menus = new ArrayList<>();
-    
-    private Course() {
-        maxValue = 0;
-    }
-    
-    public static Course create() {
-        return new Course();
-    }
-    
-    public void update(Map.Entry<String, Integer> entry) {
-        if (entry.getValue() < maxValue) {
-            return;
-        }
-        if (entry.getValue() > maxValue) {
-            maxValue = entry.getValue();
-            menus.clear();
-        }
-        menus.add(entry.getKey());
-    }
-    
-    public void addAll(List<String> result) {
-        result.addAll(menus);
-    }
-}
+import java.util.stream.Collectors;
 
 class Solution {
+    private final Map<String, Integer> combinations = new HashMap<>();
+    
+    private void saveCombinations(int seq, StringBuilder sb, String order) {
+        if (seq == order.length()) {
+            if (sb.length() >= 2) {
+                char[] menus = sb.toString().toCharArray();
+                Arrays.sort(menus);
+                String result = new String(menus);
+                combinations.put(result, combinations.getOrDefault(result, 0) + 1);
+            }
+            return;
+        }
+        
+        sb.append(order.charAt(seq));
+        saveCombinations(seq + 1, sb, order);
+        sb.deleteCharAt(sb.length() - 1);
+        saveCombinations(seq + 1, sb, order);
+    }
     
     public String[] solution(String[] orders, int[] course) {
-        Map<String, Integer> result = new HashMap<>();
+        List<String> answer = new ArrayList<>();
+        Map<Integer, Integer> maxCountMap = new HashMap<>();
+        Map<Integer, List<String>> resultMap = new HashMap<>();
         
         for (String order : orders) {
-            String target = orderCourseName(order);
-            List<String> combinations = createCombinations(target);
-            count(combinations, result);
+            saveCombinations(0, new StringBuilder(), order);
         }
         
-        return select(check(result), course).stream()
+        for (Map.Entry<String, Integer> entry : combinations.entrySet()) {
+            String combination = entry.getKey();
+            int count = entry.getValue();
+            int number = combination.length();
+            
+            if (count <= 1) {
+                continue;
+            }
+            
+            int currentMax = maxCountMap.getOrDefault(number, 0);
+            
+            if (count > currentMax) {
+                maxCountMap.put(number, count);
+                List<String> list = new ArrayList<>();
+                list.add(combination);
+                resultMap.put(number, list);
+            } else if (count == currentMax) {
+                resultMap.get(number).add(combination);
+            }
+        }
+        
+        for (int seq : course) {
+            if (resultMap.containsKey(seq)) {
+                List<String> target = resultMap.get(seq);
+                answer.addAll(target);
+            }
+        }
+        
+        return answer.stream()
                 .sorted()
                 .toArray(String[]::new);
-    }
-    
-    private List<String> select(Course[] courses, int[] course) {
-        List<String> result = new ArrayList<>();
-        
-        for (int n : course) {
-            if (courses[n] != null) {
-                courses[n].addAll(result);
-            }
-        }
-        
-        return result;
-    }
-    
-    private Course[] check(Map<String, Integer> countCourses) {
-        Course[] courses = new Course[11];
-        
-        for (Map.Entry<String, Integer> entry : countCourses.entrySet()) {
-            int length = entry.getKey().length();
-            
-            if (entry.getValue().intValue() <= 1) {
-                continue;
-            }
-            if (courses[length] == null) {
-                courses[length] = Course.create();
-            }
-            
-            courses[length].update(entry);
-        }
-        
-        return courses;
-    }
-    
-    private void count(List<String> combinations, Map<String, Integer> result) {
-        for (String combination : combinations) {
-            result.merge(combination, 1, (a, b) -> a + b);
-        }
-    }
-    
-    private List<String> createCombinations(String order) {
-        List<String> result = new ArrayList<>();
-        boolean[] visited = new boolean[order.length()];
-        
-        dfs("", 0, visited, order, result);
-        
-        return result;
-    }
-    
-    private void dfs(String currentCombinations, int currentIndex, boolean[] visited, String order, List<String> result) {
-        if (currentCombinations.length() >= 2) {
-            result.add(currentCombinations);
-        }
-        
-        for (int index = currentIndex; index < order.length(); index++) {
-            if (visited[index]) {
-                continue;
-            }
-            
-            visited[index] = true;
-            dfs(currentCombinations + order.charAt(index), index, visited, order, result);
-            visited[index] = false;
-        }
-    }
-    
-    private String orderCourseName(String courseName) {
-        return courseName.chars()
-                    .sorted()
-                    .collect(
-                            StringBuilder::new,
-                            StringBuilder::appendCodePoint,
-                            StringBuilder::append)
-                    .toString();
     }
 }
