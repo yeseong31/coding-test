@@ -1,32 +1,42 @@
-from collections import defaultdict
-from itertools import combinations
 from bisect import bisect_left
+from collections import defaultdict
 
 
 def solution(info, query):
     answer = []
-    people = defaultdict(list)
+    scores = defaultdict(list)
     
     for i in info:
-        person = i.split()
-        score = int(person.pop())
-        people[''.join(person)].append(score)
+        *cond, score = i.split()
         
-        for j in range(4):
-            for _case in combinations(person, j):
-                people[''.join(_case)].append(score)
+        cases = []
+        get_cases(cond, 0, [], cases)
+        
+        for key in cases:
+            scores[key].append(int(score))
     
-    for p in people:
-        people[p].sort()
-        
+    for key in scores:
+        scores[key].sort()
+    
     for q in query:
-        key = q.split()
-        score = int(key.pop())
+        *cond, score = q.split()
+        score = int(score)
         
-        key = ''.join(key)
-        key = key.replace('and', '').replace(' ', '').replace('-', '')
+        key = ''.join(cond).replace('and', '')
+        values = scores[key]
         
-        count = len(people[key]) - bisect_left(people[key], score)
-        answer.append(count)
+        index = bisect_left(values, score)
+        answer.append(len(values) - index)
     
     return answer
+
+
+def get_cases(cond, seq, current, cases):
+    if seq == len(cond):
+        if current:
+            cases.append(''.join(current))
+        return
+    
+    get_cases(cond, seq + 1, current + [cond[seq]], cases)
+    get_cases(cond, seq + 1, current + ['-'], cases)
+    
