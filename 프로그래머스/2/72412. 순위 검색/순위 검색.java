@@ -1,81 +1,82 @@
-import java.util.*;
-import java.util.function.Consumer;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class Solution {
-    public int[] solution(String[] info, String[] query) {
-        int[] answer = new int[query.length];
-        Map<String, List<Integer>> scoresMap = buildScoresMap(info);
-        
-        for (int index = 0; index < answer.length; index++) {
-            answer[index] = count(query[index], scoresMap);
-        }
-        
-        return answer;
-    }
-    
-    private int count(String query, Map<String, List<Integer>> scoresMap) {
-        String[] tokens = query.split(" (and )?");
-        String key = String.join("", Arrays.copyOf(tokens, tokens.length - 1));
-        
-        if (!scoresMap.containsKey(key)) {
-            return 0;
-        }
-        
-        List<Integer> scores = scoresMap.get(key);
-        int score = Integer.parseInt(tokens[tokens.length - 1]);
-        
-        return scores.size() - binarySearch(score, scoresMap.get(key));
-    }
-    
-    private int binarySearch(int score, List<Integer> scores) {
-        int start = 0;
-        int end = scores.size() - 1;
-        
-        while (start < end) {
-            int mid = (start + end) / 2;
-            
-            if (scores.get(mid) >= score) {
-                end = mid;
-            } else {
-                start = mid + 1;
+    private void getKeyCombinations(String[] tokens, int seq, String current, List<String> keyCombinations) {
+        if (seq == tokens.length - 1) {
+            if (current.length() > 0) {
+                keyCombinations.add(current);
             }
-        }
-        
-        if (scores.get(start) < score) {
-            return scores.size();
-        }
-        return start;
-    }
-    
-    private Map<String, List<Integer>> buildScoresMap(String[] info) {
-        Map<String, List<Integer>> scoresMap = new HashMap<>();
-
-        for (String people : info) {
-            String[] tokens = people.split(" ");
-            int score = Integer.parseInt(tokens[tokens.length - 1]);
-            
-            forEachKey(0, "", tokens, key -> {
-                scoresMap.putIfAbsent(key, new ArrayList<>());
-                scoresMap.get(key).add(score);
-            });
-            
-        }
-        
-        for (List<Integer> scores : scoresMap.values()) {
-            Collections.sort(scores);
-        }
-        
-        return scoresMap;
-    }
-    
-    private void forEachKey(int index, String prefix, String[] tokens, Consumer<String> actions) {
-        if (index == tokens.length - 1) {
-            actions.accept(prefix);
             return;
         }
         
-        forEachKey(index + 1, prefix + tokens[index], tokens, actions);
-        forEachKey(index + 1, prefix + "-", tokens, actions);
+        getKeyCombinations(tokens, seq + 1, current + tokens[seq], keyCombinations);
+        getKeyCombinations(tokens, seq + 1, current + "-", keyCombinations);
+    }
+    
+    private int binarySearch(List<Integer> values, int score) {
+        int left = 0;
+        int right = values.size() - 1;
+        
+        while (left < right) {
+            int mid = (left + right) / 2;
+            
+            if (values.get(mid) >= score) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        if (values.get(left) < score) {
+            return values.size();
+        }
+        return left;
+    }
+    
+    public int[] solution(String[] info, String[] query) {
+        List<Integer> answer = new ArrayList<>();
+        Map<String, List<Integer>> scores = new HashMap<>();
+        
+        for (String i : info) {
+            String[] tokens = i.split(" ");
+            int score = Integer.parseInt(tokens[tokens.length - 1]);
+            
+            List<String> keyCombinations = new ArrayList<>();
+            getKeyCombinations(tokens, 0, new String(), keyCombinations);
+            
+            for (String key : keyCombinations) {
+                scores.computeIfAbsent(key, k -> new ArrayList<>());
+                scores.get(key).add(score);
+            }
+        }
+        
+        for (List<Integer> value : scores.values()) {
+            Collections.sort(value);
+        }
+
+        for (String q : query) {
+            String[] tokens = q.replaceAll(" and ", " ").split(" ");
+            String key = String.join("", Arrays.copyOf(tokens, tokens.length - 1));
+            
+            if (!scores.containsKey(key)) {
+                answer.add(0);
+                continue;
+            }
+            
+            List<Integer> values = scores.get(key);
+            int score = Integer.parseInt(tokens[tokens.length - 1]);
+            
+            int result = binarySearch(values, score);
+            answer.add(values.size() - result);
+        }
+        
+        return answer.stream()
+                .mapToInt(Integer::valueOf)
+                .toArray();
     }
 }
