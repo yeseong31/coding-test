@@ -1,8 +1,8 @@
 class Solution {
     public int solution(int[][] triangle) {
-        for (int x = triangle.length - 2; x >= 0; x--) {
-            for (int y = 0; y < triangle[x].length; y++) {
-                triangle[x][y] += Math.max(triangle[x + 1][y], triangle[x + 1][y + 1]);
+        for (int i = triangle.length - 2; i >= 0; i--) {
+            for (int j = 0; j < triangle[i].length; j++) {
+                triangle[i][j] += Math.max(triangle[i + 1][j], triangle[i + 1][j + 1]);
             }
         }
         
