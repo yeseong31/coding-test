@@ -1,25 +1,32 @@
+import java.util.Arrays;
+
 class Solution {
     public long solution(int n, int[] times) {
-        long left = 1;
-        long right = 1_000_000_000_000_000L;
+        Arrays.sort(times);
         
-        while (left < right) {
-            long mid = (left + right) / 2;
+        long minTime = 0;
+        long maxTime = (long) times[times.length - 1] * n;
+        long answer = maxTime;
+        
+        while (minTime < maxTime) {
+            long currentTime = (minTime + maxTime) / 2;
+            long required = 0;
             
-            if (canImmigrate(n, times, mid)) {
-                right = mid;
+            for (int t : times) {
+                required += currentTime / t;
+                if (required >= n) {
+                    break;
+                }
+            }
+            
+            if (required >= n) {
+                answer = Math.min(answer, currentTime);
+                maxTime = currentTime;
             } else {
-                left = mid + 1;
+                minTime = currentTime + 1;
             }
         }
-        return left;
-    }
-    
-    private boolean canImmigrate(int n, int[] times, long mid) {
-        long count = 0;
-        for (int time : times) {
-            count += mid / time;
-        }
-        return count >= n;
+        
+        return answer;
     }
 }
