@@ -1,18 +1,10 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 class Solution {
     public String solution(String my_string) {
-        Set<Character> checked = new HashSet<>();
-        StringBuilder sb = new StringBuilder();
-        
-        for (char c : my_string.toCharArray()) {
-            if (!checked.contains(c)) {
-                checked.add(c);
-                sb.append(c);
-            }
-        }
-        
-        return sb.toString();
+        return my_string.chars()
+                .mapToObj(Character::toString)
+                .distinct()
+                .collect(Collectors.joining());
     }
 }
