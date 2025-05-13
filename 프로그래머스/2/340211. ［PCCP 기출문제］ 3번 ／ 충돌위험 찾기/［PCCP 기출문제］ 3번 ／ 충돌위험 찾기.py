@@ -17,12 +17,12 @@ def move_point(x, y, nx, ny):
 
 
 def get_footprints(points, via_routes):
-    x, y = points[via_routes[0] - 1]
-    result = [(x, y)]
+    result = [tuple(points[via_routes[0] - 1])]
     
     for index in range(1, len(via_routes)):
         x, y = points[via_routes[index - 1] - 1]
         nx, ny = points[via_routes[index] - 1]
+        
         result.extend(move_point(x, y, nx, ny))
     
     return result
