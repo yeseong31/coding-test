@@ -1,17 +1,32 @@
+from collections import deque
+
+
 def solution(s):
-    def check(target):
-        stack = []
-        for t in target:
-            if t in ['(', '[', '{']:
-                stack.append(t)
-            elif not stack or stack.pop() != dic[t]:
-                return False
-        return not stack
-
-    dic = {
-        '}': '{',
+    answer = 0
+    q = deque(s)
+    
+    pairs = {
+        ']': '[',
         ')': '(',
-        ']': '['
+        '}': '{',
     }
+    
+    for _ in range(len(q)):
+        answer += is_valid(q, pairs)
+        q.append(q.popleft())
+    
+    return answer
 
-    return sum(check(s[i:] + s[:i]) for i in range(len(s)))
+
+def is_valid(q, pairs):
+    stack = []
+    
+    for _, v in enumerate(q):
+        if v not in pairs:
+            stack.append(v)
+        elif stack and stack[-1] == pairs[v]:
+            stack.pop()
+        else:
+            return False
+
+    return not stack
