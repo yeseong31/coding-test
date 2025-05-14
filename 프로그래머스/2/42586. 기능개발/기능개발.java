@@ -1,39 +1,34 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         List<Integer> answer = new ArrayList<>();
-        Queue<Integer> queue = new LinkedList<>();
-        int count = 0;
         
-        for (int index = 0; index < progresses.length; index++) {
-            int remainingDay = calculateRemainingDay(index, progresses, speeds);
-            
-            while (!queue.isEmpty() && queue.peek() < remainingDay) {
-                queue.poll();
-                count++;
+        int n = progresses.length;
+        int days = 0;
+        int current = 0;
+        int count;
+        
+        while (true) {
+            days++;
+            if (current == n) {
+                break;
             }
             
-            queue.add(remainingDay);
+            count = 0;
+            while (current < n && progresses[current] + speeds[current] * days >= 100) {
+                count++;
+                current++;
+            }
             
             if (count > 0) {
                 answer.add(count);
-                count = 0;
             }
         }
         
-        answer.add(queue.size());
-        
         return answer.stream()
-                .mapToInt(Integer::intValue)
+                .mapToInt(Integer::valueOf)
                 .toArray();
-    }
-    
-    private int calculateRemainingDay(int index, int[] progresses, int[] speeds) {
-        return (int) Math.ceil((100.0 - progresses[index]) / speeds[index]);
     }
 }
