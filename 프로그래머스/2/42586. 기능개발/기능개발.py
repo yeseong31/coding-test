@@ -1,22 +1,19 @@
-from math import ceil
-from collections import deque
-
-
 def solution(progresses, speeds):
     answer = []
-    q = deque()
-    cnt = 0
+    days = 0
+    current = 0
     
-    for p, s in zip(progresses, speeds):
-        day = ceil((100 - p) / s)
-        
-        while q and q[0] < day:
-            q.popleft()
-            cnt += 1
+    while True:
+        days += 1
+        if current == len(progresses):
+            break
             
-        q.append(day)
-        if cnt > 0:
-            answer.append(cnt)
-            cnt = 0
+        count = 0
+        while current < len(progresses) and progresses[current] + speeds[current] * days >= 100:
+            current += 1
+            count += 1
     
-    return answer + [len(q)]
+        if count > 0:
+            answer.append(count)
+    
+    return answer
