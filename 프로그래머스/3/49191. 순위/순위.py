@@ -1,41 +1,21 @@
-def count_forward(u, graph, visited):
-    result = 1
-    
-    for v in range(len(graph[u])):
-        if not graph[u][v] or visited[v]:
-            continue
-        
-        visited[v] = True
-        result += count_forward(v, graph, visited)
-    
-    return result
-
-
-def count_backward(u, graph, visited):
-    result = 1
-    
-    for v in range(len(graph[u])):
-        if not graph[v][u] or visited[v]:
-            continue
-        
-        visited[v] = True
-        result += count_backward(v, graph, visited)
-    
-    return result
+from collections import defaultdict
 
 
 def solution(n, results):
-    answer = 0
-    graph = [[False] * n for _ in range(n)]
+    answer = [0] * n
     
-    for a, b in results:
-        graph[a - 1][b - 1] = True
+    wins = defaultdict(set)
+    loses = defaultdict(set)
     
-    for u in range(n):
-        wins = count_forward(u, graph, [False] * n) - 1
-        loses = count_backward(u, graph, [False] * n) - 1
-        
-        if wins + loses == n - 1:
-            answer += 1
+    for w, l in results:
+        wins[w].add(l)
+        loses[l].add(w)
+
+    for i in range(1, n + 1):
+        for w in loses[i]:
+            wins[w].update(wins[i])
+        for ㅣ in wins[i]:
+            loses[ㅣ].update(loses[i])
     
-    return answer
+    return sum(1 for i in range(1, n + 1) if len(wins[i]) + len(loses[i]) == n - 1)
+    
