@@ -1,6 +1,3 @@
-from collections import defaultdict
-
-
 class Vertex:
     def __init__(self, x, y):
         self.x = x;
@@ -19,7 +16,7 @@ def solution(arrows):
     x, y, count = 0, 0, 0
     v = Vertex(x, y)
     
-    vertices = defaultdict()
+    vertices = dict()
     vertices[v.id] = v
     
     for arrow in arrows:
