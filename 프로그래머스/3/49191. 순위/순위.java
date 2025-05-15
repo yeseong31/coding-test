@@ -1,53 +1,41 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 class Solution {
     public int solution(int n, int[][] results) {
         int answer = 0;
-        boolean[][] graph = new boolean[n][n];
+        Map<Integer, Set<Integer>> wins = new HashMap<>();
+        Map<Integer, Set<Integer>> loses = new HashMap<>();
         
-        for (int[] edge : results) {
-            int u = edge[0] - 1;
-            int v = edge[1] - 1;
-            graph[u][v] = true;
+        for (int i = 1; i <= n; i++) {
+            wins.put(i, new HashSet<>());
+            loses.put(i, new HashSet<>());
+        }
+
+        for (int[] result : results) {
+            int w = result[0];
+            int l = result[1];
+            wins.get(w).add(l);
+            loses.get(l).add(w);
         }
         
-        for (int u = 0; u < n; u++) {
-            int wins = countForward(u, graph, new boolean[n]) - 1;
-            int loses = countBackward(u, graph, new boolean[n]) - 1;
-            
-            if (wins + loses == n - 1) {
+        for (int x = 1; x <= n; x++) {
+            for (int a : loses.get(x)) {
+                wins.get(a).addAll(wins.get(x));
+            }
+            for (int b : wins.get(x)) {
+                loses.get(b).addAll(loses.get(x));
+            }
+        }
+        
+        for (int x = 1; x <= n; x++) {
+            if (wins.get(x).size() + loses.get(x).size() == n - 1) {
                 answer++;
             }
         }
         
         return answer;
-    }
-
-    private int countForward(int u, boolean[][] graph, boolean[] visited) {
-        int count = 1;
-        
-        for (int v = 0; v < graph[u].length; v++) {
-            if (!graph[u][v] || visited[v]) {
-                continue;
-            }
-            
-            visited[v] = true;
-            count += countForward(v, graph, visited);
-        }
-        
-        return count;
-    }
-    
-    private int countBackward(int u, boolean[][] graph, boolean[] visited) {
-        int count = 1;
-        
-        for (int v = 0; v < graph[u].length; v++) {
-            if (!graph[v][u] || visited[v]) {
-                continue;
-            }
-            
-            visited[v] = true;
-            count += countBackward(v, graph, visited);
-        }
-        
-        return count;
     }
 }
