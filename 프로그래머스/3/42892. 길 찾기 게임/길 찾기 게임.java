@@ -3,113 +3,92 @@ import java.util.Arrays;
 import java.util.List;
 
 class Node {
+    public int x;
+    public int y;
+    public int v;
+    public Node left;
+    public Node right;
     
-    private final int x;
-    private final int y;
-    private final int v;
-    
-    private Node left;
-    private Node right;
-    
-    private Node(int x, int y, int v) {
+    public Node(int x, int y, int v) {
         this.x = x;
         this.y = y;
         this.v = v;
     }
+}
+
+class Tree {
+    private Node root;
     
-    public static Node of(int x, int y, int v) {
-        return new Node(x, y, v);
+    public boolean insert(int x, int y, int v) {
+        root = _insert(root, x, y, v);
+        return root != null;
     }
     
-    public int getX() {
-        return x;
-    }
-    
-    public int getY() {
-        return y;
-    }
-    
-    public Node getLeft() {
-        return left;
-    }
-    
-    public Node getRight() {
-        return right;
-    }
-    
-    public int getV() {
-        return v;
-    }
-    
-    public void insert(Node node) {
-        if (node.getX() < x) {
-            if (left == null) {
-                left = node;
-            } else {
-                left.insert(node);
-            }
-        } else {
-            if (right == null) {
-                right = node;
-            } else {
-                right.insert(node);
-            }
+    private Node _insert(Node node, int x, int y, int v) {
+        if (node == null) {
+            return new Node(x, y, v);
         }
+        if (x < node.x) {
+            node.left = _insert(node.left, x, y, v);
+        } else {
+            node.right = _insert(node.right, x, y, v);
+        }
+        return node;
+    }
+    
+    public int[] preorder() {
+        return _preorder(root, new ArrayList<>());
+    }
+    
+    private int[] _preorder(Node node, List<Integer> result) {
+        if (node != null) {
+            result.add(node.v);
+            _preorder(node.left, result);
+            _preorder(node.right, result);
+        }
+        return result.stream().mapToInt(Integer::valueOf).toArray();
+    }
+    
+    public int[] postorder() {
+        return _postorder(root, new ArrayList<>());
+    }
+    
+    private int[] _postorder(Node node, List<Integer> result) {
+        if (node != null) {
+            _postorder(node.left, result);
+            _postorder(node.right, result);
+            result.add(node.v);
+        }
+        return result.stream().mapToInt(Integer::valueOf).toArray();
     }
 }
 
 class Solution {
-    
     public int[][] solution(int[][] nodeinfo) {
-        Node[] nodes = new Node[nodeinfo.length];
-        
-        for (int index = 0; index < nodeinfo.length; index++) {
-            int x = nodeinfo[index][0];
-            int y = nodeinfo[index][1];
-            nodes[index] = Node.of(x, y, index + 1);
+        Tree tree = new Tree();
+        List<int[]> nodes = new ArrayList<>();
+
+        for (int i = 0; i < nodeinfo.length; i++) {
+            int x = nodeinfo[i][0];
+            int y = nodeinfo[i][1];
+            int k = i + 1;
+            nodes.add(new int[] { x, y, k });
         }
-        
-        Arrays.sort(nodes, (a, b) -> b.getY() - a.getY());
-        
-        Node root = construct(nodes);
-        
-        List<Integer> preOrderResult = new ArrayList<>();
-        preOrder(root, preOrderResult);
-        
-        List<Integer> postOrderResult = new ArrayList<>();
-        postOrder(root, postOrderResult);
-        
-        return new int[][] {
-            preOrderResult.stream().mapToInt(Integer::intValue).toArray(),
-            postOrderResult.stream().mapToInt(Integer::intValue).toArray(),
+
+        nodes.sort((a, b) -> {
+            if (b[1] != a[1]) {
+                return b[1] - a[1];
+            }
+            return a[0] - b[0];
+        });
+
+        for (int[] node : nodes) {
+            tree.insert(node[0], node[1], node[2]);
+        }
+
+        return new int[][] { 
+            tree.preorder(), 
+            tree.postorder() 
         };
-    }    
-    
-    private Node construct(Node[] nodes) {
-        for (int index = 1; index < nodes.length; index++) {
-            nodes[0].insert(nodes[index]);
-        }
-        
-        return nodes[0];
-    }
-    
-    private void preOrder(Node node, List<Integer> result) {
-        if (node == null) {
-            return;
-        }
-        
-        result.add(node.getV());
-        preOrder(node.getLeft(), result);
-        preOrder(node.getRight(), result);
-    }
-    
-    private void postOrder(Node node, List<Integer> result) {
-        if (node == null) {
-            return;
-        }
-        
-        postOrder(node.getLeft(), result);
-        postOrder(node.getRight(), result);
-        result.add(node.getV());
     }
 }
