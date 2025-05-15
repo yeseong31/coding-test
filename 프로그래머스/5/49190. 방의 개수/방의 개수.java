@@ -4,85 +4,82 @@ import java.util.Map;
 import java.util.Set;
 
 class Vertex {
+    private int x;
+    private int y;
+    private String id;
+    private Set<String> connected = new HashSet<>();
     
-    private final int x;
-    private final int y;
-    private final String id; 
-    private final Set<String> connects = new HashSet<>();
+    public static String generateId(int x, int y) {
+        return String.format("%d_%d", x, y);
+    }
     
-    private Vertex(int x, int y) {
+    public Vertex(int x, int y) {
         this.x = x;
         this.y = y;
         this.id = generateId(x, y);
     }
     
-    public static Vertex of(int x, int y) {
-        return new Vertex(x, y);
+    public int getX() {
+        return x;
     }
     
-    public static String generateId(int x, int y) {
-        return String.format("(%d, %d)", x, y);
+    public int getY() {
+        return y;
     }
     
     public String getId() {
         return id;
     }
     
-    public int getNextX(int dx) {
-        return x + dx;
+    public boolean isConnected(String otherId) {
+        return connected.contains(otherId);
     }
     
-    public int getNextY(int dy) {
-        return y + dy;
-    }
-    
-    public boolean isConnected(String id) {
-        return connects.contains(id);
-    }
-    
-    public void connect(String id) {
-        connects.add(id);
+    public void connect(String otherId) {
+        connected.add(otherId);
     }
 }
 
 class Solution {
-    
-    private static final int[] dx = {-1, -1, 0, 1, 1, 1, 0, -1};
-    private static final int[] dy = {0, 1, 1, 1, 0, -1, -1, -1};
+    private final int[] dx = new int[] {0, 1, 1, 1, 0, -1, -1, -1};
+    private final int[] dy = new int[] {1, 1, 0, -1, -1, -1, 0, 1};
     
     public int solution(int[] arrows) {
+        int answer = 0;
+        int x = 0;
+        int y = 0;
+        
         Map<String, Vertex> vertices = new HashMap<>();
         
-        Vertex v = Vertex.of(0, 0);
-        vertices.put(v.getId(), v);
+        Vertex v = new Vertex(x, y);
+        vertices.put(Vertex.generateId(x, y), v);
         
-        return findRooms(arrows, v, vertices);
-    }
-    
-    private int findRooms(int[] arrows, Vertex v, Map<String, Vertex> vertices) {
-        int result = 0;
-        
-        for (int arrow : arrows) {
+        for (int d : arrows) {
             for (int i = 0; i < 2; i++) {
-                int x = v.getNextX(dx[arrow]);
-                int y = v.getNextY(dy[arrow]);
-
-                String id = Vertex.generateId(x, y);
-
+                int nx = x + dx[d];
+                int ny = y + dy[d];
+                String id = Vertex.generateId(nx, ny);
+                
+                Vertex nv;
                 if (!vertices.containsKey(id)) {
-                    vertices.put(id, Vertex.of(x, y));
-                } else if (!v.isConnected(id)) {
-                    result++;
+                    nv = new Vertex(nx, ny);
+                    vertices.put(id, nv);
+                } else {
+                    nv = vertices.get(id);
+                    if (!v.isConnected(id)) {
+                        answer++;
+                    }
                 }
-
-                Vertex nv = vertices.get(id);
+                
                 v.connect(nv.getId());
                 nv.connect(v.getId());
-
+                
+                x = nx;
+                y = ny;
                 v = nv;
             }
         }
         
-        return result;
+        return answer;
     }
 }
