@@ -1,59 +1,58 @@
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
-
-class Disk {
-
-    private int requestTime;
-    private int executionTime;
-
-    private Disk(int requestTime, int executionTime) {
-        this.requestTime = requestTime;
-        this.executionTime = executionTime;
-    }
-
-    public static Disk of(int[] job) {
-        return new Disk(job[0], job[1]);
-    }
-
-    public int getRequestTime() {
-        return requestTime;
-    }
-
-    public int getExecutionTime() {
-        return executionTime;
-    }
-}
+import java.util.Queue;
 
 class Solution {
-
-    public static int solution(int[][] jobs) {
-        int answer = 0;
-        int currentTime = 0;
-        int completionTime = 0;
-        int index = 0;
-
-        Arrays.sort(jobs, Comparator.comparingInt(job -> job[0]));
+    private class Process {
+        private final int start;
+        private final int duration;
         
-        PriorityQueue<Disk> waitingQueue = new PriorityQueue<>(
-                Comparator.comparingInt(job -> job.getExecutionTime()));
-
-        while (index < jobs.length || !waitingQueue.isEmpty()) {
-            while (index < jobs.length && currentTime >= jobs[index][0]) {
-                waitingQueue.add(Disk.of(jobs[index++]));
+        public Process(int start, int duration) {
+            this.start = start;
+            this.duration = duration;
+        }
+        
+        public int getStart() {
+            return start;
+        }
+        
+        public int getDuration() {
+            return duration;
+        }
+    }
+    
+    public int solution(int[][] jobs) {
+        Process[] processes = new Process[jobs.length];
+        
+        for (int i = 0; i < jobs.length; i++) {
+            processes[i] = new Process(jobs[i][0], jobs[i][1]);
+        }
+        
+        Arrays.sort(processes, Comparator.comparingInt(process -> process.getStart()));
+        
+        Queue<Process> q = new LinkedList<>(Arrays.asList(processes));
+        PriorityQueue<Process> pq = new PriorityQueue<>(Comparator.comparingInt(process -> process.getDuration()));
+        
+        int exec = 0;
+        int time = 0;
+        
+        while (!q.isEmpty() || !pq.isEmpty()) {
+            while (!q.isEmpty() && q.peek().getStart() <= time) {
+                pq.add(q.poll());
             }
             
-            if (waitingQueue.isEmpty() || currentTime < waitingQueue.peek().getRequestTime()) {
-                currentTime++;
+            if (pq.isEmpty()) {
+                time = q.peek().getStart();
                 continue;
             }
-
-            Disk target = waitingQueue.poll();
-            completionTime = currentTime + target.getExecutionTime();
-            answer += completionTime - target.getRequestTime();
-            currentTime = completionTime;
+            
+            Process process = pq.poll();
+            time += process.getDuration();
+            exec += time - process.getStart();
         }
-
-        return answer / jobs.length;
+        
+        return exec / jobs.length;
     }
 }
