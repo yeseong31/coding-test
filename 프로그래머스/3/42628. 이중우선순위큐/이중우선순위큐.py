@@ -1,63 +1,40 @@
-from heapq import heappush, heappop
-
-
-class DoublePriorityQueue:
-    def __init__(self):
-        self.max_q = []
-        self.min_q = []
-        self.q_size = 0
-
-    def add(self, value):
-        heappush(self.max_q, -value)
-        heappush(self.min_q, value)
-        self.q_size += 1
-
-    def remove_max_value(self):
-        if self.q_size == 0:
-            return
-
-        self.q_size -= 1
-        heappop(self.max_q)
-        
-        if self.q_size == 0:
-            self.clear_queue()
-        
-    def remove_min_value(self):
-        if self.q_size == 0:
-            return
-
-        self.q_size -= 1
-        heappop(self.min_q)
-        
-        if self.q_size == 0:
-            self.clear_queue()
-            
-    def receive_max_value(self):
-        return -heappop(self.max_q) if self.q_size else 0
-            
-    def receive_min_value(self):
-        return heappop(self.min_q) if self.q_size else 0
-        
-    def clear_queue(self):
-        self.max_q.clear()
-        self.min_q.clear()
-        self.q_size = 0
+from heapq import heappush, heappop, heapify, nsmallest
 
 
 def solution(operations):
-    q = DoublePriorityQueue()
-
+    max_heap = []
+    min_heap = []
+    count = 0
+    
     for operation in operations:
-        token, value = operation.split(' ')
-        value = int(value)
+        op, num_str = operation.split()
+        num = int(num_str)
         
-        if token == 'I':
-            q.add(value)
+        if op == 'I':
+            heappush(min_heap, num)
+            heappush(max_heap, -num)
+            count += 1
+            
+        if count == 0:
             continue
         
-        if value < 0:
-            q.remove_min_value()
-        else:
-            q.remove_max_value()
-
-    return q.receive_max_value(), q.receive_min_value()
+        if op == 'D':
+            if num == 1:
+                heappop(max_heap)
+                min_heap = nsmallest(len(max_heap), min_heap)
+                heapify(min_heap)
+                count -= 1
+            elif num == -1:
+                heappop(min_heap)
+                max_heap = nsmallest(len(min_heap), max_heap)
+                heapify(max_heap)
+                count -= 1
+                
+            if count == 0:
+                max_heap.clear()
+                min_heap.clear()
+    
+    if count == 0:
+        return 0, 0
+    
+    return -max_heap[0], min_heap[0]
