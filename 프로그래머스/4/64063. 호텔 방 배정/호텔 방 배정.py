@@ -1,21 +1,17 @@
 import sys
-sys.setrecursionlimit(2000)
+sys.setrecursionlimit(2_000)
 
 
-def dfs(number, rooms):
-    if number not in rooms:
-        rooms[number] = number + 1
-        return number
-
-    room = dfs(rooms[number], rooms)
-    rooms[number] = room + 1
-    return room
-
+def find_empty_room(rooms, x):
+    if x not in rooms:
+        rooms[x] = x + 1
+        return x
+    
+    empty_room = find_empty_room(rooms, rooms[x])
+    rooms[x] = empty_room + 1
+    return empty_room
+    
 
 def solution(k, room_number):
     rooms = dict()
-    
-    for number in room_number:
-        dfs(number, rooms)
-    
-    return list(rooms)
+    return [find_empty_room(rooms, x) for x in room_number]
