@@ -1,32 +1,35 @@
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 class Solution {
     public int[] solution(String[] gems) {
-        int[] answer = new int[] {1, gems.length};
+        int[] answer = {0, gems.length};
         
-        Map<String, Integer> kinds = new HashMap<>();
+        Map<String, Integer> count = new HashMap<>();
+        Set<String> kind = new HashSet<>();
         
-        int left = 0;
-        long length = Arrays.stream(gems).distinct().count();
+        for (String gem : gems) {
+            kind.add(gem);
+        }
         
-        for (int right = 0; right < gems.length; right++) {
-            kinds.put(gems[right], kinds.getOrDefault(gems[right], 0) + 1);
+        int start = 0;
+        for (int end = 0; end < gems.length; end++) {
+            count.putIfAbsent(gems[end], 0);
+            count.put(gems[end], count.get(gems[end]) + 1);
             
-            while (kinds.size() == length) {
-                kinds.put(gems[left], kinds.get(gems[left]) - 1);
+            while (start <= end && count.size() == kind.size()) {
+                count.put(gems[start], count.get(gems[start]) - 1);
                 
-                if (kinds.get(gems[left]) == 0) {
-                    if (answer[1] - answer[0] > right - left) {
-                        answer[0] = left + 1;
-                        answer[1] = right + 1;
+                if (count.get(gems[start]) == 0) {
+                    if (end - start < answer[1] - answer[0]) {
+                        answer[0] = start + 1;
+                        answer[1] = end + 1;
                     }
-                    
-                    kinds.remove(gems[left]);
+                    count.remove(gems[start]);
                 }
-                
-                left++;
+                start++;
             }
         }
         
