@@ -16,8 +16,7 @@ class Solution {
         
         int start = 0;
         for (int end = 0; end < gems.length; end++) {
-            count.putIfAbsent(gems[end], 0);
-            count.put(gems[end], count.get(gems[end]) + 1);
+            count.put(gems[end], count.getOrDefault(gems[end], 0) + 1);
             
             while (start <= end && count.size() == kind.size()) {
                 count.put(gems[start], count.get(gems[start]) - 1);
