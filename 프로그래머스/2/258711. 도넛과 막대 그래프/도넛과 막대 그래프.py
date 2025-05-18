@@ -1,50 +1,44 @@
-from collections import defaultdict
-
-
 def solution(edges):
-    graph = defaultdict(list)
+    n = 0
+    for a, b in edges:
+        n = max(n, a, b)
+    
+    graph = [[] for _ in range(n + 1)]
+    edge_info = [[0, 0] for _ in range(n + 1)]
     for a, b in edges:
         graph[a].append(b)
+        edge_info[b][0] += 1
+        edge_info[a][1] += 1
+        
+    root = -1
+    for x, (in_edge, out_edge) in enumerate(edge_info):
+        if in_edge == 0 and out_edge >= 2:
+            root = x
+            break
     
-    root = sorted(graph, key=lambda x: len(graph[x]), reverse=True)[0]
-    visited = set()
-    visited.add(root)
-    
-    donut = stick = eight = 0
-    
+    donut, stick, eight = 0, 0, 0
     for node in graph[root]:
-        if len(graph[node]) == 2:
-            eight += 1
-            continue
+        visited = set()
+        x = node
+        is_donut = True
         
-        if graph[node] and node == graph[node]:
-            donut += 1
-            continue
+        while x not in visited:
+            visited.add(x)
+            in_edge, out_edge = edge_info[x]
             
-        count_node = count_edge = 0
-        checked = False
-        
-        while not checked and node not in visited:
-            count_node += 1
-            visited.add(node)
-            
-            if len(graph[node]) == 1:
-                count_edge += 1
-                node = graph[node].pop()
-                continue
-            
-            checked = True
-            if len(graph[node]) == 2:
-                eight += 1
-            if not graph[node]:
+            if out_edge == 0:
                 stick += 1
+                is_donut = False
+                break
+            
+            if out_edge == 2:
+                eight += 1
+                is_donut = False
+                break
+            
+            x = graph[x][0]
         
-        if checked:
-            continue
-        
-        if count_node == count_edge:
+        if is_donut:
             donut += 1
-        else:
-            eight += 1
-    
+            
     return root, donut, stick, eight
