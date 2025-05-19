@@ -1,6 +1,5 @@
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.PriorityQueue;
 
 class Solution {
@@ -30,15 +29,15 @@ class Solution {
     public int solution(String[][] book_time) {
         int answer = 1;
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        List<Time> times = new ArrayList<>();
+        Time[] times = new Time[book_time.length];
         
-        for (String[] time : book_time) {
-            int start = convertTime(time[0]);
-            int end = convertTime(time[1]);
-            times.add(new Time(start, end));
+        for (int i = 0; i < book_time.length; i++) {
+            int start = convertTime(book_time[i][0]);
+            int end = convertTime(book_time[i][1]);
+            times[i] = new Time(start, end);
         }
         
-        Collections.sort(times);
+        Arrays.sort(times);
         
         for (Time t : times) {
             if (pq.isEmpty()) {
