@@ -7,9 +7,7 @@ def solution(n):
         
         while target > 0:
             target -= j
-            j -= 1
-            
-            if j <= 0:
+            if (j := j - 1) <= 0:
                 break
         
         if target == 0:
