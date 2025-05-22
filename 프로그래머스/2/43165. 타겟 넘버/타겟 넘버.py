@@ -1,18 +1,13 @@
-from collections import deque
-
+def dfs(seq, target, numbers, result):
+    if seq == len(numbers):
+        result.append(target == 0)
+        return
+    
+    dfs(seq + 1, target + numbers[seq], numbers, result)
+    dfs(seq + 1, target - numbers[seq], numbers, result)
+    
 
 def solution(numbers, target):
-    answer = 0
-    q = deque([(0, 0)])
-    
-    while q:
-        index, result = q.popleft()
-        
-        if index == len(numbers):
-            if result == target:
-                answer += 1
-        else:
-            q.append((index + 1, result + numbers[index]))
-            q.append((index + 1, result - numbers[index]))
-    
-    return answer
+    answer = []
+    dfs(0, target, numbers, answer)
+    return sum(x for x in answer)
