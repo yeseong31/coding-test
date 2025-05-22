@@ -1,90 +1,67 @@
-import java.lang.StringBuilder;
-import java.util.ArrayList;
-import java.util.List;
-
 class Point {
+    public int x;
+    public int y;
+    public char hand;
     
-    private final int x;
-    private final int y;
-    
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Point(int number, char hand) {
+        this.x = (number + 2) / 3;
+        this.y = (number + 2) % 3;
+        this.hand = hand;
     }
     
-    public int getX() {
-        return x;
+    public char moveTo(int number) {
+        x = (number + 2) / 3;
+        y = (number + 2) % 3;
+        return hand;
     }
     
-    public int getY() {
-        return y;
+    public int getDistance(int number) {
+        if (number == 0) {
+            number = 11;
+        }
+        
+        int x = (number + 2) / 3;
+        int y = (number + 2) % 3;
+        
+        return Math.abs(this.x - x) + Math.abs(this.y - y);
     }
 }
 
 class Solution {
-    
     public String solution(int[] numbers, String hand) {
-        StringBuilder answer = new StringBuilder();
-        List<Point> keypads = generateKeypads();
+        StringBuilder sb = new StringBuilder();
+        Point left = new Point(10, 'L');
+        Point right = new Point(12, 'R');
         
-        int lx = 3;
-        int ly = 0;
-        int rx = 3;
-        int ry = 2;
-        
-        for (int number : numbers) {
-            Point keypad = keypads.get(number);
-            
-            if ((number - 1) % 3 == 0) {
-                answer.append("L");
-                lx = keypad.getX();
-                ly = keypad.getY();
+        for (int n : numbers) {
+            if (n == 0) {
+                n = 11;
+            }
+            if ((n + 2) % 3 == 0) {
+                sb.append(left.moveTo(n));
+                continue;
+            }
+            if ((n + 2) % 3 == 2) {
+                sb.append(right.moveTo(n));
                 continue;
             }
             
-            if ((number - 1) % 3 == 2) {
-                answer.append("R");
-                rx = keypad.getX();
-                ry = keypad.getY();
-                continue;
-            }
+            int leftDist = left.getDistance(n);
+            int rightDist = right.getDistance(n);
             
-            int distance = findDistance(keypad, lx, ly, rx, ry);
-            
-            if ((distance == 0 && hand.equals("left")) || distance < 0) {
-                answer.append("L");
-                lx = keypad.getX();
-                ly = keypad.getY();
+            if (leftDist == rightDist) {
+                if (hand.equals("left")) {
+                    sb.append(left.moveTo(n));
+                } else {
+                    sb.append(right.moveTo(n));
+                }
+            } else if (leftDist < rightDist) {
+                sb.append(left.moveTo(n));
             } else {
-                answer.append("R");
-                rx = keypad.getX();
-                ry = keypad.getY();
+                sb.append(right.moveTo(n));
             }
         }
         
-        return answer.toString();
-    }
-    
-    private int findDistance(Point keypad, int lx, int ly, int rx, int ry) {
-        int x = keypad.getX();
-        int y = keypad.getY();
-        
-        int distanceFromLeft = Math.abs(x - lx) + Math.abs(y - ly);
-        int distanceFromRight = Math.abs(x - rx) + Math.abs(y - ry);
-        
-        return distanceFromLeft - distanceFromRight;
-    }
-    
-    private List<Point> generateKeypads() {
-        List<Point> keypads = new ArrayList<>();
-        
-        keypads.add(new Point(3, 1));
-        for (int number = 1; number <= 9; number++) {
-            int x = (number - 1) / 3;
-            int y = (number - 1) % 3;
-            keypads.add(new Point(x, y));
-        }
-        
-        return keypads;
+        return sb.toString();
     }
 }
