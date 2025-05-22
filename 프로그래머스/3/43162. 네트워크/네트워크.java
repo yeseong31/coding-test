@@ -1,50 +1,45 @@
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 class Solution {
-    public int solution(int n, int[][] computers) {
-        int[] parent = generateParent(n);
-        connect(parent, computers);
-        
-        return (int) Arrays.stream(parent).distinct().count();
+    private int findParent(int[] parents, int x) {
+        if (parents[x] != x) {
+            parents[x] = findParent(parents, parents[x]);
+        }
+        return parents[x];
     }
     
-    private void connect(int[] parent, int[][] computers) {
-        for (int x = 1; x < parent.length; x++) {
-            for (int y = 0; y < x; y++) {
-                if (computers[x][y] == 1) {
-                    unionParent(parent, x, y);
+    private void unionParent(int[] parents, int a, int b) {
+        a = findParent(parents, a);
+        b = findParent(parents, b);
+        
+        if (a < b) {
+            parents[b] = a;
+        } else {
+            parents[a] = b;
+        }
+    }
+    
+    public int solution(int n, int[][] computers) {
+        int[] parents = new int[n];
+        for (int i = 0; i < n; i++) {
+            parents[i] = i;
+        }
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (i != j && computers[i][j] == 1) {
+                    unionParent(parents, i, j);
                 }
             }
         }
         
-        for (int x = 0; x < parent.length; x++) {
-            parent[x] = findParent(parent, x);
+        Set<Integer> roots = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            roots.add(findParent(parents, i));
         }
-    }
-    
-    private int findParent(int[] parent, int x) {
-        if (parent[x] != x) {
-            return findParent(parent, parent[x]);
-        }
-        return parent[x];
-    }
-    
-    private void unionParent(int[] parent, int x, int y) {
-        x = findParent(parent, x);
-        y = findParent(parent, y);
         
-        if (x < y) {
-            parent[y] = x;
-        } else {
-            parent[x] = y;
-        }
-    }
-    
-    private int[] generateParent(int n) {
-        int[] parent = new int[n];
-        for (int index = 0; index < n; index++) {
-            parent[index] = index;
-        }
-        return parent;
+        return roots.size();
     }
 }
