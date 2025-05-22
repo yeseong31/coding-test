@@ -1,7 +1,7 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 
 class Point {
@@ -46,13 +46,13 @@ class Solution {
         Point goal = new Point(n - 1, m - 1, 0);
         
         Set<Point> visited = new HashSet<>();
-        Deque<Point> queue = new ArrayDeque<>();
+        Queue<Point> queue = new LinkedList<>();
         
-        queue.offerLast(start);
+        queue.offer(start);
         visited.add(start);
         
         while (!queue.isEmpty()) {
-            Point point = queue.pollFirst();
+            Point point = queue.poll();
             if (point.x == goal.x && point.y == goal.y) {
                 return point.seq;
             }
@@ -68,7 +68,7 @@ class Solution {
                 Point next = new Point(nx, ny, point.seq + 1);
                 if (!visited.contains(next)) {
                     visited.add(next);
-                    queue.offerLast(next);
+                    queue.offer(next);
                 }
             }
         }
