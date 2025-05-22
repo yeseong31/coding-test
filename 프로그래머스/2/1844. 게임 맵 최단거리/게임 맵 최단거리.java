@@ -1,70 +1,75 @@
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 class Point {
+    public int x;
+    public int y;
+    public int seq;
     
-    private final int x;
-    private final int y;
-    private final int distance;
-    
-    public Point(int x, int y, int distance) {
+    public Point(int x, int y, int seq) {
         this.x = x;
         this.y = y;
-        this.distance = distance;
+        this.seq = seq;
     }
-    
-    public int getX() {
-        return x;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
-    
-    public int getY() {
-        return y;
-    }
-    
-    public int getDistance() {
-        return distance;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        Point other = (Point) obj;
+        return this.x == other.x && this.y == other.y;
     }
 }
 
 class Solution {
-    
-    private static final int[] dx = {-1, 0, 1, 0};
-    private static final int[] dy = {0, 1, 0, -1};
+    private final int[] dx = {1, 0, -1, 0};
+    private final int[] dy = {0, 1, 0, -1};
     
     public int solution(int[][] maps) {
         int n = maps.length;
         int m = maps[0].length;
         
-        Queue<Point> queue = new LinkedList<>();
-        queue.add(new Point(0, 0, 1));
+        Point start = new Point(0, 0, 1);
+        Point goal = new Point(n - 1, m - 1, 0);
         
-        boolean[][] visited = new boolean[n][m];
-        for (boolean[] row : visited) {
-            Arrays.fill(row, false);
-        }
+        Set<Point> visited = new HashSet<>();
+        Deque<Point> queue = new ArrayDeque<>();
+        
+        queue.offerLast(start);
+        visited.add(start);
         
         while (!queue.isEmpty()) {
-            Point point = queue.poll();
-            
-            int x = point.getX();
-            int y = point.getY();
-            int distance = point.getDistance();
-            
-            if (x == n - 1 && y == m - 1) {
-               return distance;
+            Point point = queue.pollFirst();
+            if (point.x == goal.x && point.y == goal.y) {
+                return point.seq;
             }
             
-            for (int index = 0; index < 4; index++) {
-                int nx = x + dx[index];
-                int ny = y + dy[index];
+            for (int i = 0; i < 4; i++) {
+                int nx = point.x + dx[i];
+                int ny = point.y + dy[i];
                 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || maps[nx][ny] == 0 || visited[nx][ny]) {
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m || maps[nx][ny] == 0) {
                     continue;
                 }
-                
-                visited[nx][ny] = true;
-                queue.add(new Point(nx, ny, distance + 1));
+
+                Point next = new Point(nx, ny, point.seq + 1);
+                if (!visited.contains(next)) {
+                    visited.add(next);
+                    queue.offerLast(next);
+                }
             }
         }
         
