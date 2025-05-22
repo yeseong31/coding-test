@@ -1,47 +1,20 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
-class State {
-    
-    private final int index;
-    private final int acc;
-    
-    public State(int index, int acc) {
-        this.index = index;
-        this.acc = acc;
-    }
-    
-    public int getIndex() {
-        return index;
-    }
-    
-    public int getAcc() {
-        return acc;
-    }
-}
+import java.util.ArrayList;
+import java.util.List;
 
 class Solution {
-    public int solution(int[] numbers, int target) {
-        int answer = 0;
-        Queue<State> queue = new LinkedList<>();
-        queue.add(new State(0, 0));
-        
-        while (!queue.isEmpty()) {
-            State state = queue.poll();
-            int index = state.getIndex();
-            int acc = state.getAcc();
-            
-            if (index == numbers.length) {
-                if (acc == target) {
-                    answer++;
-                }
-                continue;
-            }
-            
-            queue.add(new State(index + 1, acc - numbers[index]));
-            queue.add(new State(index + 1, acc + numbers[index]));
+    private void dfs(int seq, int target, int[] numbers, List<Integer> result) {
+        if (seq == numbers.length) {
+            result.add(target == 0 ? 1 : 0);
+            return;
         }
         
-        return answer;
+        dfs(seq + 1, target + numbers[seq], numbers, result);
+        dfs(seq + 1, target - numbers[seq], numbers, result);
+    }
+    
+    public int solution(int[] numbers, int target) {
+        List<Integer> answer = new ArrayList<>();
+        dfs(0, target, numbers, answer);
+        return (int) answer.stream().filter(x -> x == 1).count();
     }
 }
