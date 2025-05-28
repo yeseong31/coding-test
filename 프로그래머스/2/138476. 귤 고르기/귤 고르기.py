@@ -7,9 +7,7 @@ def solution(k, tangerine):
     
     for c in sorted(count, key=lambda x: count[x], reverse=True):
         answer += 1
-        k -= count[c]
-        
-        if k <= 0:
+        if (k := k - count[c]) <= 0:
             return answer
     
     return answer
