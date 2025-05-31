@@ -32,7 +32,7 @@ def solution(points, routes):
     answer = 0
     
     footprints = [get_footprints(points, x) for x in routes]
-    footprints = [x for x in zip_longest(*footprints)]
+    footprints = list(zip_longest(*footprints))
     
     for robot_points in footprints:
         for key, value in Counter(robot_points).items():
