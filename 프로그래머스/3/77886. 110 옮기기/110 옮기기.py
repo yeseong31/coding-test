@@ -1,19 +1,19 @@
-def solution(s):
-    def count(x):
-        res = 0
-        stack = []
-        
-        for c in x:
-            if c != '0' or stack[-2:] != ['1', '1']:
-                stack.append(c)
-                continue
-                
-            del stack[-2:]
-            res += 1
-            
-        return ''.join(stack), res
+def count(x):
+    res = 0
+    stack = []
 
-    
+    for c in x:
+        if c != '0' or stack[-2:] != ['1', '1']:
+            stack.append(c)
+            continue
+
+        del stack[-2:]
+        res += 1
+
+    return ''.join(stack), res
+
+
+def solution(s):    
     answer = []
     
     for target in s:
