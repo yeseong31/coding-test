@@ -10,13 +10,13 @@ class Solution {
             return;
         }
         
-        for (int i = 0; i < 5; i++) {
-            sb.append(vowels[i]);
+        for (char vowel : vowels) {
+            sb.append(vowel);
             dic.add(sb.toString());
             
             makeDictionary(sb, dic);
             
-            sb.deleteCharAt(sb.toString().length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
         }
     }
     
