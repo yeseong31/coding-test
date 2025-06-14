@@ -20,9 +20,7 @@ def solution(n, cores):
     remain_work = n - sum((target_time - 1) // core for core in cores)
 
     for i, core in enumerate(cores, 1):
-        if target_time % core != 0:
-            continue
-        
-        remain_work -= 1
-        if remain_work == 0:
-            return i
+        if target_time % core == 0:
+            remain_work -= 1
+            if remain_work == 0:
+                return i
