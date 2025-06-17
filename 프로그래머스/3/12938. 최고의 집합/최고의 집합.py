@@ -3,7 +3,9 @@ def solution(n, s):
         return [-1]
     
     answer = [s // n] * n
-    for i in range(s % n):
-        answer[n - 1] += 1
+    
+    for _ in range(s % n):
         n -= 1
+        answer[n] += 1
+    
     return answer
