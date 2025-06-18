@@ -30,8 +30,7 @@ def get_footprints(points, via_routes):
 
 def solution(points, routes):
     answer = 0
-    
-    footprints = [get_footprints(points, x) for x in routes]
+    footprints = list(get_footprints(points, x) for x in routes)
     footprints = list(zip_longest(*footprints))
     
     for robot_points in footprints:
