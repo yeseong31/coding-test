@@ -1,3 +1,6 @@
 def solution(name, yearning, photo):
-    s = {n: s for n, s in zip(name, yearning)}
-    return [sum(s[v] for v in p if v in s) for p in photo]
+    dic = dict()
+    for n, s in zip(name, yearning):
+        dic[n] = s
+    
+    return [sum(dic[v] for v in p if v in dic) for p in photo]
