@@ -10,4 +10,4 @@ def dfs(seq, target, numbers, result):
 def solution(numbers, target):
     answer = []
     dfs(0, target, numbers, answer)
-    return sum(x for x in answer)
+    return sum(answer)
