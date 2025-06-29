@@ -11,8 +11,8 @@ def solution(m, n, board):
         if b[x][y] != '0' and b[x][y] == b[x + 1][y] == b[x][y + 1] == b[x + 1][y + 1]:
             v[x][y] = v[x + 1][y] = v[x][y + 1] = v[x + 1][y + 1] = 1
             return True
-        
-        return False
+        else:
+            return False
 
     def delete(b, v):
         c = 0
