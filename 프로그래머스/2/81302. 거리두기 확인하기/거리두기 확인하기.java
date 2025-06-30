@@ -42,17 +42,11 @@ class Solution {
             int my = (ny < y) ? y - 1 : y + 1;
 
             if (distX == 2) {
-                if (place[mx][ny] == 'O') {
-                    return false;
-                }
+                if (place[mx][ny] == 'O') return false;
             } else if (distY == 2) {
-                if (place[nx][my] == 'O') {
-                    return false;
-                }
+                if (place[nx][my] == 'O') return false;
             } else if (distX == 1 && distY == 1) {
-                if (!(place[nx][y] == 'X' && place[x][ny] == 'X')) {
-                    return false;
-                }
+                if (!(place[nx][y] == 'X' && place[x][ny] == 'X')) return false;
             } else if (place[nx][ny] == 'P') {
                 return false;
             }
@@ -90,11 +84,8 @@ class Solution {
                 place[j] = places[i][j].toCharArray();
             }
             
-            if (isPossiblePlace(place)) {
-                answer[i] = 1;
-            } else {
-                answer[i] = 0;
-            }
+            if (isPossiblePlace(place)) answer[i] = 1;
+            else answer[i] = 0;
         }
         
         return answer;
