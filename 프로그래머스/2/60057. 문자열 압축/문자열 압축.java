@@ -1,58 +1,69 @@
+import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 class Solution {
-    private int compress(String s, int n) {
-        List<String> tokens = new ArrayList<>();
-        int index = 0;
+
+    private List<String> split(String s, int n) {
+        List<String> result = new ArrayList<>();
         
-        while (index < s.length()) {
-            int endIndex = (index + n) < s.length() ? (index + n) : s.length();
-            String token = s.substring(index, endIndex);
+        for (int start = 0; start <= s.length(); start += n) {
+            int end = start + n;
             
-            tokens.add(token);
-            index += n;
+            if (end > s.length()) {
+                end = s.length();
+            }
+            
+            result.add(s.substring(start, end));
         }
         
+        return result;
+    }
+    
+    private int compress(String s, int n) {
         StringBuilder sb = new StringBuilder();
+        List<String> tokens = split(s, n);
+        
         String prev = null;
         int count = 1;
         
-        for (String cur : tokens) {
+        for (String token : tokens) {
             if (prev == null) {
-                prev = cur;
+                prev = token;
                 continue;
             }
             
-            if (prev.equals(cur)) {
+            if (token.equals(prev)) {
                 count++;
                 continue;
             }
             
-            if (count != 1) {
-                sb.append(Integer.toString(count));
-            }
-            
+            if (count > 1) sb.append(count);
             sb.append(prev);
-            prev = cur;
-            count = 1;
-        }
             
-        if (count != 1) {
-            sb.append(Integer.toString(count));
+            count = 1;
+            prev = token;
         }
         
+        if (count > 1) sb.append(count);
         sb.append(prev);
-        return sb.toString().length();
+        
+        return sb.length();
     }
     
     public int solution(String s) {
-        int answer = s.length();
+        if (s.length() == 1) {
+            return 1;
+        }
         
-        for (int n = 1; n < s.length() / 2 + 1; n++) {
-            answer = Math.min(answer, compress(s, n));
+        int answer = s.length() + 1;
+        
+        for (int i = 1; i <= s.length() / 2; i++) {
+            int length = compress(s, i);
+            
+            if (length < answer) {
+                answer = length;
+            }
         }
         
         return answer;
