@@ -1,29 +1,26 @@
+import java.util.Arrays;
+
 class Solution {
-    private int countZero(String s) {
+    private int removeZero(String s) {
         int count = 0;
-        
         for (char c : s.toCharArray()) {
-            if (c == '0') {
-                count++;
-            }
+            if (c == '0') count++;
         }
-        
         return count;
     }
     
     public int[] solution(String s) {
-        int seq = 0;
-        int total_zero_count = 0;
+        int[] answer = {0, 0};
         
         while (!s.equals("1")) {
-            int zero_count = countZero(s);
-            total_zero_count += zero_count;
+            int zero = removeZero(s);
             
-            int next_s_length = s.length() - zero_count;
-            s = Integer.toString(next_s_length, 2);
-            seq++;
+            answer[0]++;
+            answer[1] += zero;
+            
+            s = Integer.toString(s.length() - zero, 2);
         }
         
-        return new int[] {seq, total_zero_count};
+        return answer;
     }
 }
