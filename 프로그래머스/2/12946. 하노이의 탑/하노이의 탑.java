@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 class Solution {
     private void hanoi(int start, int mid, int end, int n, List<int[]> answer) {
         if (n == 1) {
@@ -16,7 +15,7 @@ class Solution {
     
     public int[][] solution(int n) {
         List<int[]> answer = new ArrayList<>();
-        hanoi(1, 2, 3, n, answer);
+        hanoi(1, 2 ,3, n, answer);
         return answer.toArray(new int[0][]);
     }
 }
