@@ -11,16 +11,15 @@ class Solution {
     private void saveCombinations(int seq, StringBuilder sb, String order) {
         if (seq == order.length()) {
             if (sb.length() >= 2) {
-                char[] menus = sb.toString().toCharArray();
-                Arrays.sort(menus);
-                String result = new String(menus);
-                combinations.put(result, combinations.getOrDefault(result, 0) + 1);
+                String key = sb.toString();
+                combinations.put(key, combinations.getOrDefault(key, 0) + 1);
             }
             return;
         }
         
         sb.append(order.charAt(seq));
         saveCombinations(seq + 1, sb, order);
+        
         sb.deleteCharAt(sb.length() - 1);
         saveCombinations(seq + 1, sb, order);
     }
@@ -31,7 +30,14 @@ class Solution {
         Map<Integer, List<String>> resultMap = new HashMap<>();
         
         for (String order : orders) {
-            saveCombinations(0, new StringBuilder(), order);
+            String key = order.chars()
+                    .boxed()
+                    .sorted((v1, v2) -> v1 - v2)
+                    .collect(StringBuilder::new,
+                             StringBuilder::appendCodePoint,
+                             StringBuilder::append)
+                    .toString();
+            saveCombinations(0, new StringBuilder(), key);
         }
         
         for (Map.Entry<String, Integer> entry : combinations.entrySet()) {
