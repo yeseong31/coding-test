@@ -2,40 +2,38 @@ import java.util.Arrays;
 
 class Solution {
     public int solution(int distance, int[] rocks, int n) {
+        Arrays.sort(rocks);
         rocks = Arrays.copyOf(rocks, rocks.length + 1);
         rocks[rocks.length - 1] = distance;
-        Arrays.sort(rocks);
         
-        int answer = 0;
-        int start = 0;
+        int start = 1;
         int end = distance + 1;
         
-        while (start < end) {
-            int mid = (start + end) /  2;
-            
-            int prev = 0;
-            int count = 0;
-            
-            for (int r : rocks) {
-                if (r - prev < mid) {
-                    count++;
-                } else {
-                    prev = r;
-                }
-                
-                if (count > n) {
-                    break;
-                }
-            }
-            
-            if (count > n) {
-                end = mid;
+        while (end - start > 1) {
+            int mid = (start + end) / 2;
+            if (isValid(mid, rocks, n)) {
+                start = mid;
             } else {
-                answer = mid;
-                start = mid + 1;
+                end = mid;
             }
         }
         
-        return answer;
+        return start;
+    }
+    
+    private static boolean isValid(int mid, int[] rocks, int n) {
+        int removed = 0;
+        int last = 0;
+        
+        for (int rock : rocks) {
+            if (rock - last < mid) {
+                removed++;
+                continue;
+            }
+            
+            last = rock;
+        }
+        
+        return removed <= n;
     }
 }
