@@ -2,30 +2,26 @@ import java.util.Arrays;
 
 class Solution {
     public long solution(int n, int[] times) {
-        Arrays.sort(times);
+        long left = 0;
+        long right = (long) Arrays.stream(times).max().getAsInt() * n;
         
-        long minTime = 0;
-        long maxTime = (long) times[times.length - 1] * n;
-        long answer = maxTime;
+        long answer = right;
         
-        while (minTime < maxTime) {
-            long currentTime = (minTime + maxTime) / 2;
-            long required = 0;
+        while (left <= right) {
+            long mid = (left + right) / 2;
             
+            long total = 0;
             for (int t : times) {
-                required += currentTime / t;
-                if (required >= n) {
-                    break;
-                }
+                total += mid / t;
             }
             
-            if (required >= n) {
-                answer = Math.min(answer, currentTime);
-                maxTime = currentTime;
+            if (total >= n) {
+                answer = mid;
+                right = mid - 1;
             } else {
-                minTime = currentTime + 1;
+                left = mid + 1;
             }
-        }
+        }        
         
         return answer;
     }
