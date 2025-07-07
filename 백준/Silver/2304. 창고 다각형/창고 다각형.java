@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.Arrays;
-import java.util.StringTokenizer;
 
 class Point {
     final int l;
@@ -13,30 +12,28 @@ class Point {
 }
 
 public class Main {
-    static FastReader sc = new FastReader();
-    static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
 
-    public static void main(String[] args) {
-        input();
-        System.out.println(sb);
-    }
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    static void input() {
-        int n = sc.nextInt();
+        int answer = 0;
+
+        int n = Integer.parseInt(br.readLine());
         Point[] points = new Point[n];
 
         int maxH = Integer.MIN_VALUE;
 
         for (int i = 0; i < n; i++) {
-            int l = sc.nextInt();
-            int h = sc.nextInt();
+            String[] input = br.readLine().split(" ");
+            int l = Integer.parseInt(input[0]);
+            int h = Integer.parseInt(input[1]);
 
             points[i] = new Point(l, h);
             maxH = Math.max(maxH, h);
         }
+        
         Arrays.sort(points, (p1, p2) -> p1.l - p2.l);
-
-        int area = 0;
 
         int prevL = points[0].l;
         int prevH = -1;
@@ -44,14 +41,13 @@ public class Main {
         int leftPointL = Integer.MAX_VALUE;
         int rightPointL = Integer.MIN_VALUE;
 
-        // 왼쪽부터
         for (int i = 0; i < n; i++) {
             int currentL = points[i].l;
             int currentH = points[i].h;
 
             if (prevH < currentH) {
                 if (prevH > 0) {
-                    area += (currentL - prevL) * prevH;
+                    answer += (currentL - prevL) * prevH;
                 }
                 prevL = currentL;
                 prevH = currentH;
@@ -60,7 +56,8 @@ public class Main {
             if (currentH == maxH) {
                 leftPointL = points[i].l;
                 break;
-            };
+            }
+            ;
         }
 
         prevL = points[n - 1].l;
@@ -72,7 +69,7 @@ public class Main {
 
             if (prevH < currentH) {
                 if (prevH > 0) {
-                    area += (prevL - currentL) * prevH;
+                    answer += (prevL - currentL) * prevH;
                 }
                 prevL = currentL;
                 prevH = currentH;
@@ -81,56 +78,14 @@ public class Main {
             if (currentH == maxH) {
                 rightPointL = points[i].l;
                 break;
-            };
-        }
-
-        area += (rightPointL - leftPointL + 1) * maxH;
-        sb.append(area);
-    }
-
-    static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-
-        public FastReader() {
-            br = new BufferedReader(new InputStreamReader(System.in));
-        }
-
-        public FastReader(String s) throws FileNotFoundException {
-            br = new BufferedReader(new FileReader(new File(s)));
-        }
-
-        String next() {
-            while (st == null || !st.hasMoreElements()) {
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
-            return st.nextToken();
+            ;
         }
 
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
+        answer += (rightPointL - leftPointL + 1) * maxH;
 
-        long nextLong() {
-            return Long.parseLong(next());
-        }
+        bw.write(answer + "");
+        bw.flush();
 
-        double nextDouble() {
-            return Double.parseDouble(next());
-        }
-
-        String nextLine() {
-            String str = "";
-            try {
-                str = br.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return str;
-        }
     }
 }
