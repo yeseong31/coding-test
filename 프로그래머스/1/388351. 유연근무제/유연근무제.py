@@ -23,9 +23,8 @@ def solution(schedules, timelogs, startday):
         for day, log in enumerate(timelog, startday):
             day %= 7
             
-            if day < 5:
-                if convert_time(log) <= deadline:
-                    count += 1
+            if day < 5 and convert_time(log) <= deadline:
+                count += 1
                 
         if count == 5:
             answer += 1
