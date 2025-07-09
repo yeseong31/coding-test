@@ -5,7 +5,7 @@ class Solution {
         int answer = 0;
         
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        pq.add(24);
+        pq.offer(24);
         
         for (int t = 0; t < players.length; t++) {
             int p = players[t];
@@ -14,12 +14,10 @@ class Solution {
                 pq.poll();
             }
             
-            if (p < pq.size() * m) {
-                continue;
-            }
+            if (p < pq.size() * m) continue;
             
             while (pq.size() * m <= p) {
-                pq.add(t + k);
+                pq.offer(t + k);
                 answer++;
             }
         }

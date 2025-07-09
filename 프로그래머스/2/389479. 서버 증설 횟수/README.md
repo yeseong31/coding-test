@@ -1,10 +1,10 @@
 # [level 2] 서버 증설 횟수 - 389479 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/389479?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/389479) 
 
 ### 성능 요약
 
-메모리: 71.2 MB, 시간: 1.66 ms
+메모리: 72.6 MB, 시간: 1.72 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 05월 17일 13:53:33
+2025년 07월 09일 22:43:07
 
 ### 문제 설명
 
