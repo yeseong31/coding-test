@@ -6,17 +6,21 @@ def solution(board):
     d = (1, -1)
     visited = [[False] * m for _ in range(n)]
     
-    rx = ry = gx = gy = -1
+    rx = ry = -1
+    gx = gy = -1
+    
     for i in range(n):
         for j in range(m):
             if board[i][j] == '.':
                 continue
-            elif board[i][j] == 'G':
+            if board[i][j] == 'G':
                 gx, gy = i, j
-            elif board[i][j] == 'R':
+            if board[i][j] == 'R':
                 rx, ry = i, j
     
-    q = deque([(rx, ry, 0)])
+    q = deque()
+    q.append((rx, ry, 0))
+    
     while q:
         x, y, c = q.popleft()
         if (x, y) == (gx, gy):
