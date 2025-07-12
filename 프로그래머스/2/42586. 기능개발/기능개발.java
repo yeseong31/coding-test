@@ -3,32 +3,29 @@ import java.util.List;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        List<Integer> answer = new ArrayList<>();
-        
         int n = progresses.length;
-        int days = 0;
-        int current = 0;
-        int count;
+        int[] days = new int[n];
         
-        while (true) {
-            days++;
-            if (current == n) {
-                break;
-            }
-            
-            count = 0;
-            while (current < n && progresses[current] + speeds[current] * days >= 100) {
-                count++;
-                current++;
-            }
-            
-            if (count > 0) {
-                answer.add(count);
-            }
+        for (int i = 0; i < n; i++) {
+            days[i] = (int) Math.ceil((100.0 - progresses[i]) / speeds[i]);
         }
         
-        return answer.stream()
-                .mapToInt(Integer::valueOf)
-                .toArray();
+        List<Integer> answer = new ArrayList<>(); 
+        int prev = 0;
+        int count = 0;
+        
+        for (int i = 0; i < n; i++) {
+            if (days[prev] >= days[i]) {
+                count++;
+                continue;
+            }
+            
+            answer.add(count);
+            count = 1;
+            prev = i;
+        }
+        
+        answer.add(count);
+        return answer.stream().mapToInt(v -> v).toArray();
     }
 }
