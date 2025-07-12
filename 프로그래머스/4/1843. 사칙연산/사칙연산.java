@@ -1,68 +1,59 @@
 import java.util.Arrays;
 
 class Solution {
-    private final int[][] maxDp = new int[202][202];
-    private final int[][] minDp = new int[202][202];
-    private final int inf = 100_000_000;
+    private static final int[][] maxDp = new int[202][202];
+    private static final int[][] minDp = new int[202][202];
     
-    private int getMax(int start, int end, String[] arr) {
-        if (maxDp[start][end] != -inf) {
+    private static int max(int start, int end, String[] arr) {
+        if (end - start == 1) {
+            return Integer.parseInt(arr[start]);
+        } 
+        if (maxDp[start][end] > Integer.MIN_VALUE) {
             return maxDp[start][end];
         }
-        if (end - start == 1) {
-            return Integer.parseInt(arr[start]);
-        }
         
-        int result = -inf;
-        int v;
-        
-        for (int opIndex = start + 1; opIndex < end; opIndex += 2) {
-            if (arr[opIndex].equals("+")) {
-                v = getMax(start, opIndex, arr) + getMax(opIndex + 1, end, arr);
+        for (int mid = start + 1; mid < end; mid += 2) {
+            int v;
+            
+            if (arr[mid].equals("+")) {
+                v = max(start, mid, arr) + max(mid + 1, end, arr);
             } else {
-                v = getMax(start, opIndex, arr) - getMin(opIndex + 1, end, arr);
+                v = max(start, mid, arr) - min(mid + 1, end, arr);
             }
-            result = Math.max(result, v);
+            
+            maxDp[start][end] = Math.max(maxDp[start][end], v);
         }
         
-        maxDp[start][end] = result;
-        return result;
+        return maxDp[start][end];
     }
     
-    private int getMin(int start, int end, String[] arr) {
-        if (minDp[start][end] != inf) {
-            return minDp[start][end];
-        }
+    private static int min(int start, int end, String[] arr) {
         if (end - start == 1) {
             return Integer.parseInt(arr[start]);
+        } 
+        if (minDp[start][end] < Integer.MAX_VALUE) {
+            return minDp[start][end];
         }
         
-        int result = inf;
-        int v;
-        
-        for (int opIndex = start + 1; opIndex < end; opIndex += 2) {
-            if (arr[opIndex].equals("+")) {
-                v = getMin(start, opIndex, arr) + getMin(opIndex + 1, end, arr);
+        for (int mid = start + 1; mid < end; mid += 2) {
+            int v;
+
+            if (arr[mid].equals("+")) {
+                v = min(start, mid, arr) + min(mid + 1, end, arr);
             } else {
-                v = getMin(start, opIndex, arr) - getMax(opIndex + 1, end, arr);
+                v = min(start, mid, arr) - max(mid + 1, end, arr);
             }
-            result = Math.min(result, v);
+            
+            minDp[start][end] = Math.min(minDp[start][end], v);
         }
-        
-        minDp[start][end] = result;
-        return result;
+
+        return minDp[start][end];
     }
-        
-    public Solution() {
-        for (int[] row : maxDp) {
-            Arrays.fill(row, -inf);
-        }
-        for (int[] row : minDp) {
-            Arrays.fill(row, inf);
-        }
-    }
-        
+    
     public int solution(String arr[]) {
-        return getMax(0, arr.length, arr);
+        for (int[] row : maxDp) Arrays.fill(row, Integer.MIN_VALUE);
+        for (int[] row : minDp) Arrays.fill(row, Integer.MAX_VALUE);
+        
+        return max(0, arr.length, arr);
     }
 }
