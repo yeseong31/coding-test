@@ -2,43 +2,44 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 class Truck {
-    public int seq;
-    public int outTime;
+    public final int seq;
+    public final int weight;
+    public final int exit_time;
     
-    public Truck(int seq, int outTime) {
+    public Truck(int seq, int weight, int exit_time) {
         this.seq = seq;
-        this.outTime = outTime;
+        this.weight = weight;
+        this.exit_time = exit_time;
     }
 }
 
 class Solution {
     public int solution(int bridge_length, int weight, int[] truck_weights) {
-        Deque<Truck> q = new ArrayDeque<>();
+        Deque<Truck> deque = new ArrayDeque<>();
         
-        int time = 0;
+        int n = truck_weights.length;
+        int current_weight = 0;
         int seq = 0;
-        int currentWeight = 0;
+        int t = 0;
         
-        while (seq != truck_weights.length) {
-            time++;
-            
-            if (!q.isEmpty() && q.peekFirst().outTime == time) {
-                Truck truck = q.pollFirst();
-                currentWeight -= truck_weights[truck.seq];
+        while (seq < n) {
+            if (!deque.isEmpty() && deque.peekFirst().exit_time == ++t) {
+                Truck truck = deque.removeFirst();
+                current_weight -= truck.weight;
             }
             
-            if (currentWeight + truck_weights[seq] <= weight) {
-                q.offerLast(new Truck(seq, time + bridge_length));
-                currentWeight += truck_weights[seq++];
+            if (current_weight + truck_weights[seq] <= weight) {
+                deque.offerLast(new Truck(seq, truck_weights[seq], t + bridge_length));
+                current_weight += truck_weights[seq++];
             }
         }
         
-        while (!q.isEmpty()) {
-            if (q.peekFirst().outTime == ++time) {
-                q.pollFirst();
+        while (!deque.isEmpty()) {
+            if (deque.peekFirst().exit_time == ++t) {
+                deque.removeFirst();
             }
         }
         
-        return time;
+        return t + 1;
     }
 }
