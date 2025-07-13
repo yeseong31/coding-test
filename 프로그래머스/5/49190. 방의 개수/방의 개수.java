@@ -3,80 +3,54 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-class Vertex {
-    private int x;
-    private int y;
-    private String id;
-    private Set<String> connected = new HashSet<>();
+class Point {
     
-    public static String generateId(int x, int y) {
-        return String.format("%d_%d", x, y);
-    }
+    public final int x;
+    public final int y;
+    public final String id;
+    public final Set<String> connected;
     
-    public Vertex(int x, int y) {
+    public Point(int x, int y) {
         this.x = x;
         this.y = y;
-        this.id = generateId(x, y);
+        this.id = createId(x, y);
+        this.connected = new HashSet<>();
     }
     
-    public int getX() {
-        return x;
-    }
-    
-    public int getY() {
-        return y;
-    }
-    
-    public String getId() {
-        return id;
-    }
-    
-    public boolean isConnected(String otherId) {
-        return connected.contains(otherId);
-    }
-    
-    public void connect(String otherId) {
-        connected.add(otherId);
+    public static String createId(int x, int y) {
+        return String.format("%d_%d", x, y);
     }
 }
 
 class Solution {
-    private final int[] dx = new int[] {0, 1, 1, 1, 0, -1, -1, -1};
-    private final int[] dy = new int[] {1, 1, 0, -1, -1, -1, 0, 1};
+    
+    private static final int[] dx = {0, 1, 1, 1, 0, -1, -1, -1};
+    private static final int[] dy = {1, 1, 0, -1, -1, -1, 0, 1};
     
     public int solution(int[] arrows) {
         int answer = 0;
-        int x = 0;
-        int y = 0;
+        Map<String, Point> points = new HashMap<>();
         
-        Map<String, Vertex> vertices = new HashMap<>();
-        
-        Vertex v = new Vertex(x, y);
-        vertices.put(Vertex.generateId(x, y), v);
+        Point v = new Point(0, 0);
+        points.put(v.id, v);
         
         for (int d : arrows) {
             for (int i = 0; i < 2; i++) {
-                int nx = x + dx[d];
-                int ny = y + dy[d];
-                String id = Vertex.generateId(nx, ny);
+                int x = v.x + dx[d];
+                int y = v.y + dy[d];
+
+                String id = Point.createId(x, y);
                 
-                Vertex nv;
-                if (!vertices.containsKey(id)) {
-                    nv = new Vertex(nx, ny);
-                    vertices.put(id, nv);
-                } else {
-                    nv = vertices.get(id);
-                    if (!v.isConnected(id)) {
-                        answer++;
-                    }
+                if (!points.containsKey(id)) {
+                    points.put(id, new Point(x, y));
+                } else if (!v.connected.contains(id)) {
+                    answer++;
                 }
-                
-                v.connect(nv.getId());
-                nv.connect(v.getId());
-                
-                x = nx;
-                y = ny;
-                v = nv;
+
+                Point u = points.get(id);
+                v.connected.add(u.id);
+                u.connected.add(v.id);
+                v = points.get(id);
             }
         }
         
