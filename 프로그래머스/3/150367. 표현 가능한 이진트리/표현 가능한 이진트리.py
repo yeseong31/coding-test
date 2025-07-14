@@ -15,11 +15,13 @@ def dfs(start, end, tree):
     
     if left == right == tree[mid] == '0':
         return '0'
+    
     return '1'
 
 
 def convert_to_full_binary_tree(binary_n):
     value = 1
+    
     while 2 ** value - 1 < len(binary_n):
         value += 1
     
