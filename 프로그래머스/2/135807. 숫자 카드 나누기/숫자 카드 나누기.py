@@ -4,21 +4,14 @@ from math import gcd
 def solution(arrayA, arrayB):
     def calcul_gcd(arr):
         result = 0
-        
         for i, x in enumerate(arr):
-            if i == 0:
-                result = x
-                continue
-            
-            result = gcd(result, x)
-        
+            result = x if i == 0 else gcd(result, x)
         return result
 
     def check(arr, target):
         for x in arr:
             if x % target == 0:
                 return False
-        
         return True
 
     answer = []
