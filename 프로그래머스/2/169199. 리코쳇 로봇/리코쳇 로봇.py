@@ -13,9 +13,9 @@ def solution(board):
         for j in range(m):
             if board[i][j] == '.':
                 continue
-            if board[i][j] == 'G':
+            elif board[i][j] == 'G':
                 gx, gy = i, j
-            if board[i][j] == 'R':
+            elif board[i][j] == 'R':
                 rx, ry = i, j
     
     q = deque()
@@ -23,7 +23,7 @@ def solution(board):
     
     while q:
         x, y, c = q.popleft()
-        if (x, y) == (gx, gy):
+        if x == gx and y == gy:
             return c
         
         visited[x][y] = True
