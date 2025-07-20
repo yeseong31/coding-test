@@ -1,37 +1,42 @@
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 class Solution {
+    
     public int[] solution(String[] gems) {
         int[] answer = {0, gems.length};
         
-        Map<String, Integer> count = new HashMap<>();
-        Set<String> kind = new HashSet<>();
+        Map<String, Integer> counter = new HashMap<>();
+        int n = Arrays.stream(gems)
+                .distinct()
+                .collect(Collectors.toList())
+                .size();
         
-        for (String gem : gems) {
-            kind.add(gem);
-        }
-        
-        int start = 0;
-        for (int end = 0; end < gems.length; end++) {
-            count.put(gems[end], count.getOrDefault(gems[end], 0) + 1);
+        int left = 0;
+        for (int right = 0; right < gems.length; right++) {
+            counter.put(gems[right], counter.getOrDefault(gems[right], 0) + 1);
             
-            while (start <= end && count.size() == kind.size()) {
-                count.put(gems[start], count.get(gems[start]) - 1);
-                
-                if (count.get(gems[start]) == 0) {
-                    if (end - start < answer[1] - answer[0]) {
-                        answer[0] = start + 1;
-                        answer[1] = end + 1;
-                    }
-                    count.remove(gems[start]);
+            while (counter.size() == n) {
+                counter.put(gems[left], counter.get(gems[left]) - 1);
+                if (counter.get(gems[left]) == 0) {
+                    counter.remove(gems[left]);
                 }
-                start++;
+                left++;
+            }
+            
+            if (left == 0) continue;
+            
+            counter.put(gems[--left], 1);
+            
+            if (right - left < answer[1] - answer[0]) {
+                answer[0] = left + 1;
+                answer[1] = right + 1;
             }
         }
-        
+
         return answer;
     }
 }
