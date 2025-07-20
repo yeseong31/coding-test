@@ -1,114 +1,130 @@
-import java.lang.StringBuilder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-class Trie {
+class Node {
+	public final Map<Character, Node> children;
+	public boolean isEnd;
+    public int count;
     
-    private final List<String> words = new ArrayList<>();
-    
-    public void add(String word) {
-        words.add(word);
-    }
-    
-    public void sort() {
-        Collections.sort(words);
-    }
-    
-    public int bisectLeft(String query) {
-        int index = Collections.binarySearch(words, query);
-        
-        if (index < 0) {
-            return -index - 1;
-        }
-        
-        return index;
-    }
-    
-    public int bisectRight(String query) {
-        int index = Collections.binarySearch(words, query);
-        
-        if (index < 0) {
-            return -index - 1;
-        }
-        
-        return index + 1;
-    }
+	public Node() {
+		this.children = new HashMap<>();
+		this.isEnd = false;
+        this.count = 0;
+	}
 }
 
-class DoubleTrie {
-    
-    private static final int WORD_LENGTH = 10_001;
-    
-    private final Trie[] trie = new Trie[WORD_LENGTH];
-    private final Trie[] reversedTrie = new Trie[WORD_LENGTH];
-    private final Set<Integer> checked = new HashSet<>();
-    
-    public void add(String word) {
-        int length = word.length();
+class Trie {
+	public final Node root;
+
+	public Trie() {
+		this.root = new Node();
+	}
+
+	private int countWildcardMatches(Node node, String suffix) {
+		if (suffix.isEmpty()) {
+			return node.isEnd ? 1 : 0;
+		}
+
+		char c = suffix.charAt(0);
+		int count = 0;
+
+		if (c == '?') {
+			for (Node child : node.children.values()) {
+				count += countWildcardMatches(child, suffix.substring(1));
+			}
+            return count;
+		}
         
-        if (!checked.contains(length)) {
-            trie[length] = new Trie();
-            reversedTrie[length] = new Trie();
-        }
-        
-        checked.add(length);
-        trie[length].add(word);
-        reversedTrie[length].add(reverse(word));
-    }
-    
-    public void sort() {
-        for (int index : checked) {
-            trie[index].sort();
-            reversedTrie[index].sort();
-        }
-    }
-    
-    public int search(String query) {
-        int length = query.length();
-        
-        if (!checked.contains(length)) {
+        if (!node.children.containsKey(c)) {
             return 0;
         }
         
-        String firstQuery = query.replace('?', 'a');
-        String lastQuery = query.replace('?', 'z');
-        Trie target;
+        count += countWildcardMatches(node.children.get(c), suffix.substring(1));
+		return count;
+	}
+
+	public void insert(String word) {
+		Node node = root;
+        root.count++;
+		
+        for (char c : word.toCharArray()) {
+			node.children.putIfAbsent(c, new Node());
+			node = node.children.get(c);
+            node.count++;
+		}
         
-        if (query.charAt(0) != '?') {
-            target = trie[length];
-        } else {
-            target = reversedTrie[length];
-            firstQuery = reverse(firstQuery);
-            lastQuery = reverse(lastQuery);
-        }
+		node.isEnd = true;
+	}
+
+	public int search(String word) {
+		Node node = root;
         
-        return target.bisectRight(lastQuery) - target.bisectLeft(firstQuery);
+		for (int i = 0; i < word.length(); i++) {
+			char c = word.charAt(i);
+            
+			if (c == '?') {
+                return node.count;
+			}
+			if (!node.children.containsKey(c)) {
+				return 0;
+			}
+            
+			node = node.children.get(c);
+		}
+        
+		return node.isEnd ? 1 : 0;
+	}
+}
+
+class DoubleTrie {
+    private final Map<Integer, Trie> trieMap;
+    private final Map<Integer, Trie> reverseTrieMap;
+    
+    public DoubleTrie() {
+        this.trieMap = new HashMap<>();
+        this.reverseTrieMap = new HashMap<>();
     }
     
-    private String reverse(String word) {
-        return new StringBuilder(word).reverse().toString();
+    public void insert(String word) {
+        int n = word.length();
+        String reversed = new StringBuilder(word).reverse().toString();
+        
+        this.trieMap.putIfAbsent(n, new Trie());
+        this.trieMap.get(n).insert(word);
+        
+        this.reverseTrieMap.putIfAbsent(n, new Trie());
+        this.reverseTrieMap.get(n).insert(reversed);
+    }
+    
+    public int search(String word) {
+        int n = word.length();
+        
+        if (!this.trieMap.containsKey(n)) {
+            return 0;
+        }
+        if (word.charAt(0) == '?') {
+            String reversed = new StringBuilder(word).reverse().toString();
+            return this.reverseTrieMap.get(n).search(reversed);
+        }
+        
+        return this.trieMap.get(n).search(word);
     }
 }
 
 class Solution {
-    
-    public int[] solution(String[] words, String[] queries) {
-        int[] answer = new int[queries.length];
-        DoubleTrie doubleTrie = new DoubleTrie();
+	public int[] solution(String[] words, String[] queries) {
+        int n = queries.length;
+		int[] answer = new int[n];
         
+        DoubleTrie dt = new DoubleTrie();
         for (String word : words) {
-            doubleTrie.add(word);
+            dt.insert(word);
         }
         
-        doubleTrie.sort();
-        
-        for (int index = 0; index < queries.length; index++) {
-            answer[index] = doubleTrie.search(queries[index]);;
+        for (int i = 0; i < n; i++) {
+            answer[i] = dt.search(queries[i]);
         }
         
-        return answer;
-    }
+		return answer;
+	}
 }
