@@ -1,14 +1,10 @@
+import java.util.Arrays;
+
 class Solution {
     public int solution(String skill, String[] skill_trees) {
-        int answer = 0;
-        
-        for (String skillTree : skill_trees) {
-            String prefix = skillTree.replaceAll("[^" + skill + "]", "");
-            if (skill.startsWith(prefix)) {
-                answer++;
-            }
-        }
-        
-        return answer;
+        return (int) Arrays.stream(skill_trees)
+                .map(v -> v.replaceAll("[^" + skill + "]", ""))
+                .filter(v -> skill.startsWith(v))
+                .count();
     }
 }
