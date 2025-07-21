@@ -1,39 +1,31 @@
-import java.lang.StringBuilder;
 import java.util.Arrays;
 
 class Solution {
     
-    public int solution(int n, int k) {
-        String[] target = convertToK(n, k).split("0");
-        return countPrimeNumber(target);
-    }
-    
-    private int countPrimeNumber(String[] target) {
-        return (int) Arrays.stream(target)
-                .filter(s -> !s.isEmpty())
-                .mapToLong(Long::parseLong)
-                .filter(this::isPrimeNumber)
-                .count();
-    }
-    
-    private boolean isPrimeNumber(long number) {
-        for (int index = 2; index <= Math.sqrt(number); index++) {
-            if (number % index == 0) {
+    private static boolean isPrimeNumber(long n) {
+        if (n <= 1) {
+            return false;
+        }
+        
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i == 0) {
                 return false;
             }
         }
         
-        return number > 1;
+        return true;
     }
     
-    private String convertToK(int n, int k) {
-        StringBuilder sb = new StringBuilder();
+    public int solution(int n, int k) {
+        int answer = -1;
         
-        while (n != 0) {
-            sb.append(n % k);
-            n /= k;
-        }    
+        String converted = Long.toString(n, k);
+        String[] numbers = converted.split("0");
         
-        return sb.reverse().toString();
+        return (int) Arrays.stream(numbers)
+                .filter(s -> !s.isEmpty())
+                .mapToLong(Long::parseLong)
+                .filter(v -> isPrimeNumber(v))
+                .count();
     }
 }
