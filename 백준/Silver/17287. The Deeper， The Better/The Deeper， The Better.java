@@ -4,37 +4,26 @@ import java.util.StringTokenizer;
 public class Main {
 
     private static int solution(String s) {
-        int sum = 0;
-        int max = -1;
+        int answer = Integer.MIN_VALUE;
+        int score = 0;
 
         for (char c : s.toCharArray()) {
             switch (c) {
-                case '(':
-                    sum += 1;
-                    break;
-                case '{':
-                    sum += 2;
-                    break;
-                case '[':
-                    sum += 3;
-                    break;
-                case ')':
-                    sum -= 1;
-                    break;
-                case '}':
-                    sum -= 2;
-                    break;
-                case ']':
-                    sum -= 3;
-                    break;
-                default:
+                case '(': score += 1; break;
+                case ')': score -= 1; break;
+                case '{': score += 2; break;
+                case '}': score -= 2; break;
+                case '[': score += 3; break;
+                case ']': score -= 3; break;
+                default: {
                     if (Character.isDigit(c)) {
-                        max = Math.max(max, sum);
+                        answer = Math.max(answer, score);
                     }
+                } break;
             }
         }
 
-        return max;
+        return answer;
     }
 
     public static void main(String[] args) throws Exception {
