@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,40 +9,32 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringBuilder sb = new StringBuilder();
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(br.readLine());
 
         long answer = 0;
         int maxNumber = Integer.MIN_VALUE;
-        int x;
-
-        Stack<Integer> stack = new Stack<>();
+        int prevGroupValue = -1;
 
         for (int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            x = Integer.parseInt(st.nextToken());
-
+            int x = Integer.parseInt(br.readLine());
             maxNumber = Math.max(maxNumber, x);
 
-            if (stack.isEmpty()) {
-                stack.add(x);
+            if (i == 0) {
+                prevGroupValue = x;
                 continue;
             }
 
-            if (stack.peek() == x) continue;
-            if (stack.peek() < x) {
-                answer += x - stack.pop();
+            if (x == prevGroupValue) continue;
+            if (prevGroupValue < x) {
+                answer += x - prevGroupValue;
             }
 
-            stack.add(x);
+            prevGroupValue = x;
         }
 
-        if (!stack.isEmpty()) {
-            answer += maxNumber - stack.peek();
-        }
+        answer += maxNumber - prevGroupValue;
 
         sb.append(answer);
-
         bw.write(sb.toString());
         bw.flush();
         bw.close();
