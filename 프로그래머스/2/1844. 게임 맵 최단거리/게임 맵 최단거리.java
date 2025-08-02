@@ -1,78 +1,42 @@
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
-
-class Point {
-    public int x;
-    public int y;
-    public int seq;
-    
-    public Point(int x, int y, int seq) {
-        this.x = x;
-        this.y = y;
-        this.seq = seq;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        
-        Point other = (Point) obj;
-        return this.x == other.x && this.y == other.y;
-    }
-}
+import java.util.*;
 
 class Solution {
-    private final int[] dx = {1, 0, -1, 0};
-    private final int[] dy = {0, 1, 0, -1};
-    
-    public int solution(int[][] maps) {
+
+    public static int solution(int[][] maps) {
         int n = maps.length;
         int m = maps[0].length;
+        boolean[][] visited = new boolean[n][m];
         
-        Point start = new Point(0, 0, 1);
-        Point goal = new Point(n - 1, m - 1, 0);
-        
-        Set<Point> visited = new HashSet<>();
-        Queue<Point> queue = new LinkedList<>();
-        
-        queue.offer(start);
-        visited.add(start);
-        
-        while (!queue.isEmpty()) {
-            Point point = queue.poll();
-            if (point.x == goal.x && point.y == goal.y) {
-                return point.seq;
-            }
-            
-            for (int i = 0; i < 4; i++) {
-                int nx = point.x + dx[i];
-                int ny = point.y + dy[i];
-                
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || maps[nx][ny] == 0) {
-                    continue;
-                }
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
 
-                Point next = new Point(nx, ny, point.seq + 1);
-                if (!visited.contains(next)) {
-                    visited.add(next);
-                    queue.offer(next);
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, 0, 1});
+        visited[0][0] = true;
+
+        while (!q.isEmpty()) {
+            int[] current = q.poll();
+            int x = current[0];
+            int y = current[1];
+            int d = current[2];
+
+            if (x == n - 1 && y == m - 1) {
+                return d;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+                    if (maps[nx][ny] == 1 && !visited[nx][ny]) {
+                        visited[nx][ny] = true;
+                        q.offer(new int[]{nx, ny, d + 1});
+                    }
                 }
             }
         }
-        
+
         return -1;
     }
 }
