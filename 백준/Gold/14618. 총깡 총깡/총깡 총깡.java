@@ -60,23 +60,17 @@ public class Main {
     private static String[] solution(int n, int start, int[] a, int[] b, int[][] roads) {
         String[] answer = new String[2];
 
-        // 그래프 초기화
         List<List<Node>> graph = new ArrayList<>();
         for (int i = 0; i <= n; i++) {
             graph.add(new ArrayList<>());
         }
 
-        // 간선 추가
         for (int[] road : roads) {
-            int from = road[0];
-            int to = road[1];
-            int cost = road[2];
-
+            int from = road[0], to = road[1], cost = road[2];
             graph.get(from).add(new Node(to, cost));
             graph.get(to).add(new Node(from, cost));
         }
 
-        // 다익스트라 수행
         int[] dist = dijkstra(n, start, graph);
 
         Set<Integer> aSet = new HashSet<>();
@@ -89,16 +83,14 @@ public class Main {
         boolean isA = false;
 
         for (int i = 1; i <= n; i++) {
-            if (dist[i] == -1) continue;
-            if (!aSet.contains(i) && !bSet.contains(i)) continue;
+            if (dist[i] == -1 || (!aSet.contains(i) && !bSet.contains(i))) continue;
 
+            boolean isInA = aSet.contains(i);
             if (dist[i] < minDist) {
                 minDist = dist[i];
                 closedNode = i;
-                isA = aSet.contains(i);
-                continue;
-            }
-            if (dist[i] == minDist && aSet.contains(i) && !isA) {
+                isA = isInA;
+            } else if (dist[i] == minDist && isInA && !isA) {
                 closedNode = i;
                 isA = true;
             }
@@ -106,15 +98,14 @@ public class Main {
 
         if (closedNode == -1) {
             answer[1] = "-1";
-        } else {
-            answer[1] = String.valueOf(minDist);
-            if (aSet.contains(closedNode)) {
-                answer[0] = "A";
-            } else if (bSet.contains(closedNode)) {
-                answer[0] = "B";
-            } else {
-                answer[0] = "";
-            }
+            return answer;
+        }
+
+        answer[1] = String.valueOf(minDist);
+        if (aSet.contains(closedNode)) {
+            answer[0] = "A";
+        } else if (bSet.contains(closedNode)) {
+            answer[0] = "B";
         }
 
         return answer;
