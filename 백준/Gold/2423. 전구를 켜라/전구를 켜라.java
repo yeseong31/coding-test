@@ -11,10 +11,6 @@ public class Main {
         public final int y;
         public final int c;
 
-        public Node(int x, int y) {
-            this(x, y, 0);
-        }
-
         public Node(int x, int y, int c) {
             this.x = x;
             this.y = y;
@@ -27,34 +23,37 @@ public class Main {
         }
     }
 
-    private static int dijkstra(int n, int m, List<List<List<Node>>> graph) {
+    private static int bfs01(int n, int m, List<List<List<Node>>> graph) {
         int[][] dist = new int[n + 1][m + 1];
         for (int[] row : dist) {
             Arrays.fill(row, Integer.MAX_VALUE);
         }
 
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.offer(new Node(0, 0));
+        Deque<Node> deque = new ArrayDeque<>();
+        deque.offerFirst(new Node(0, 0, 0));
         dist[0][0] = 0;
 
-        while (!pq.isEmpty()) {
-            Node current = pq.poll();
+        while (!deque.isEmpty()) {
+            Node current = deque.pollFirst();
             int x = current.x;
             int y = current.y;
             int c = current.c;
 
-            if (x == n && y == m) {
-                return c;
-            }
+            if (x == n && y == m) return c;
 
-            for (Node connectedNode : graph.get(x).get(y)) {
-                int nx = connectedNode.x;
-                int ny = connectedNode.y;
-                int nc = connectedNode.c;
+            for (Node next : graph.get(x).get(y)) {
+                int nx = next.x;
+                int ny = next.y;
+                int nc = next.c;
 
                 if (dist[nx][ny] > c + nc) {
                     dist[nx][ny] = c + nc;
-                    pq.offer(new Node(nx, ny, c + nc));
+
+                    if (nc == 0) {
+                        deque.offerFirst(new Node(nx, ny, c + nc));
+                    } else {
+                        deque.offerLast(new Node(nx, ny, c + nc));
+                    }
                 }
             }
         }
@@ -91,7 +90,7 @@ public class Main {
             }
         }
 
-        return dijkstra(n, m, graph);
+        return bfs01(n, m, graph);
     }
 
     public static void main(String[] args) throws Exception {
