@@ -8,10 +8,9 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+    private static int c;
     private static List<List<Integer>> graph;
     private static boolean[] visited;
-    private static int[] count;
-    private static int c;
 
     private static void dfs(int curr) {
         visited[curr] = true;
@@ -44,9 +43,9 @@ public class Main {
             graph.get(b).add(a);
         }
 
+        int[] count = new int[n + 1];
         int maxCount = 0;
-        count = new int[n + 1];
-
+        
         for (int i = 1; i <= n; i++) {
             visited = new boolean[n + 1];
             c = 0;
@@ -56,7 +55,6 @@ public class Main {
             count[i] = c;
             maxCount = Math.max(maxCount, c);
         }
-
 
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= n; i++) {
