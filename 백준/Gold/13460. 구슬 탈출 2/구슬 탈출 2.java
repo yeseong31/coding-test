@@ -11,22 +11,6 @@ public class Main {
     private static final int[] dx = {-1, 1, 0, 0};
     private static final int[] dy = {0, 0, -1, 1};
 
-    private static class State {
-        int rx;
-        int ry;
-        int bx;
-        int by;
-        int cnt;
-
-        State(int rx, int ry, int bx, int by, int cnt) {
-            this.rx = rx;
-            this.ry = ry;
-            this.bx = bx;
-            this.by = by;
-            this.cnt = cnt;
-        }
-    }
-
     private static int[] move(int x, int y, int d, char[][] board) {
         int count = 0;
         boolean inHole = false;
@@ -48,10 +32,14 @@ public class Main {
     }
 
     private static int solution(int n, int m, char[][] board) {
-        int rx = 0, ry = 0, bx = 0, by = 0;
+        int rx = 0;
+        int ry = 0;
+        int bx = 0;
+        int by = 0;
+        int cnt;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < m - 1; j++) {
                 if (board[i][j] == 'R') {
                     rx = i;
                     ry = j;
@@ -62,42 +50,54 @@ public class Main {
             }
         }
 
-        Queue<State> q = new LinkedList<>();
-        q.add(new State(rx, ry, bx, by, 0));
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{rx, ry, bx, by, 0});
 
         boolean[][][][] visited = new boolean[n][m][n][m];
         visited[rx][ry][bx][by] = true;
 
         while (!q.isEmpty()) {
-            State curr = q.poll();
-            
-            if (curr.cnt >= 10) continue;
+            int[] curr = q.poll();
+            rx = curr[0];
+            ry = curr[1];
+            bx = curr[2];
+            by = curr[3];
+            cnt = curr[4];
+
+            if (cnt >= 10) continue;
 
             for (int i = 0; i < 4; i++) {
-                int[] rMove = move(curr.rx, curr.ry, i, board);
-                int[] bMove = move(curr.bx, curr.by, i, board);
+                int[] rMove = move(rx, ry, i, board);
+                int[] bMove = move(bx, by, i, board);
 
                 if (bMove[3] == 1) continue;
+                if (rMove[3] == 1) return cnt + 1;
 
-                if (rMove[3] == 1) return curr.cnt + 1;
+                int nrx = rMove[0];
+                int nry = rMove[1];
+                int rCnt = rMove[2];
 
-                if (rMove[0] == bMove[0] && rMove[1] == bMove[1]) {
-                    if (rMove[2] > bMove[2]) {
-                        rMove[0] -= dx[i];
-                        rMove[1] -= dy[i];
+                int nbx = bMove[0];
+                int nby = bMove[1];
+                int bCnt = bMove[2];
+
+                if (nrx == nbx && nry == nby) {
+                    if (rCnt > bCnt) {
+                        nrx -= dx[i];
+                        nry -= dy[i];
                     } else {
-                        bMove[0] -= dx[i];
-                        bMove[1] -= dy[i];
+                        nbx -= dx[i];
+                        nby -= dy[i];
                     }
                 }
 
-                if (!visited[rMove[0]][rMove[1]][bMove[0]][bMove[1]]) {
-                    visited[rMove[0]][rMove[1]][bMove[0]][bMove[1]] = true;
-                    q.add(new State(rMove[0], rMove[1], bMove[0], bMove[1], curr.cnt + 1));
+                if (!visited[nrx][nry][nbx][nby]) {
+                    visited[nrx][nry][nbx][nby] = true;
+                    q.add(new int[]{nrx, nry, nbx, nby, cnt + 1});
                 }
             }
         }
-        
+
         return -1;
     }
 
