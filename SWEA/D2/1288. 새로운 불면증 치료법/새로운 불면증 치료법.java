@@ -3,20 +3,20 @@ import java.io.*;
 public class Solution {
 
     private static int solution(int n) {
-        int count = 1;
-        int total = (1 << 10) - 1;  // '1111111111'
+        int total = (1 << 10) - 1;
+        int count = 0;
         int mask = 0;
 
         while (mask != total) {
-            for (char c : String.valueOf(n * count++).toCharArray()) {
+            for (char c : String.valueOf(n * ++count).toCharArray()) {
                 mask |= (1 << (c - '0'));
             }
         }
-        return n * (count - 1);
+        
+        return n * count;
     }
 
     public static void main(String[] args) throws Exception {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringBuilder sb = new StringBuilder();
