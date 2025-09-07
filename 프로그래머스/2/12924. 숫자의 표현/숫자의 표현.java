@@ -6,11 +6,9 @@ public class Solution {
             int target = n;
             int j = i;
 
-            while (target > 0) {
+            while (target > 0 && j > 0) {
                 target -= j;
                 j--;
-                
-                if (j <= 0) break;
             }
 
             if (target == 0) cnt++;
