@@ -6,11 +6,7 @@ class Solution {
         return Arrays.stream(numbers)
                 .boxed()
                 .map(String::valueOf)
-                .sorted((v1, v2) -> {
-                    Integer n1 = Integer.parseInt(v1 + v2);
-                    Integer n2 = Integer.parseInt(v2 + v1);
-                    return n2 - n1;
-                })
+                .sorted((a, b) -> (b + a).compareTo(a + b))
                 .collect(Collectors.joining(""))
                 .replaceAll("^0+", "0");
     }
