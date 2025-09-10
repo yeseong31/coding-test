@@ -1,7 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -21,15 +19,16 @@ public class Main {
             int m = Integer.parseInt(st.nextToken());
             int w = Integer.parseInt(st.nextToken());
 
-            List<Edge> edgeList = new ArrayList<>();
+            Edge[] edges = new Edge[m * 2 + w + n];
+            int seq = 0;
 
             for (int i = 0; i < m; i++) {
                 st = new StringTokenizer(br.readLine());
                 int from = Integer.parseInt(st.nextToken());
                 int to = Integer.parseInt(st.nextToken());
                 int dist = Integer.parseInt(st.nextToken());
-                edgeList.add(new Edge(from, to, dist));
-                edgeList.add(new Edge(to, from, dist));
+                edges[seq++] = new Edge(from, to, dist);
+                edges[seq++] = new Edge(to, from, dist);
             }
 
             for (int i = 0; i < w; i++) {
@@ -37,14 +36,12 @@ public class Main {
                 int from = Integer.parseInt(st.nextToken());
                 int to = Integer.parseInt(st.nextToken());
                 int time = Integer.parseInt(st.nextToken());
-                edgeList.add(new Edge(from, to, -time));
+                edges[seq++] = new Edge(from, to, -time);
             }
 
             for (int i = 1; i <= n; i++) {
-                edgeList.add(new Edge(0, i, 0));
+                edges[seq++] = new Edge(0, i, 0);
             }
-
-            Edge[] edges = edgeList.toArray(new Edge[0]);
 
             int[] distance = new int[n + 1];
             Arrays.fill(distance, INF);
