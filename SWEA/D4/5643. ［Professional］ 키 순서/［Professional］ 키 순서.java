@@ -8,11 +8,11 @@ public class Solution {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringBuilder sb = new StringBuilder();
 
-        int T = Integer.parseInt(br.readLine().trim());
+        int T = Integer.parseInt(br.readLine());
 
         for (int testCase = 1; testCase <= T; testCase++) {
-            int n = Integer.parseInt(br.readLine().trim());
-            int m = Integer.parseInt(br.readLine().trim());
+            int n = Integer.parseInt(br.readLine());
+            int m = Integer.parseInt(br.readLine());
 
             boolean[][] checked = new boolean[n + 1][n + 1];
 
@@ -36,14 +36,14 @@ public class Solution {
             int answer = 0;
 
             for (int i = 1; i <= n; i++) {
-                int count = 0;
+                int cnt = 0;
 
                 for (int j = 1; j <= n; j++) {
                     if (i == j) continue;
-                    if (checked[i][j] || checked[j][i]) count++;
+                    if (checked[i][j] || checked[j][i]) cnt++;
                 }
 
-                if (count == n - 1) answer++;
+                if (cnt == n - 1) answer++;
             }
 
             sb.append("#").append(testCase).append(" ").append(answer).append("\n");
