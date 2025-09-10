@@ -1,7 +1,12 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Solution {
+
+    private static boolean[] visited;
+    private static int count;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -14,36 +19,36 @@ public class Solution {
             int n = Integer.parseInt(br.readLine());
             int m = Integer.parseInt(br.readLine());
 
-            boolean[][] checked = new boolean[n + 1][n + 1];
+            List<List<Integer>> adj = new ArrayList<>();
+            List<List<Integer>> rev = new ArrayList<>();
+
+            for (int i = 0; i <= n; i++) {
+                adj.add(new ArrayList<>());
+                rev.add(new ArrayList<>());
+            }
 
             for (int i = 0; i < m; i++) {
                 StringTokenizer st = new StringTokenizer(br.readLine());
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
-                checked[a][b] = true;
-            }
-
-            for (int k = 1; k <= n; k++) {
-                for (int i = 1; i <= n; i++) {
-                    for (int j = 1; j <= n; j++) {
-                        if (checked[i][k] && checked[k][j]) {
-                            checked[i][j] = true;
-                        }
-                    }
-                }
+                adj.get(a).add(b);
+                rev.get(b).add(a);
             }
 
             int answer = 0;
 
             for (int i = 1; i <= n; i++) {
-                int cnt = 0;
+                visited = new boolean[n + 1];
+                count = 0;
+                dfs(i, adj);  // i보다 큰 학생들 탐색
+                int taller = count;
 
-                for (int j = 1; j <= n; j++) {
-                    if (i == j) continue;
-                    if (checked[i][j] || checked[j][i]) cnt++;
-                }
+                visited = new boolean[n + 1];
+                count = 0;
+                dfs(i, rev);  // i보다 작은 학생들 탐색
+                int shorter = count;
 
-                if (cnt == n - 1) answer++;
+                if (taller + shorter == n - 1) answer++;
             }
 
             sb.append("#").append(testCase).append(" ").append(answer).append("\n");
@@ -53,5 +58,16 @@ public class Solution {
         bw.flush();
         bw.close();
         br.close();
+    }
+
+    static void dfs(int current, List<List<Integer>> graph) {
+        visited[current] = true;
+
+        for (int next : graph.get(current)) {
+            if (!visited[next]) {
+                count++;
+                dfs(next, graph);
+            }
+        }
     }
 }
