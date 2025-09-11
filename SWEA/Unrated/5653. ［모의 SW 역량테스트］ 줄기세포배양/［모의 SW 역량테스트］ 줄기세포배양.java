@@ -17,9 +17,6 @@ public class Solution {
     private static final int INACTIVE = 2;
 
     private static boolean[][] visited;
-    private static int[] power;
-    private static int[] time;
-    private static int[] state;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -59,7 +56,7 @@ public class Solution {
     }
 
     static int simulation(int k) {
-        for (int t = 1; t <= k; t++) {
+        for (int currTime = 1; currTime <= k; currTime++) {
             while (!pq.isEmpty()) {
                 Cell curr = pq.poll();
                 int x = curr.x;
@@ -74,21 +71,21 @@ public class Solution {
             for (Cell cell : cells) {
                 if (cell.state == DEAD) continue;
 
-                if (cell.state == ACTIVE && cell.time == t) {
+                if (cell.state == ACTIVE && cell.time == currTime) {
                     cell.state = DEAD;
                     cell.time = 0;
                     cell.health = 0;
                     continue;
                 }
 
-                if (cell.state == INACTIVE && cell.time == t) {
+                if (cell.state == INACTIVE && cell.time == currTime) {
                     cell.state = ACTIVE;
-                    cell.time = cell.health + t;
+                    cell.time = cell.health + currTime;
 
                     for (int i = 0; i < 4; i++) {
                         int nx = cell.x + dx[i];
                         int ny = cell.y + dy[i];
-                        pq.add(new Cell(nx, ny, t + 1 + cell.health, cell.health));
+                        pq.add(new Cell(nx, ny, currTime + 1 + cell.health, cell.health));
                     }
                 }
             }
