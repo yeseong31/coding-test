@@ -1,21 +1,20 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
 
     private static List<Integer>[] graph;
-    private static int[] count;
+    private static boolean[] visited;
+    private static int[] dp;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder sb = new StringBuilder();
 
         StringTokenizer st = new StringTokenizer(br.readLine());
         int n = Integer.parseInt(st.nextToken());
@@ -23,27 +22,27 @@ public class Main {
         int q = Integer.parseInt(st.nextToken());
 
         graph = new List[n + 1];
-        for (int i = 0; i <= n; i++) {
+        for (int i = 0; i < n + 1; i++) {
             graph[i] = new ArrayList<>();
         }
-
-        count = new int[n + 1];
 
         for (int i = 0; i < n - 1; i++) {
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
-
             graph[u].add(v);
             graph[v].add(u);
         }
 
-        dfs(r, -1);
+        visited = new boolean[n + 1];
+        dp = new int[n + 1];
+        Arrays.fill(dp, 1);
 
-        StringBuilder sb = new StringBuilder();
+        dfs(r);
+
         for (int i = 0; i < q; i++) {
             int x = Integer.parseInt(br.readLine());
-            sb.append(count[x]).append('\n');
+            sb.append(dp[x]).append('\n');
         }
 
         bw.write(sb.toString());
@@ -52,15 +51,14 @@ public class Main {
         br.close();
     }
 
-    private static int dfs(int curr, int parent) {
-        int result = 1;
+    private static void dfs(int curr) {
+        visited[curr] = true;
 
         for (int next : graph[curr]) {
-            if (next != parent) {
-                result += dfs(next, curr);
+            if (!visited[next]) {
+                dfs(next);
+                dp[curr] += dp[next];
             }
         }
-
-        return count[curr] = result;
     }
 }
