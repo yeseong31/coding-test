@@ -8,16 +8,11 @@ class Solution {
         for (char c : s.toCharArray()) {
             if (!stack.isEmpty() && stack.peek() == c) {
                 stack.pop();
-                continue;
+            } else {
+                stack.add(c);
             }
-            
-            stack.add(c);
         }
-
-        if (stack.isEmpty()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        
+        return stack.isEmpty() ? 1 : 0;
     }
 }
