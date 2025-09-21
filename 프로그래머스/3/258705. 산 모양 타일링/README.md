@@ -1,10 +1,10 @@
 # [level 3] 산 모양 타일링 - 258705 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258705?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258705) 
 
 ### 성능 요약
 
-메모리: 95.9 MB, 시간: 12.16 ms
+메모리: 85.5 MB, 시간: 18.89 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 09월 21일 02:01:49
+2025년 09월 21일 16:17:11
 
 ### 문제 설명
 
