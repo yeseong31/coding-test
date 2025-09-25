@@ -4,86 +4,55 @@ import java.util.List;
 import java.util.Map;
 
 class Solution {
-    private boolean checkOddEven(int node, Map<Integer, List<Integer>> tree, boolean[] visited, int parent) {
-        List<Integer> children = tree.get(node);
-        int countChildren = children.size();
-        
-        if (parent != -1) {
-            countChildren--;
-        }
-        
-        if (node % 2 == countChildren % 2) {
-            visited[node] = true;
-            
-            for (int child : children) {
-                if (child == parent) {
-                    continue;
-                }
-                if (!checkOddEven(child, tree, visited, node)) {
-                    visited[node] = false;
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        
-        return true;
-    }
     
-    private boolean checkReverseOddEven(int node, Map<Integer, List<Integer>> tree, boolean[] visited, int parent) {
-        List<Integer> children = tree.get(node);
-        int countChildren = children.size();
-        
-        if (parent != -1) {
-            countChildren--;
-        }
-        
-        if (node % 2 != countChildren % 2) {
-            visited[node] = true;
-            
-            for (int child : children) {
-                if (child == parent) {
-                    continue;
-                }
-                if (!checkReverseOddEven(child, tree, visited, node)) {
-                    visited[node] = false;
-                    return false;
-                }
-            }
-        } else {
-            return false;   
-        }
-        
-        return true;
-    }
+    private static final Map<Integer, List<Integer>> tree = new HashMap<>();
     
-    public int[] solution(int[] nodes, int[][] edges) {
-        int[] answer = new int[] {0, 0};
-        Map<Integer, List<Integer>> graph = new HashMap<>();
+    private static boolean[] visited;
+    
+    public int[] solution(int[] nodes, int[][] edges) {   
+        int[] answer = new int[2];
         
         for (int node : nodes) {
-            graph.put(node, new ArrayList<>());
-        }
-        for (int[] edge : edges) {
-            graph.get(edge[0]).add(edge[1]);
-            graph.get(edge[1]).add(edge[0]);
+            tree.put(node, new ArrayList<>());
         }
         
-        boolean[] visited = new boolean[1000001];
-        for (int root : nodes) {
-            if (!visited[root] && checkOddEven(root, graph, visited, -1)) {
-                answer[0]++;
-            }
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            tree.get(u).add(v);
+            tree.get(v).add(u);
         }
         
         visited = new boolean[1000001];
         for (int root : nodes) {
-            if (!visited[root] && checkReverseOddEven(root, graph, visited, -1)) {
-                answer[1]++;
+            if (!visited[root] && dfs(root, -1, false)) answer[0]++;
+        }
+        
+        visited = new boolean[1000001];
+        for (int root : nodes) {
+            if (!visited[root] && dfs(root, -1, true)) answer[1]++;
+        }
+               
+        return answer;
+    }
+    
+    private static boolean dfs(int curr, int prev, boolean isReversed) {
+        List<Integer> children = tree.get(curr);
+        int count = children.size();
+        
+        if (prev != -1) count--;
+        if (isReversed && curr % 2 == count % 2) return false;
+        if (!isReversed && curr % 2 != count % 2) return false;
+        
+        visited[curr] = true;
+        
+        for (int next : children) {
+            if (next != prev && !dfs(next, curr, isReversed)) {
+                visited[curr] = false;
+                return false;
             }
         }
         
-        return answer;
+        return true;
     }
 }
