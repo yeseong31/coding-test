@@ -1,89 +1,102 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 class Solution {
 
-    private static final List<List<Integer>> COMBINATIONS = new ArrayList<>();
+    private static int[][] inputDices;
+    private static int n;
+    private static int fullmask;
 
-    private static int[][] DICE;
-    private static int N;
+    public int[] solution(int[][] dice) {
+        inputDices = dice;
+        n = dice.length;
+        fullmask = (1 << n) - 1;
 
-    public static List<Integer> solution(int[][] dice) {
-        DICE = dice;
-        N = dice.length;
+        List<int[]> list = new ArrayList<>();
 
-        int MAX_WIN = 0;
-        List<Integer> BEST = new ArrayList<>();
-
-        // n개 중 n/2개 조합 구하기
-        combine(0, new ArrayList<>());
-
-        for (List<Integer> aGroup : COMBINATIONS) {
-            List<Integer> bGroup = new ArrayList<>();
-            for (int i = 0; i < N; i++) if (!aGroup.contains(i)) bGroup.add(i);
-
-            List<Integer> aScores = getScores(aGroup);
-            List<Integer> bScores = getScores(bGroup);
-            Collections.sort(bScores);
-
-            int aWins = 0;
-            for (int a : aScores) {
-                aWins += binarySearch(bScores, a);
-            }
-
-            if (aWins > MAX_WIN) {
-                MAX_WIN = aWins;
-                BEST = new ArrayList<>();
-                for (int idx : aGroup) BEST.add(idx + 1);
+        for (int i = 0; i < (1 << n); i++) {
+            if (Integer.bitCount(i) == n / 2) {
+                list.add(new int[]{i, fight(i)});
             }
         }
 
-        return BEST;
-    }
-
-    private static List<Integer> getScores(List<Integer> group) {
-        List<Integer> scores = new ArrayList<>();
-        dfs(group, 0, 0, scores);
-        return scores;
-    }
-
-    private static void dfs(List<Integer> group, int depth, int sum, List<Integer> scores) {
-        if (depth == group.size()) {
-            scores.add(sum);
-            return;
-        }
-
-        for (int face : DICE[group.get(depth)]) {
-            dfs(group, depth + 1, sum + face, scores);
-        }
-    }
-
-    private static void combine(int start, List<Integer> curr) {
-        if (curr.size() == N / 2) {
-            COMBINATIONS.add(new ArrayList<>(curr));
-            return;
-        }
-
-        for (int i = start; i < N; i++) {
-            curr.add(i);
-            combine(i + 1, curr);
-            curr.remove(curr.size() - 1);
-        }
-    }
-
-    private static int binarySearch(List<Integer> list, int target) {
-        int l = 0, r = list.size();
-
-        while (l < r) {
-            int m = l + (r - l) / 2;
-            if (list.get(m) < target) {
-                l = m + 1;
-            } else {
-                r = m;
+        int[] bestCase = list.get(0);
+        for (int[] target : list) {
+            if (target[1] > bestCase[1]) {
+                bestCase = target;
             }
         }
 
-        return l;
+        int[] answer = new int[n / 2];
+        int mask = bestCase[0];
+
+        for (int i = 0, idx = 0; i < n; i++) {
+            if ((mask & (1 << i)) != 0) {
+                answer[idx++] = i + 1;
+            }
+        }
+
+        return answer;
+    }
+
+    private int fight(int mask) {
+        int result = 0;
+        int a = mask;
+        int b = ~mask & fullmask;
+
+        int[] sumA = getAllSums(a);
+        int[] sumB = getAllSums(b);
+
+        for (int sum = 1; sum < sumB.length; sum++) {
+            sumB[sum] += sumB[sum - 1];
+        }
+
+        int bMax = sumB.length - 1;
+        
+        for (int sum = 3; sum < sumA.length; sum++) {
+            int scoreB = sumB[Math.min(sum - 1, bMax)];
+            result += scoreB * sumA[sum];
+        }
+
+        return result;
+    }
+
+    private int[] getAllSums(int mask) {
+        int maxSum = getMaxSum(mask);
+        int[] dp = new int[maxSum + 1];
+        dp[0] = 1;
+
+        for (int i = 0; i <= n; i++) {
+            if ((mask & (1 << i)) == 0) continue;
+
+            int[] next = new int[maxSum + 1];
+
+            for (int sum = 0; sum <= maxSum; sum++) {
+                if (dp[sum] == 0) continue;
+                for (int face : inputDices[i]) {
+                    next[sum + face] += dp[sum];
+                }
+            }
+            dp = next;
+        }
+
+        return dp;
+    }
+
+    private int getMaxSum(int mask) {
+        int sum = 0;
+        int i = 0;
+
+        for (int[] dice : inputDices) {
+            if ((mask & (1 << i++)) == 0) continue;
+            int max = 0;
+
+            for (int d : dice) {
+                max = Math.max(max, d);
+            }
+            sum += max;
+        }
+
+        return sum;
     }
 }
