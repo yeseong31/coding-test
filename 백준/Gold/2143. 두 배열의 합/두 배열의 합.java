@@ -1,65 +1,77 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+class Main {
 
-public class Main {
+    public static void main(String[] args) throws Exception {
+        final int H_MAX = ~(-1 << 20);
+        final int STEP = 31;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int[] hash = new int[H_MAX + 1];
+        int[] data = new int[H_MAX + 1];
 
-        long T = Long.parseLong(br.readLine());
-        int n = Integer.parseInt(br.readLine());
+        int T = read();
+        int n = read();
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
         int[] a = new int[n];
         for (int i = 0; i < n; i++) {
-            a[i] = Integer.parseInt(st.nextToken());
+            a[i] = read();
         }
 
-        int m = Integer.parseInt(br.readLine());
+        int m = read();
 
-        st = new StringTokenizer(br.readLine());
         int[] b = new int[m];
         for (int i = 0; i < m; i++) {
-            b[i] = Integer.parseInt(st.nextToken());
+            b[i] = read();
         }
 
-        long answer = solution(T, a, b);
-        System.out.println(answer);
+        for (int i = 0; i < n; i++) {
+            int currentSum = 0;
+
+            for (int j = i; j < n; j++) {
+                currentSum += a[j];
+                int hashKey = currentSum & H_MAX;
+
+                while (hash[hashKey] > 0 && data[hashKey] != currentSum) {
+                    hashKey = (hashKey + STEP) & H_MAX;
+                }
+
+                hash[hashKey]++;
+                data[hashKey] = currentSum;
+            }
+        }
+
+        long count = 0;
+
+        for (int i = 0; i < m; i++) {
+            int currentSum = 0;
+
+            for (int j = i; j < m; j++) {
+                currentSum += b[j];
+                int required = T - currentSum;
+                int hashKey = required & H_MAX;
+
+                while (hash[hashKey] > 0 && data[hashKey] != required) {
+                    hashKey = (hashKey + STEP) & H_MAX;
+                }
+                if (hash[hashKey] > 0 && data[hashKey] == required) {
+                    count += hash[hashKey];
+                }
+            }
+        }
+
+        System.out.print(count);
     }
 
-    private static long solution(long T, int[] a, int[] b) {
-        long answer = 0;
+    private static int read() throws Exception {
+        int c = System.in.read();
+        int n = c & 15;
+        boolean neg = n == 13;
 
-        long[] cumA = new long[a.length + 1];
-        long[] cumB = new long[b.length + 1];
-
-        for (int i = 1; i <= a.length; i++) {
-            cumA[i] += cumA[i - 1] + a[i - 1];
+        if (neg) {
+            n = System.in.read() & 15;
         }
-        for (int i = 1; i <= b.length; i++) {
-            cumB[i] += cumB[i - 1] + b[i - 1];
+        while ((c = System.in.read()) > 32) {
+            n = (n << 3) + (n << 1) + (c & 15);
         }
-
-        Map<Long, Long> map = new HashMap<>();
-
-        for (int left = 1; left <= a.length; left++) {
-            for (int right = left; right <= a.length; right++) {
-                long sum = cumA[right] - cumA[left - 1];
-                map.put(sum, map.getOrDefault(sum, 0L) + 1);
-            }
-        }
-
-        for (int left = 1; left <= b.length; left++) {
-            for (int right = left; right <= b.length; right++) {
-                long sum = cumB[right] - cumB[left - 1];
-                answer += map.getOrDefault(T - sum, 0L);
-            }
-        }
-
-        return answer;
+        
+        return neg ? ~n + 1 : n;
     }
 }
