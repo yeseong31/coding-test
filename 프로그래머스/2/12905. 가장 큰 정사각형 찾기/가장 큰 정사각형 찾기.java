@@ -14,8 +14,8 @@ class Solution {
                     dp[i][j] = Math.min(
                         Math.min(dp[i][j - 1], dp[i - 1][j]),
                         dp[i - 1][j - 1]
-                    ) + 1;
-                    answer = Math.max(answer, dp[i][j]);
+                    );
+                    answer = Math.max(answer, ++dp[i][j]);
                 }
             }
         }
