@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 class Solution {
+    
     public int[] solution(int[][] edges) {
         int n = 0;
         for (int[] edge : edges) {
@@ -24,6 +25,7 @@ class Solution {
         
         int a = 0;
         int b = 0;
+        
         for (int[] edge : edges) {
             a = edge[0];
             b = edge[1];
@@ -34,6 +36,7 @@ class Solution {
         }
         
         int root = 0;
+        
         for (int[] row : edgeInfo) {
             if (row[0] == 0 && row[1] >= 2) {
                 break;
@@ -44,8 +47,10 @@ class Solution {
         int donut = 0;
         int stick = 0;
         int eight = 0;
+        
         for (int node : graph.get(root)) {
             Set<Integer> visited = new HashSet<>();
+            
             int x = node;
             boolean isDonut = true;
             
