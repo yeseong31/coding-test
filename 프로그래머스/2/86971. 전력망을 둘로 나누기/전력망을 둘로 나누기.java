@@ -2,8 +2,12 @@ import java.util.*;
 
 public class Solution {
 
+    private static List<List<Integer>> graph;
+    private static int n;
+
     public int solution(int n, int[][] wires) {
-        List<List<Integer>> graph = new ArrayList<>();
+        Solution.n = n;  // 클래스 필드에 저장
+        graph = new ArrayList<>();
         for (int i = 0; i <= n; i++) {
             graph.add(new ArrayList<>());
         }
@@ -16,17 +20,16 @@ public class Solution {
         }
 
         int answer = n;
-
         for (int[] wire : wires) {
             int a = wire[0];
             int b = wire[1];
-            answer = Math.min(answer, Math.abs(2 * bfs(a, b, graph, n) - n));
+            answer = Math.min(answer, Math.abs(2 * bfs(a, b) - n));
         }
 
         return answer;
     }
-
-    private int bfs(int start, int blocked, List<List<Integer>> graph, int n) {
+    
+    private static int bfs(int start, int blocked) {
         Queue<Integer> q = new LinkedList<>();
         boolean[] visited = new boolean[n + 1];
 
