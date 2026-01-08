@@ -30,13 +30,19 @@ class Solution {
             for (int j = 0; j < timelog.length; j++) {
                 int day = (startday + j) % 7;
                 
-                if (day >= 5) continue;
+                if (day >= 5) {
+                    continue;
+                }
 
                 String logTime = convertTime(timelog[j]);
-                if (logTime.compareTo(deadline) <= 0) count++;
+                if (logTime.compareTo(deadline) <= 0) {
+                    count++;
+                }
             }
 
-            if (count == 5) answer++;
+            if (count == 5) {
+                answer++;
+            }
         }
 
         return answer;
