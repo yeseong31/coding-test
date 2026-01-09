@@ -2,12 +2,14 @@ import java.util.*;
 
 class Solution {
     
+    private static final List<Set<Integer>> queue = new ArrayList<>();
+    private static final List<List<Integer>> result = new ArrayList<>();
+    
     private static int N;
-    private static List<Set<Integer>> queue;
     private static int[] answer;
-    private static List<List<Integer>> result;
 
     private static boolean isValidCase(List<Integer> currentCase) {
+        
         for (int i = 0; i < queue.size(); i++) {
             Set<Integer> q = queue.get(i);
             int ans = answer[i];
@@ -17,8 +19,11 @@ class Solution {
                 if (q.contains(c)) count++;
             }
             
-            if (count != ans) return false;
+            if (count != ans) {
+                return false;
+            }
         }
+        
         return true;
     }
 
@@ -39,17 +44,18 @@ class Solution {
     }
 
     public int solution(int n, int[][] qArr, int[] ans) {
+        
         N = n;
         answer = ans;
-        queue = new ArrayList<>();
         
         for (int[] arr : qArr) {
             Set<Integer> s = new HashSet<>();
-            for (int v : arr) s.add(v);
+            for (int v : arr) {
+                s.add(v);
+            }
             queue.add(s);
         }
         
-        result = new ArrayList<>();
         dfs(1, new ArrayList<>());
         
         return result.size();
