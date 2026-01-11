@@ -43,14 +43,20 @@ class Solution {
 
         while (!q.isEmpty()) {
             Point cur = q.poll();
-            if (maps[cur.x].charAt(cur.y) == end) return cur.step;
+            if (maps[cur.x].charAt(cur.y) == end) {
+                return cur.step;
+            }
 
             for (int i = 0; i < 4; i++) {
                 int nx = cur.x + dx[i];
                 int ny = cur.y + dy[i];
 
-                if (nx < 0 || ny < 0 || nx >= maps.length || ny >= maps[0].length()) continue;
-                if (visited[nx][ny] || maps[nx].charAt(ny) == 'X') continue;
+                if (nx < 0 || ny < 0 || nx >= maps.length || ny >= maps[0].length()) {
+                    continue;
+                }
+                if (visited[nx][ny] || maps[nx].charAt(ny) == 'X') {
+                    continue;
+                }
 
                 visited[nx][ny] = true;
                 q.add(new Point(nx, ny, cur.step + 1));
