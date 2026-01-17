@@ -15,16 +15,16 @@ class Node {
 
 class Solution {
     
-    private static int findParent(int[] parents, int x) {
+    private static int find(int[] parents, int x) {
         if (parents[x] != x) {
-            parents[x] = findParent(parents, parents[x]);
+            parents[x] = find(parents, parents[x]);
         }
         return parents[x];
     }
     
-    private static void unionParent(int[] parents, int a, int b) {
-        a = findParent(parents, a);
-        b = findParent(parents, b);
+    private static void union(int[] parents, int a, int b) {
+        a = find(parents, a);
+        b = find(parents, b);
         
         if (a < b) {
             parents[b] = a;
@@ -50,8 +50,8 @@ class Solution {
             int a = nodes[seq].a;
             int b = nodes[seq].b;
             
-            if (findParent(parents, a) != findParent(parents, b)) {
-                unionParent(parents, a, b);
+            if (find(parents, a) != find(parents, b)) {
+                union(parents, a, b);
                 answer += nodes[seq].c;
             }
         }
