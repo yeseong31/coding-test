@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -12,79 +10,85 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        List<Integer> numbers = new ArrayList<>();
-        while (st.hasMoreTokens()) {
-            int n = Integer.parseInt(st.nextToken());
-            if (n == 0) {
-                System.out.println(solution(numbers));
-                return;
+        int[] cost = buildCost();
+        int[] curr = new int[25];
+        int[] next = new int[25];
+
+        Arrays.fill(curr, INF);
+        curr[idx(0, 0)] = 0;
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.isEmpty()) {
+                continue;
             }
-            numbers.add(n);
-        }
-    }
+            StringTokenizer st = new StringTokenizer(line);
+            while (st.hasMoreTokens()) {
+                int p = Integer.parseInt(st.nextToken());
+                if (p == 0) {
+                    int answer = INF;
+                    for (int s = 0; s < 25; s++) {
+                        answer = Math.min(answer, curr[s]);
+                    }
+                    System.out.println(answer);
+                    return;
+                }
 
-    private static int solution(List<Integer> numbers) {
-        int n = numbers.size();
-        int[][] currDp = new int[5][5];
-        int[][] nextDp = new int[5][5];
+                Arrays.fill(next, INF);
 
-        for (int i = 0; i < 5; i++) {
-            Arrays.fill(currDp[i], INF);
-        }
-        currDp[0][0] = 0;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < 5; j++) {
-                Arrays.fill(nextDp[j], INF);
-            }
-
-            int p = numbers.get(i);
-
-            for (int l = 0; l < 5; l++) {
-                for (int r = 0; r < 5; r++) {
-                    int cost = currDp[l][r];
-                    if (cost == INF) {
+                for (int s = 0; s < 25; s++) {
+                    int base = curr[s];
+                    if (base == INF) {
                         continue;
                     }
 
-                    int leftCost = calculate(l, p);
-                    if (cost + leftCost < nextDp[p][r]) {
-                        nextDp[p][r] = cost + leftCost;
+                    int l = s / 5;
+                    int r = s % 5;
+
+                    int s1 = idx(p, r);
+                    int v1 = base + cost[l * 5 + p];
+                    if (v1 < next[s1]) {
+                        next[s1] = v1;
                     }
 
-                    int rightCost = calculate(r, p);
-                    if (cost + rightCost < nextDp[l][p]) {
-                        nextDp[l][p] = cost + rightCost;
+                    int s2 = idx(l, p);
+                    int v2 = base + cost[r * 5 + p];
+                    if (v2 < next[s2]) {
+                        next[s2] = v2;
                     }
                 }
-            }
 
-            int[][] tmp = currDp;
-            currDp = nextDp;
-            nextDp = tmp;
-        }
-
-        int answer = INF;
-        for (int l = 0; l < 5; l++) {
-            for (int r = 0; r < 5; r++) {
-                answer = Math.min(answer, currDp[l][r]);
+                int[] tmp = curr;
+                curr = next;
+                next = tmp;
             }
         }
-        return answer;
     }
 
-    private static int calculate(int prev, int next) {
-        if (prev == 0) {
-            return 2;
+    private static int idx(int l, int r) {
+        return l * 5 + r;
+    }
+
+    private static int[] buildCost() {
+        int[] c = new int[25];
+
+        for (int prev = 0; prev < 5; prev++) {
+            for (int next = 0; next < 5; next++) {
+                int v;
+                if (prev == 0) {
+                    v = 2;
+                } else if (prev == next) {
+                    v = 1;
+                } else if (Math.abs(next - prev) == 2) {
+                    v = 4;
+                } else {
+                    v = 3;
+                }
+                c[prev * 5 + next] = v;
+            }
         }
-        if (prev == next) {
-            return 1;
-        }
-        if (Math.abs(next - prev) == 2) {
-            return 4;
-        }
-        return 3;
+
+        return c;
     }
 }
