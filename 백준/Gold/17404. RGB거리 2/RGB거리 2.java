@@ -24,28 +24,21 @@ public class Main {
         int answer = INF;
         int[] dp = new int[3];
 
-        for (int start = 0; start < 3; start++) {
+        for (int firstColor = 0; firstColor < 3; firstColor++) {
             Arrays.fill(dp, INF);
-            dp[start] = colors[0][start];
+            dp[firstColor] = colors[0][firstColor];
 
             for (int i = 1; i < colors.length; i++) {
-                int[] next = new int[3];
-                Arrays.fill(next, INF);
-
-                for (int j = 0; j < 3; j++) {
-                    if (dp[j] != INF) {
-                        int l = (j + 2) % 3;
-                        int r = (j + 1) % 3;
-                        next[l] = Math.min(next[l], dp[j] + colors[i][l]);
-                        next[r] = Math.min(next[r], dp[j] + colors[i][r]);
-                    }
-                }
-
-                dp = next;
+                int a = Math.min(dp[1], dp[2]) + colors[i][0];
+                int b = Math.min(dp[0], dp[2]) + colors[i][1];
+                int c = Math.min(dp[0], dp[1]) + colors[i][2];
+                dp[0] = a;
+                dp[1] = b;
+                dp[2] = c;
             }
 
             for (int i = 0; i < 3; i++) {
-                if (i != start) {
+                if (i != firstColor) {
                     answer = Math.min(answer, dp[i]);
                 }
             }
