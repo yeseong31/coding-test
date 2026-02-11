@@ -1,10 +1,12 @@
 import java.util.Arrays;
 
 class Solution {
+    
     private static final int[][] maxDp = new int[202][202];
     private static final int[][] minDp = new int[202][202];
     
     private static int max(int start, int end, String[] arr) {
+        
         if (end - start == 1) {
             return Integer.parseInt(arr[start]);
         } 
@@ -28,6 +30,7 @@ class Solution {
     }
     
     private static int min(int start, int end, String[] arr) {
+        
         if (end - start == 1) {
             return Integer.parseInt(arr[start]);
         } 
@@ -51,6 +54,7 @@ class Solution {
     }
     
     public int solution(String arr[]) {
+        
         for (int[] row : maxDp) Arrays.fill(row, Integer.MIN_VALUE);
         for (int[] row : minDp) Arrays.fill(row, Integer.MAX_VALUE);
         
