@@ -1,10 +1,10 @@
 # [level 2] 유사 칸토어 비트열 - 148652 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/148652) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/148652?language=java) 
 
 ### 성능 요약
 
-메모리: 10.2 MB, 시간: 8589.87 ms
+메모리: 90.5 MB, 시간: 102.43 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 11월 08일 22:29:25
+2026년 04월 01일 23:06:11
 
 ### 문제 설명
 
@@ -41,8 +41,8 @@
 <li>1 ≤ <code>l</code>, <code>r</code> ≤ 5<sup><code>n</code></sup>
 
 <ul>
-<li>l ≤ <code>r</code> &lt; <code>l</code> + 10,000,000</li>
-<li><code>l</code>과 <code>r</code>은 비트열에서의 인덱스(1-base)이며 폐구간 [l, r]을 나타냅니다.</li>
+<li><code>l</code> ≤ <code>r</code> &lt; <code>l</code> + 10,000,000</li>
+<li><code>l</code>과 <code>r</code>은 비트열에서의 인덱스(1-base)이며 폐구간 <code>[l, r]</code>을 나타냅니다.</li>
 </ul></li>
 </ul>
 
