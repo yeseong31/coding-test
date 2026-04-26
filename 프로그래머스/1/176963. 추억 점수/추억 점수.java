@@ -14,9 +14,7 @@ class Solution {
         for (int i = 0; i < photo.length; i++) {
             int sum = 0;
             for (String person : photo[i]) {
-                if (map.containsKey(person)) {
-                    sum += map.get(person);
-                }
+                sum += map.getOrDefault(person, 0);
             }
             answer[i] = sum;
         }
