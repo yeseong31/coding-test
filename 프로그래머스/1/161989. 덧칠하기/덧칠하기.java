@@ -1,21 +1,13 @@
-import java.util.*;
-
 class Solution {
     
     public int solution(int n, int m, int[] section) {
         int answer = 0;
-        Deque<Integer> stack = new ArrayDeque<>();
+        int paintedEnd = 0;
         
         for (int s : section) {
-            stack.addLast(s);
-        }
-        
-        while (!stack.isEmpty()) {
-            answer++;
-            int point = stack.removeLast();
-            
-            while (!stack.isEmpty() && stack.peekLast() > point - m) {
-                stack.removeLast();
+            if (s > paintedEnd) {
+                answer++;
+                paintedEnd = s + m - 1;
             }
         }
         
