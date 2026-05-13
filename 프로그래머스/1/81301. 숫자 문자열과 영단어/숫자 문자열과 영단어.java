@@ -1,11 +1,12 @@
 class Solution {
-    private static final String[] numbers = {
+    
+    private static final String[] NUMBER_WORDS = {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
     };
-    
+
     public int solution(String s) {
-        for (int i = 0; i < 10; i++) {
-            s = s.replace(numbers[i], Integer.toString(i));
+        for (int i = 0; i < NUMBER_WORDS.length; i++) {
+            s = s.replace(NUMBER_WORDS[i], String.valueOf(i));
         }
         return Integer.parseInt(s);
     }
