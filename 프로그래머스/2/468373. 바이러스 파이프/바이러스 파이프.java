@@ -1,80 +1,63 @@
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Solution {
-
-    private static List<List<Edge>> graph = new ArrayList<>();
-    private static int answer = 1;
+    
+    private int maxInfected = 1;
 
     public int solution(int n, int infection, int[][] edges, int k) {
-        graph = new ArrayList<>();
+        List<List<int[]>> graph = new ArrayList<>();
         for (int i = 0; i <= n; i++) {
             graph.add(new ArrayList<>());
         }
-
         for (int[] edge : edges) {
-            int x = edge[0];
-            int y = edge[1];
-            int t  = edge[2];
-            graph.get(x).add(new Edge(y, t));
-            graph.get(y).add(new Edge(x, t));
+            graph.get(edge[0]).add(new int[]{edge[1], edge[2]});
+            graph.get(edge[1]).add(new int[]{edge[0], edge[2]});
         }
 
         boolean[] infected = new boolean[n + 1];
         infected[infection] = true;
 
-        dfs(0, n, k, infected);
+        dfs(0, k, n, infected, graph);
 
-        return answer;
+        return maxInfected;
     }
 
-    private static void dfs(int step, int n, int k, boolean[] infected) {
+    private void dfs(int step, int k, int n, boolean[] infected, List<List<int[]>> graph) {
         int count = 0;
-
         for (boolean b : infected) {
             if (b) count++;
         }
-
-        answer = Math.max(answer, count);
+        maxInfected = Math.max(maxInfected, count);
 
         if (step == k) return;
 
         for (int type = 1; type <= 3; type++) {
-            boolean[] next = bfs(n, infected, type);
-            dfs(step + 1, n, k, next);
+            boolean[] nextState = bfs(n, infected, graph, type);
+            dfs(step + 1, k, n, nextState, graph);
         }
     }
 
-    private static boolean[] bfs(int n, boolean[] infected, int type) {
-        boolean[] next = infected.clone();
+    private boolean[] bfs(int n, boolean[] infected, List<List<int[]>> graph, int type) {
+        boolean[] nextState = infected.clone();
         Queue<Integer> queue = new LinkedList<>();
 
         for (int i = 1; i <= n; i++) {
-            if (infected[i]) queue.offer(i);
+            if (infected[i]) {
+                queue.add(i);
+            }
         }
 
         while (!queue.isEmpty()) {
             int curr = queue.poll();
-            for (Edge e : graph.get(curr)) {
-                if (e.type == type && !next[e.to]) {
-                    next[e.to] = true;
-                    queue.offer(e.to);
+            for (int[] edge : graph.get(curr)) {
+                int to = edge[0];
+                int edgeType = edge[1];
+                if (edgeType == type && !nextState[to]) {
+                    nextState[to] = true;
+                    queue.add(to);
                 }
             }
         }
-
-        return next;
-    }
-
-    private static class Edge {
-        private final int to;
-        private final int type;
-
-        public Edge(int to, int type) {
-            this.to = to;
-            this.type = type;
-        }
+        return nextState;
     }
 }
