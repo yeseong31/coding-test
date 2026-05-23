@@ -1,23 +1,25 @@
 class Solution {
     public int solution(String[][] board, int h, int w) {
-        int answer = 0;
-        
-        int[] dh = {-1, 0, 1, 0};
-        int[] dw = {0, -1, 0, 1};
-        
-        for (int i = 0; i < 4; i++) {
-            int nh = h + dh[i];
-            int nw = w + dw[i];
-            
-            if (nh < 0 || nh >= board.length || nw < 0 || nw >= board[0].length) {
-                continue;
-            }
-            
-            if (board[nh][nw].equals(board[h][w])) {
-                answer++;
+        int count = 0;
+        int n = board.length;
+        int m = board[0].length;
+        String color = board[h][w];
+
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        for (int[] d : directions) {
+            int nh = h + d[0];
+            int nw = w + d[1];
+
+            if (isValid(nh, nw, n, m) && board[nh][nw].equals(color)) {
+                count++;
             }
         }
-        
-        return answer;
+
+        return count;
+    }
+
+    private boolean isValid(int h, int w, int n, int m) {
+        return h >= 0 && h < n && w >= 0 && w < m;
     }
 }
