@@ -1,50 +1,27 @@
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 class Solution {
-    private final PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
-    private final PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-    
     public int[] solution(String[] operations) {
-        for (String operation : operations) {
-            String[] tokens = operation.split(" ");
-            String op = tokens[0];
-            String numStr = tokens[1];
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        
+        for (String op : operations) {
+            String[] tokens = op.split(" ");
+            String cmd = tokens[0];
+            int val = Integer.parseInt(tokens[1]);
             
-            switch (op) {
-                case "I" -> {
-                    int number = Integer.parseInt(numStr);
-                    maxHeap.add(number);
-                    minHeap.add(number);
-                }
-                case "D" -> {
-                    if (maxHeap.size() == 0) {
-                        continue;
-                    }
-                    if (numStr.equals("-1")) {
-                        minHeap.poll();
-                        maxHeap.clear();
-                        
-                        Iterator<Integer> iter = minHeap.iterator();
-                        while (iter.hasNext()) {
-                            maxHeap.add(iter.next());
-                        }
-                    } else {
-                        maxHeap.poll();
-                        minHeap.clear();
-                        
-                        Iterator<Integer> iter = maxHeap.iterator();
-                        while (iter.hasNext()) {
-                            minHeap.add(iter.next());
-                        }
-                    }
+            if (cmd.equals("I")) {
+                map.put(val, map.getOrDefault(val, 0) + 1);
+            } else if (!map.isEmpty()) {
+                int key = (val == 1) ? map.lastKey() : map.firstKey();
+                if (map.put(key, map.get(key) - 1) == 1) {
+                    map.remove(key);
                 }
             }
         }
         
-        if (maxHeap.size() == 0 || minHeap.size() == 0) {
+        if (map.isEmpty()) {
             return new int[] {0, 0};
         }
-        return new int[] {maxHeap.peek(), minHeap.peek()};
+        return new int[] {map.lastKey(), map.firstKey()};
     }
 }
