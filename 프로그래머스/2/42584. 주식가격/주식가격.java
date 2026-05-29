@@ -1,42 +1,22 @@
-import java.util.Stack;
-
-
-class Price {
-    private int t;
-    private int price;
-    
-    public Price(int t, int price) {
-        this.t = t;
-        this.price = price;
-    }
-    
-    public int getT() {
-        return t;
-    }
-    
-    public int getPrice() {
-        return price;
-    }
-}
-
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 class Solution {
     public int[] solution(int[] prices) {
         int[] answer = new int[prices.length];
-        Stack<Price> stack = new Stack<>();
+        Deque<Integer> stack = new ArrayDeque<>();
         
-        for (int t = 0; t < prices.length; t++) {
-            while (!stack.isEmpty() && stack.peek().getPrice() > prices[t]) {
-                Price price = stack.pop();
-                answer[price.getT()] = t - price.getT();
+        for (int i = 0; i < prices.length; i++) {
+            while (!stack.isEmpty() && prices[stack.peek()] > prices[i]) {
+                int index = stack.pop();
+                answer[index] = i - index;
             }
-            
-            stack.add(new Price(t, prices[t]));
+            stack.push(i);
         }
         
         while (!stack.isEmpty()) {
-            Price price = stack.pop();
-            answer[price.getT()] = answer.length - 1 - price.getT();
+            int index = stack.pop();
+            answer[index] = prices.length - 1 - index;
         }
         
         return answer;
