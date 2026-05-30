@@ -3,40 +3,31 @@ import java.util.*;
 class Solution {
     
     public int solution(int[] priorities, int location) {
-        Deque<int[]> q = new ArrayDeque<>();
+        Queue<int[]> queue = new LinkedList<>();
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
         
         for (int i = 0; i < priorities.length; i++) {
-            q.offer(new int[]{i, priorities[i]});
+            queue.offer(new int[]{i, priorities[i]});
+            maxHeap.offer(priorities[i]);
         }
         
-        int cnt = 1;
+        int order = 0;
         
-        while (!q.isEmpty()) {
-            int[] current = q.poll();
-            int idx = current[0];
-            int val = current[1];
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
             
-            boolean hasHigher = false;
-            
-            for (int[] item : q) {
-                if (item[1] > val) {
-                    hasHigher = true;
-                    break;
+            if (current[1] < maxHeap.peek()) {
+                queue.offer(current);
+            } else {
+                order++;
+                maxHeap.poll();
+                
+                if (current[0] == location) {
+                    return order;
                 }
             }
-            
-            if (hasHigher) {
-                q.offer(current);
-                continue;
-            }
-            
-            if (idx == location) {
-                return cnt;
-            }
-            
-            cnt++;
         }
         
-        return cnt;
+        return order;
     }
 }
