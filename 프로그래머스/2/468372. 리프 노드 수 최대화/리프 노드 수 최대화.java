@@ -1,80 +1,76 @@
 import java.util.*;
 
 class Solution {
-    
-    public int solution(int dist_limit, int split_limit) {
-        long D = dist_limit;
-        long S = split_limit;
+
+    public int solution(int distLimit, int splitLimit) {
+        long d = distLimit;
+        long s = splitLimit;
 
         List<Long> values = new ArrayList<>();
-        Queue<Long> q = new ArrayDeque<>();
-        Set<Long> visited = new HashSet<>();
-
-        q.offer(1L);
-        visited.add(1L);
-
-        while (!q.isEmpty()) {
-            long cur = q.poll();
-            values.add(cur);
-
-            if (cur * 2 <= S && visited.add(cur * 2)) {
-                q.offer(cur * 2);
-            }
-            if (cur * 3 <= S && visited.add(cur * 3)) {
-                q.offer(cur * 3);
-            }
-        }
-
+        generate(1, s, values);
         Collections.sort(values);
 
-        Map<Long, Long> cost = new HashMap<>();
-        for (long v : values) {
-            cost.put(v, Long.MAX_VALUE);
+        int n = values.size();
+        long[] cost = new long[n];
+        Arrays.fill(cost, Long.MAX_VALUE);
+        cost[0] = 0;
+
+        Map<Long, Integer> index = new HashMap<>(n);
+        for (int i = 0; i < n; i++) {
+            index.put(values.get(i), i);
         }
-        cost.put(1L, 0L);
 
-        for (long p : values) {
-            long curCost = cost.get(p);
-            if (curCost == Long.MAX_VALUE) continue;
+        for (int i = 0; i < n; i++) {
+            long p = values.get(i);
 
-            if (p * 2 <= S) {
-                long next = p * 2;
-                long nextCost = curCost + p;
-                if (nextCost < cost.get(next)) {
-                    cost.put(next, nextCost);
-                }
+            if (cost[i] == Long.MAX_VALUE) {
+                continue;
             }
 
-            if (p * 3 <= S) {
-                long next = p * 3;
-                long nextCost = curCost + p;
-                if (nextCost < cost.get(next)) {
-                    cost.put(next, nextCost);
-                }
+            if (p * 2 <= s) {
+                int next = index.get(p * 2);
+                cost[next] = Math.min(cost[next], cost[i] + p);
+            }
+
+            if (p * 3 <= s) {
+                int next = index.get(p * 3);
+                cost[next] = Math.min(cost[next], cost[i] + p);
             }
         }
 
         long answer = 1;
 
-        for (long p : values) {
-            long curCost = cost.get(p);
-            if (curCost > D) continue;
+        for (int i = 0; i < n; i++) {
+            long p = values.get(i);
+
+            if (cost[i] > d) {
+                continue;
+            }
 
             answer = Math.max(answer, p);
 
-            long remain = D - curCost;
+            long remain = d - cost[i];
+            long x = Math.min(p, remain);
 
-            if (p * 2 <= S) {
-                long x = Math.min(p, remain);
+            if (p * 2 <= s) {
                 answer = Math.max(answer, p + x);
             }
 
-            if (p * 3 <= S) {
-                long x = Math.min(p, remain);
-                answer = Math.max(answer, p + 2 * x);
+            if (p * 3 <= s) {
+                answer = Math.max(answer, p + (x << 1));
             }
         }
 
         return (int) answer;
+    }
+
+    private void generate(long value, long limit, List<Long> values) {
+        if (value > limit) {
+            return;
+        }
+
+        values.add(value);
+        generate(value * 2, limit, values);
+        generate(value * 3, limit, values);
     }
 }
