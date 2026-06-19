@@ -1,50 +1,32 @@
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 class Solution {
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HHmm");
-
-    private String convertTime(int time) {
-        String timeStr = String.format("%04d", time);
-        LocalTime targetTime = LocalTime.parse(timeStr, FORMATTER);
-        return targetTime.format(FORMATTER);
-    }
-
-    private String getDeadlineTime(String timeStr) {
-        LocalTime deadline = LocalTime.parse(timeStr, FORMATTER).plusMinutes(10);
-        return deadline.format(FORMATTER);
-    }
 
     public int solution(int[] schedules, int[][] timelogs, int startday) {
         int answer = 0;
         startday -= 1;
 
         for (int i = 0; i < schedules.length; i++) {
-            String scheduleTime = convertTime(schedules[i]);
-            String deadline = getDeadlineTime(scheduleTime);
-
-            int count = 0;
+            int deadline = toMinutes(schedules[i]) + 10;
             int[] timelog = timelogs[i];
 
+            int onTimeCount = 0;
             for (int j = 0; j < timelog.length; j++) {
                 int day = (startday + j) % 7;
-                
-                if (day >= 5) {
-                    continue;
-                }
+                if (day >= 5) continue;
 
-                String logTime = convertTime(timelog[j]);
-                if (logTime.compareTo(deadline) <= 0) {
-                    count++;
+                if (toMinutes(timelog[j]) <= deadline) {
+                    onTimeCount++;
                 }
             }
 
-            if (count == 5) {
+            if (onTimeCount == 5) {
                 answer++;
             }
         }
 
         return answer;
+    }
+
+    private int toMinutes(int hhmm) {
+        return (hhmm / 100) * 60 + (hhmm % 100);
     }
 }
