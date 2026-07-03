@@ -1,11 +1,7 @@
-import java.util.ArrayList;
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-
 class Solution {
+
+    private static final int MAX_ID = 101;
+    private static final int MAX_CELL = 100;
 
     private static final int[] dx = {0, 0, 1, 0, -1};
     private static final int[] dy = {0, 1, 0, -1, 0};
@@ -13,6 +9,9 @@ class Solution {
     private int n;
     private int m;
     private int[][] board;
+
+    private int[][][] cells = new int[MAX_ID][MAX_CELL][2];
+    private int[] counts = new int[MAX_ID];
 
     public int[][] solution(int[][] board, int[][] commands) {
         n = board.length;
@@ -24,55 +23,61 @@ class Solution {
             this.board[i] = board[i].clone();
         }
 
+        init();
+
         for (int[] command : commands) {
-            int target = command[0];
-            int direction = command[1];
-            move(target, direction);
+            move(command[0], command[1]);
         }
 
         return this.board;
     }
 
+    private void init() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int value = board[i][j];
+                if (value == 0) continue;
+                int index = counts[value]++;
+                cells[value][index][0] = i;
+                cells[value][index][1] = j;
+            }
+        }
+    }
+
     private void move(int start, int direction) {
-        Set<Integer> group = findGroup(start, direction);
+        boolean[] group = findGroup(start, direction);
         moveGroup(group, direction);
 
         while (true) {
-            List<Integer> brokenApps = findBroken(direction);
-            if (brokenApps.isEmpty()) {
-                break;
-            }
-
-            int target = brokenApps.get(0);
-            Set<Integer> nextGroup = findGroup(target, direction);
+            int broken = findBroken(direction);
+            if (broken == 0) break;
+            boolean[] nextGroup = findGroup(broken, direction);
             moveGroup(nextGroup, direction);
         }
     }
 
-    private Set<Integer> findGroup(int start, int direction) {
-        Set<Integer> visited = new HashSet<>();
-        Queue<Integer> queue = new ArrayDeque<>();
+    private boolean[] findGroup(int start, int direction) {
+        boolean[] visited = new boolean[MAX_ID];
+        int[] queue = new int[MAX_ID];
+        int front = 0, rear = 0;
 
-        visited.add(start);
-        queue.offer(start);
+        visited[start] = true;
+        queue[rear++] = start;
 
-        while (!queue.isEmpty()) {
-            int current = queue.poll();
+        while (front < rear) {
+            int current = queue[front++];
 
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (board[i][j] != current) {
-                        continue;
-                    }
+            for (int i = 0; i < counts[current]; i++) {
+                int x = cells[current][i][0];
+                int y = cells[current][i][1];
 
-                    int nx = (i + dx[direction] + n) % n;
-                    int ny = (j + dy[direction] + m) % m;
-                    int next = board[nx][ny];
+                int nx = (x + dx[direction] + n) % n;
+                int ny = (y + dy[direction] + m) % m;
 
-                    if (next != 0 && !visited.contains(next)) {
-                        visited.add(next);
-                        queue.offer(next);
-                    }
+                int next = board[nx][ny];
+                if (next != 0 && !visited[next]) {
+                    visited[next] = true;
+                    queue[rear++] = next;
                 }
             }
         }
@@ -80,52 +85,57 @@ class Solution {
         return visited;
     }
 
-    private void moveGroup(Set<Integer> group, int direction) {
-        List<Point> points = new ArrayList<>();
+    private void moveGroup(boolean[] group, int direction) {
+        int[][] nextCells = new int[MAX_ID * MAX_CELL][3];
+        int size = 0;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                int value = board[i][j];
-                if (group.contains(value)) {
-                    points.add(new Point(i, j, value));
-                }
+        for (int app = 1; app < MAX_ID; app++) {
+            if (!group[app]) continue;
+
+            for (int i = 0; i < counts[app]; i++) {
+                int x = cells[app][i][0];
+                int y = cells[app][i][1];
+
+                board[x][y] = 0;
+
+                int nx = (x + dx[direction] + n) % n;
+                int ny = (y + dy[direction] + m) % m;
+
+                nextCells[size][0] = nx;
+                nextCells[size][1] = ny;
+                nextCells[size][2] = app;
+                size++;
             }
         }
 
-        for (Point point : points) {
-            board[point.x][point.y] = 0;
-        }
+        int[] indices = new int[MAX_ID];
+        for (int i = 0; i < size; i++) {
+            int x = nextCells[i][0];
+            int y = nextCells[i][1];
+            int app = nextCells[i][2];
 
-        for (Point point : points) {
-            int nx = (point.x + dx[direction] + n) % n;
-            int ny = (point.y + dy[direction] + m) % m;
-            board[nx][ny] = point.value;
+            board[x][y] = app;
+
+            int index = indices[app]++;
+            cells[app][index][0] = x;
+            cells[app][index][1] = y;
         }
     }
 
-    private List<Integer> findBroken(int direction) {
-        List<Integer> result = new ArrayList<>();
-        boolean[] visited = new boolean[101];
+    private int findBroken(int direction) {
+        boolean[] visited = new boolean[MAX_ID];
 
         if (direction == 1 || direction == 3) {
             for (int i = 0; i < n; i++) {
                 int left = board[i][0];
                 int right = board[i][m - 1];
 
-                if (left == 0 || left != right) {
-                    continue;
-                }
+                if (left == 0 || left != right || visited[left]) continue;
 
-                boolean broken = false;
-                for (int j = 0; j < m; j++) {
-                    if (board[i][j] != left) {
-                        broken = true;
-                        break;
-                    }
-                }
-                if (broken && !visited[left]) {
-                    visited[left] = true;
-                    result.add(left);
+                visited[left] = true;
+
+                for (int j = 1; j < m - 1; j++) {
+                    if (board[i][j] != left) return left;
                 }
             }
         } else {
@@ -133,36 +143,16 @@ class Solution {
                 int top = board[0][j];
                 int bottom = board[n - 1][j];
 
-                if (top == 0 || top != bottom) {
-                    continue;
-                }
+                if (top == 0 || top != bottom || visited[top]) continue;
 
-                boolean broken = false;
-                for (int i = 0; i < n; i++) {
-                    if (board[i][j] != top) {
-                        broken = true;
-                        break;
-                    }
-                }
-                if (broken && !visited[top]) {
-                    visited[top] = true;
-                    result.add(top);
+                visited[top] = true;
+
+                for (int i = 1; i < n - 1; i++) {
+                    if (board[i][j] != top) return top;
                 }
             }
         }
 
-        return result;
-    }
-
-    private static class Point {
-        int x;
-        int y;
-        int value;
-
-        Point(int x, int y, int value) {
-            this.x = x;
-            this.y = y;
-            this.value = value;
-        }
+        return 0;
     }
 }
