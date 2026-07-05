@@ -1,97 +1,67 @@
 import java.util.*;
 
 class Solution {
-    
+
     static final int INF = (int) 1e8;
 
-    static class Node implements Comparable<Node> {
-        int cost;
-        int to;
+    private static int[] intensity;
+    private static List<List<int[]>> graph;
+    private static boolean[] isSummit;
+    private static boolean[] isGate;
 
-        Node(int cost, int to) {
-            this.cost = cost;
-            this.to = to;
+    public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
+        graph = new ArrayList<>();
+        intensity = new int[n + 1];
+        isSummit = new boolean[n + 1];
+        isGate = new boolean[n + 1];
+
+        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
+        Arrays.fill(intensity, INF);
+
+        for (int[] path : paths) {
+            graph.get(path[0]).add(new int[]{path[2], path[1]});
+            graph.get(path[1]).add(new int[]{path[2], path[0]});
         }
 
-        @Override
-        public int compareTo(Node o) {
-            return Integer.compare(this.cost, o.cost);
+        for (int s : summits) isSummit[s] = true;
+        for (int g : gates) {
+            isGate[g] = true;
+            intensity[g] = 0;
         }
-    }
 
-    private void dijkstra(int start, List<List<Node>> graph, Set<Integer> summitsSet, Set<Integer> gatesSet, int[] intensity) {
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        intensity[start] = 0;
-        pq.offer(new Node(0, start));
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        for (int g : gates) pq.offer(new int[]{0, g});
 
         while (!pq.isEmpty()) {
-            Node cur = pq.poll();
-            int dist = cur.cost;
-            int now = cur.to;
+            int[] cur = pq.poll();
+            int dist = cur[0];
+            int now = cur[1];
 
-            if (summitsSet.contains(now) || dist > intensity[now]) {
-                continue;
-            }
+            if (dist > intensity[now]) continue;
+            if (isSummit[now]) continue;
 
-            for (Node next : graph.get(now)) {
-                int c = next.cost;
-                int v = next.to;
-
-                if (gatesSet.contains(v)) {
-                    continue;
-                }
-
+            for (int[] next : graph.get(now)) {
+                int c = next[0];
+                int v = next[1];
+                if (isGate[v]) continue;
                 int nextCost = Math.max(intensity[now], c);
                 if (nextCost < intensity[v]) {
                     intensity[v] = nextCost;
-                    pq.offer(new Node(nextCost, v));
+                    pq.offer(new int[]{nextCost, v});
                 }
             }
         }
-    }
-
-    public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
-        int minSummit = 0;
-        int minIntensity = INF;
-
-        List<List<Node>> graph = new ArrayList<>();
-        for (int i = 0; i <= n; i++) {
-            graph.add(new ArrayList<>());
-        }
-
-        for (int[] path : paths) {
-            int a = path[0];
-            int b = path[1];
-            int c = path[2];
-            graph.get(a).add(new Node(c, b));
-            graph.get(b).add(new Node(c, a));
-        }
-
-        Set<Integer> summitsSet = new HashSet<>();
-        for (int summit : summits) {
-            summitsSet.add(summit);
-        }
-
-        Set<Integer> gatesSet = new HashSet<>();
-        for (int gate : gates) {
-            gatesSet.add(gate);
-        }
-
-        int[] intensity = new int[n + 1];
-        Arrays.fill(intensity, INF);
-
-        for (int gate : gates) {
-            dijkstra(gate, graph, summitsSet, gatesSet, intensity);
-        }
 
         Arrays.sort(summits);
-        for (int summit : summits) {
-            if (intensity[summit] < minIntensity) {
-                minIntensity = intensity[summit];
-                minSummit = summit;
+        int minSummit = summits[0];
+        int minIntensity = intensity[summits[0]];
+        for (int i = 1; i < summits.length; i++) {
+            if (intensity[summits[i]] < minIntensity) {
+                minIntensity = intensity[summits[i]];
+                minSummit = summits[i];
             }
         }
 
-        return new int[] {minSummit, minIntensity};
+        return new int[]{minSummit, minIntensity};
     }
 }
