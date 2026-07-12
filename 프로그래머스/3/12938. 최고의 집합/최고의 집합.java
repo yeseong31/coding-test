@@ -1,21 +1,13 @@
 import java.util.Arrays;
 
-public class Solution {
+class Solution {
+
     public int[] solution(int n, int s) {
-        if (n > s) {
-            return new int[]{-1};
-        }
+        if (n > s) return new int[]{-1};
 
         int[] answer = new int[n];
-        int base = s / n;
-        int remainder = s % n;
-
-        Arrays.fill(answer, base);
-
-        for (int i = 0; i < remainder; i++) {
-            answer[n - 1 - i]++;
-        }
-
+        Arrays.fill(answer, s / n);
+        for (int i = n - (s % n); i < n; i++) answer[i]++;
         return answer;
     }
 }
