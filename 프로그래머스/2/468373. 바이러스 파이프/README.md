@@ -1,10 +1,10 @@
 # [level 2] 바이러스 파이프 - 468373 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/468373?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/468373?language=python3) 
 
 ### 성능 요약
 
-메모리: 65 MB, 시간: 5.33 ms
+메모리: 11.7 MB, 시간: 4.03 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 05월 19일 21:27:50
+2026년 07월 17일 19:57:36
 
 ### 문제 설명
 
