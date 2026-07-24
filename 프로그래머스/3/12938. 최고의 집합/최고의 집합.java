@@ -7,7 +7,8 @@ class Solution {
 
         int[] answer = new int[n];
         Arrays.fill(answer, s / n);
-        for (int i = n - (s % n); i < n; i++) answer[i]++;
+        int r = s % n;
+        for (int i = n - r; i < n; i++) answer[i]++;
         return answer;
     }
 }
