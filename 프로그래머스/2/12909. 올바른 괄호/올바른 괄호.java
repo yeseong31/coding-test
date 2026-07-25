@@ -1,22 +1,13 @@
-import java.util.Stack;
-
 class Solution {
+
     boolean solution(String s) {
-        Stack<Character> stack = new Stack<>();
-        
+        int count = 0;
         for (char c : s.toCharArray()) {
-            switch (c) {
-                case '(' -> stack.add(c);
-                case ')' -> {
-                    if (stack.isEmpty() || stack.peek() != '(') {
-                        return false;
-                    } else {
-                        stack.pop();
-                    }
-                }
+            if (c == '(') count++;
+            else if (c == ')') {
+                if (--count < 0) return false;
             }
         }
-        
-        return stack.isEmpty();
+        return count == 0;
     }
 }
