@@ -1,10 +1,10 @@
 # [level 2] 예상 대진표 - 12985 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12985) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12985?language=java) 
 
 ### 성능 요약
 
-메모리: 10.1 MB, 시간: 0.02 ms
+메모리: 74.1 MB, 시간: 0.05 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 11월 13일 22:02:24
+2026년 07월 29일 21:11:40
 
 ### 문제 설명
 
