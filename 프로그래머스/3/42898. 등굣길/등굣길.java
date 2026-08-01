@@ -3,10 +3,6 @@ import java.util.Arrays;
 class Solution {
     public int solution(int m, int n, int[][] puddles) {
         int[][] board = new int[n][m];
-        
-        for (int[] row : board) {
-            Arrays.fill(row, 0);
-        }
         for (int[] puddle : puddles) {
             int y = puddle[0] - 1;
             int x = puddle[1] - 1;
