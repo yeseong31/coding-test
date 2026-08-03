@@ -1,25 +1,39 @@
 class Solution {
+
     public int solution(String name) {
-        int n = name.length();
-        int count = 0;
+        int upDownCost = calculateUpDownCost(name);
+        int leftRightCost = calculateMinLeftRightCost(name);
+        return upDownCost + leftRightCost;
+    }
 
-        for (int i = 0; i < n; i++) {
-            char ch = name.charAt(i);
-            count += Math.min(ch - 'A', 'Z' - ch + 1);
+    private int calculateUpDownCost(String name) {
+        int cost = 0;
+        for (char ch : name.toCharArray()) {
+            cost += Math.min(ch - 'A', 'Z' - ch + 1);
         }
+        return cost;
+    }
 
+    private int calculateMinLeftRightCost(String name) {
+        int n = name.length();
         int minStep = n - 1;
 
         for (int i = 0; i < n; i++) {
-            int next = i + 1;
-            
-            while (next < n && name.charAt(next) == 'A') {
-                next++;
-            }
-            
-            minStep = Math.min(minStep, Math.min(2 * i + (n - next), i + 2 * (n - next)));
-        }
+            int next = findNextNonA(name, i + 1);
 
-        return count + minStep;
+            int goRightFirst = 2 * i + (n - next);
+            int goLeftFirst = i + 2 * (n - next);
+
+            minStep = Math.min(minStep, Math.min(goRightFirst, goLeftFirst));
+        }
+        return minStep;
+    }
+
+    private int findNextNonA(String name, int index) {
+        int n = name.length();
+        while (index < n && name.charAt(index) == 'A') {
+            index++;
+        }
+        return index;
     }
 }
