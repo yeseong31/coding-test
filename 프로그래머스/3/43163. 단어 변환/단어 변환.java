@@ -1,74 +1,51 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-class Solution {
-    class Element {
-        private final Set<String> checked = new HashSet<>();
-        
-        public String word;
-        public int seq;
-        
-        public Element(String word, int seq) {
-            this.word = word;
-            this.seq = seq;
-        }
-        
-        public boolean isChecked(String word) {
-            return checked.contains(word);
-        }
-        
-        public void check(String word) {
-            checked.add(word);
-        }
-    }
+public class Solution {
     
-    public int solution(String begin, String target, String[] words) {
-        if (!List.of(words).contains(target)) {
+    public static int solution(String begin, String target, String[] words) {
+        List<String> wordList = Arrays.asList(words);
+        if (!wordList.contains(target)) {
             return 0;
         }
-        
-        int answer = words.length + 1;
-        
-        Deque<Element> queue = new ArrayDeque<>();
-        queue.add(new Element(begin, 0));
-        
-        int seq;
-        String word;
-        
+
+        Queue<String> queue = new LinkedList<>();
+        Queue<Integer> countQueue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+
+        queue.offer(begin);
+        countQueue.offer(0);
+        visited.add(begin);
+
         while (!queue.isEmpty()) {
-            Element e = queue.pollFirst();
-            seq = e.seq;
-            word = e.word;
-            
-            if (seq > words.length) {
-                continue;
+            String currentWord = queue.poll();
+            int count = countQueue.poll();
+
+            if (currentWord.equals(target)) {
+                return count;
             }
-            if (word.equals(target)) {
-                return seq;
-            }
-                
-            for (String next : words) {
-                if (e.isChecked(next)) {
+
+            for (String word : words) {
+                if (visited.contains(word)) {
                     continue;
                 }
-                
-                int count = 0;
-                for (int i = 0; i < word.length(); i++) {
-                    if (word.charAt(i) == next.charAt(i)) {
-                        count++;
-                    }
-                }
-                
-                if (count == word.length() - 1) {
-                    e.check(next);
-                    queue.offerLast(new Element(next, seq + 1));
+                if (diffCount(currentWord, word) == 1) {
+                    queue.offer(word);
+                    countQueue.offer(count + 1);
+                    visited.add(word);
                 }
             }
         }
-        
+
         return 0;
+    }
+
+    private static int diffCount(String a, String b) {
+        int diff = 0;
+        for (int i = 0; i < a.length(); i++) {
+            if (a.charAt(i) != b.charAt(i)) {
+                diff++;
+            }
+        }
+        return diff;
     }
 }
