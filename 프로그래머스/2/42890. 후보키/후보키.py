@@ -2,37 +2,18 @@ from itertools import combinations
 
 
 def solution(relation):
-    comb = []
-    for i in range(1, len(relation[0]) + 1):
-        comb.extend(combinations(range(len(relation[0])), i))
+    row_count = len(relation)
+    col_count = len(relation[0])
 
-    unique = []
-    for num in comb:
-        res = []
-        flag = False
+    candidate_keys = []
 
-        for i in num:
-            tmp = []
-            for rel in relation:
-                for j, r in enumerate(rel):
-                    if i == j:
-                        tmp.append(r)
-            res.append(tmp)
+    for size in range(1, col_count + 1):
+        for cols in combinations(range(col_count), size):
+            if any(set(key).issubset(cols) for key in candidate_keys):
+                continue
 
-        check = set()
-        for target in zip(*res):
-            if target not in check:
-                check.add(target)
-        
-        if len(check) == len(relation):
-            flag = True
+            projected = {tuple(row[i] for i in cols) for row in relation}
+            if len(projected) == row_count:
+                candidate_keys.append(cols)
 
-        for u in unique:
-            if set(u).issubset(set(num)):
-                flag = False
-                break
-        
-        if flag:
-            unique.append(num)
-
-    return len(unique)
+    return len(candidate_keys)
