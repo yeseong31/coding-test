@@ -1,14 +1,14 @@
 def solution(s):
-    answer = list()
-    checked = set()
-    
-    s = sorted(s[2:-2].split('},{'), key=len)
-    
-    for target in s:
-        for v in target.split(','):
-            if v not in checked:
+    answer = []
+    seen = set()
+
+    groups = s[2:-2].split('},{')
+    groups.sort(key=lambda g: len(g.split(',')))
+
+    for group in groups:
+        for v in group.split(','):
+            if v not in seen:
+                seen.add(v)
                 answer.append(int(v))
-                checked.add(v)
-    
+
     return answer
-    
