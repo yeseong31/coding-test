@@ -1,61 +1,49 @@
-import java.util.*;
+import java.util.Arrays;
 
 public class Solution {
 
-    public static Object dfs(int start, int end, String tree) {
-        if (start >= end) {
-            return tree.charAt(start);
+    private boolean isValid(char[] tree, int start, int end, boolean parentIsDummy) {
+        if (start > end) {
+            return true;
         }
 
-        int mid = (start + end) / 2;
-
-        Object left = dfs(start, mid - 1, tree);
-        Object right = dfs(mid + 1, end, tree);
-
-        if (left.equals(false) || (left.equals('1') && tree.charAt(mid) == '0')) {
+        int mid = (start + end) >>> 1;
+        boolean currentIsOne = tree[mid] == '1';
+        
+        if (parentIsDummy && currentIsOne) {
             return false;
         }
 
-        if (right.equals(false) || (right.equals('1') && tree.charAt(mid) == '0')) {
-            return false;
-        }
+        boolean currentIsDummy = !currentIsOne;
 
-        if (left.equals('0') && right.equals('0') && tree.charAt(mid) == '0') {
-            return '0';
-        }
-
-        return '1';
+        return isValid(tree, start, mid - 1, currentIsDummy)
+                && isValid(tree, mid + 1, end, currentIsDummy);
     }
 
-    public static String convertToFullBinaryTree(String binaryN) {
-        int value = 1;
+    private char[] makeFullBinaryTree(long number) {
+        String binary = Long.toBinaryString(number);
 
-        while ((int)Math.pow(2, value) - 1 < binaryN.length()) {
-            value++;
+        int treeLength = 1;
+        while (treeLength < binary.length()) {
+            treeLength = treeLength * 2 + 1;
         }
 
-        int targetLength = (int)Math.pow(2, value) - 1;
+        char[] tree = new char[treeLength];
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < targetLength - binaryN.length(); i++) {
-            sb.append('0');
-        }
-        sb.append(binaryN);
+        Arrays.fill(tree, '0');
 
-        return sb.toString();
+        int padding = treeLength - binary.length();
+        binary.getChars(0, binary.length(), tree, padding);
+
+        return tree;
     }
 
-    public static int[] solution(long[] numbers) {
+    public int[] solution(long[] numbers) {
         int[] answer = new int[numbers.length];
 
         for (int i = 0; i < numbers.length; i++) {
-            long n = numbers[i];
-
-            String binaryN = Long.toBinaryString(n);
-            String tree = convertToFullBinaryTree(binaryN);
-
-            Object result = dfs(0, tree.length() - 1, tree);
-            answer[i] = result.equals(false) ? 0 : 1;
+            char[] tree = makeFullBinaryTree(numbers[i]);
+            answer[i] = isValid(tree, 0, tree.length - 1, false) ? 1 : 0;
         }
 
         return answer;
