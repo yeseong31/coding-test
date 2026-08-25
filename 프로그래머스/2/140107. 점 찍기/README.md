@@ -1,10 +1,10 @@
 # [level 2] 점 찍기 - 140107 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/140107?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/140107) 
 
 ### 성능 요약
 
-메모리: 76.8 MB, 시간: 15.34 ms
+메모리: 90.2 MB, 시간: 5.33 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 01월 20일 22:25:23
+2026년 08월 25일 19:27:57
 
 ### 문제 설명
 

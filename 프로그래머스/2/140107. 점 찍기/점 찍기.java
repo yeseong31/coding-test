@@ -1,12 +1,14 @@
 class Solution {
-    
     public long solution(int k, int d) {
         long answer = 0;
-        long d2 = (long) d * d;
+        long maxDistanceSquared = (long) d * d;
 
-        for (int x = 0; x <= d; x += k) {
-            long yMax = (long) Math.sqrt(d2 - (long) x * x);
-            answer += 1 + (yMax / k);
+        for (long x = 0; x <= d; x += k) {
+            long yMax = (long) Math.sqrt(
+                maxDistanceSquared - x * x
+            );
+
+            answer += yMax / k + 1;
         }
 
         return answer;
