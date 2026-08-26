@@ -1,94 +1,73 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 class Solution {
 
-    private List<Point> movePoint(int x, int y, int nx, int ny) {
-        List<Point> result = new ArrayList<>();
-
-        int stepX = x <= nx ? 1 : -1;
-        for (int cx = x + stepX; cx != nx + stepX; cx += stepX) {
-            result.add(new Point(cx, y));
-        }
-
-        int lastX = nx;
-        int stepY = y <= ny ? 1 : -1;
-        for (int cy = y + stepY; cy != ny + stepY; cy += stepY) {
-            result.add(new Point(lastX, cy));
-        }
-
-        return result;
-    }
-
-    private List<Point> getFootprints(int[][] points, int[] viaRoutes) {
-        List<Point> result = new ArrayList<>();
-
-        int[] start = points[viaRoutes[0] - 1];
-        result.add(new Point(start[0], start[1]));
-
-        for (int i = 1; i < viaRoutes.length; i++) {
-            int[] prev = points[viaRoutes[i - 1] - 1];
-            int[] next = points[viaRoutes[i] - 1];
-
-            result.addAll(movePoint(prev[0], prev[1], next[0], next[1]));
-        }
-
-        return result;
-    }
-
     public int solution(int[][] points, int[][] routes) {
-        int answer = 0;
-        List<List<Point>> footprints = new ArrayList<>();
-        int maxLength = 0;
+        int robotCount = routes.length;
+        int[][] positions = new int[robotCount][2];
+        int[] targets = new int[robotCount];
+        boolean[] finished = new boolean[robotCount];
 
-        for (int[] route : routes) {
-            List<Point> path = getFootprints(points, route);
-            footprints.add(path);
-            maxLength = Math.max(maxLength, path.size());
+        for (int i = 0; i < robotCount; i++) {
+            int[] start = points[routes[i][0] - 1];
+            positions[i][0] = start[0];
+            positions[i][1] = start[1];
+
+            targets[i] = 1;
         }
 
-        for (int t = 0; t < maxLength; t++) {
-            Map<Point, Integer> counter = new HashMap<>();
+        int answer = 0;
+        int finishedCount = 0;
 
-            for (List<Point> path : footprints) {
-                if (t < path.size()) {
-                    Point p = path.get(t);
-                    counter.put(p, counter.getOrDefault(p, 0) + 1);
+        while (finishedCount < robotCount) {
+
+            Map<Integer, Integer> count = new HashMap<>();
+
+            for (int i = 0; i < robotCount; i++) {
+                if (finished[i]) {
+                    continue;
+                }
+
+                int key = positions[i][0] * 101 + positions[i][1];
+                count.put(key, count.getOrDefault(key, 0) + 1);
+            }
+
+            for (int value : count.values()) {
+                if (value >= 2) {
+                    answer++;
                 }
             }
 
-            for (int count : counter.values()) {
-                if (count > 1) {
-                    answer++;
+            for (int i = 0; i < robotCount; i++) {
+                if (finished[i]) {
+                    continue;
+                }
+
+                if (targets[i] == routes[i].length) {
+                    finished[i] = true;
+                    finishedCount++;
+                    continue;
+                }
+
+                int[] target = points[routes[i][targets[i]] - 1];
+
+                int r = positions[i][0];
+                int c = positions[i][1];
+
+                if (r != target[0]) {
+                    positions[i][0] += r < target[0] ? 1 : -1;
+                } else if (c != target[1]) {
+                    positions[i][1] += c < target[1] ? 1 : -1;
+                }
+
+                if (positions[i][0] == target[0]
+                        && positions[i][1] == target[1]) {
+                    targets[i]++;
                 }
             }
         }
 
         return answer;
-    }
-
-    static class Point {
-        int x;
-        int y;
-
-        Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (!(obj instanceof Point)) return false;
-            Point other = (Point) obj;
-            return x == other.x && y == other.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * x + y;
-        }
     }
 }
