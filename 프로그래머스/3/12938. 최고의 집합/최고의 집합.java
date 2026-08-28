@@ -3,12 +3,20 @@ import java.util.Arrays;
 class Solution {
 
     public int[] solution(int n, int s) {
-        if (n > s) return new int[]{-1};
+        if (s < n) {
+            return new int[]{-1};
+        }
+
+        int quotient = s / n;
+        int remainder = s % n;
 
         int[] answer = new int[n];
-        Arrays.fill(answer, s / n);
-        int r = s % n;
-        for (int i = n - r; i < n; i++) answer[i]++;
+        Arrays.fill(answer, quotient);
+
+        for (int i = n - remainder; i < n; i++) {
+            answer[i]++;
+        }
+
         return answer;
     }
 }
