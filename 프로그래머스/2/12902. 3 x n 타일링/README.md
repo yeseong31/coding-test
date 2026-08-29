@@ -1,10 +1,10 @@
 # [level 2] 3 x n 타일링 - 12902 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12902) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12902?language=java) 
 
 ### 성능 요약
 
-메모리: 10.3 MB, 시간: 32.70 ms
+메모리: 57.1 MB, 시간: 0.10 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2023년 12월 3일 22:50:0
+2026년 08월 29일 20:22:26
 
 ### 문제 설명
 
