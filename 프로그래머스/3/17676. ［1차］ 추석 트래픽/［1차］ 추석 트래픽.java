@@ -1,38 +1,52 @@
-import java.util.*;
+import java.math.BigDecimal;
+import java.time.LocalTime;
 
 class Solution {
 
+    private static final long WINDOW_SIZE = 1_000L;
+
     public int solution(String[] lines) {
         int n = lines.length;
-        double[] starts = new double[n];
-        double[] ends = new double[n];
+        long[] starts = new long[n];
+        long[] ends = new long[n];
 
         for (int i = 0; i < n; i++) {
             String[] parts = lines[i].split(" ");
-            String[] t = parts[1].split(":");
-            double s = Double.parseDouble(parts[2].replace("s", ""));
-            double end = (Integer.parseInt(t[0]) * 3600
-                       + Integer.parseInt(t[1]) * 60
-                       + Double.parseDouble(t[2])) * 1000;
-            double start = end - s * 1000 + 1;
-            starts[i] = start;
+
+            long end = parseTime(parts[1]);
+            long duration = parseDuration(parts[2]);
+
             ends[i] = end;
+            starts[i] = end - duration + 1;
         }
 
         int answer = 0;
-        for (int i = 0; i < n; i++) {
-            answer = Math.max(answer, check(starts[i], starts, ends, n));
-            answer = Math.max(answer, check(ends[i], starts, ends, n));
+
+        for (long windowStart : ends) {
+            long windowEnd = windowStart + WINDOW_SIZE - 1;
+            int count = 0;
+
+            for (int i = 0; i < n; i++) {
+                if (starts[i] <= windowEnd && ends[i] >= windowStart) {
+                    count++;
+                }
+            }
+
+            answer = Math.max(answer, count);
         }
+
         return answer;
     }
 
-    private int check(double startTime, double[] starts, double[] ends, int n) {
-        double endTime = startTime + 1000;
-        int count = 0;
-        for (int i = 0; i < n; i++) {
-            if (starts[i] < endTime && ends[i] >= startTime) count++;
-        }
-        return count;
+    private long parseTime(String time) {
+        return LocalTime.parse(time).toNanoOfDay() / 1_000_000;
+    }
+
+    private long parseDuration(String duration) {
+        String seconds = duration.substring(0, duration.length() - 1);
+
+        return new BigDecimal(seconds)
+                .movePointRight(3)
+                .longValueExact();
     }
 }
