@@ -5,27 +5,31 @@ class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         int n = progresses.length;
         int[] days = new int[n];
-        
+
         for (int i = 0; i < n; i++) {
-            days[i] = (int) Math.ceil((100.0 - progresses[i]) / speeds[i]);
+            int remaining = 100 - progresses[i];
+            days[i] = (remaining + speeds[i] - 1) / speeds[i];
         }
-        
-        List<Integer> answer = new ArrayList<>(); 
-        int prev = 0;
-        int count = 0;
-        
-        for (int i = 0; i < n; i++) {
-            if (days[prev] >= days[i]) {
+
+        List<Integer> answer = new ArrayList<>();
+
+        int releaseDay = days[0];
+        int count = 1;
+
+        for (int i = 1; i < n; i++) {
+            if (days[i] <= releaseDay) {
                 count++;
-                continue;
+            } else {
+                answer.add(count);
+                releaseDay = days[i];
+                count = 1;
             }
-            
-            answer.add(count);
-            count = 1;
-            prev = i;
         }
-        
+
         answer.add(count);
-        return answer.stream().mapToInt(v -> v).toArray();
+
+        return answer.stream()
+                .mapToInt(Integer::intValue)
+                .toArray();
     }
 }
