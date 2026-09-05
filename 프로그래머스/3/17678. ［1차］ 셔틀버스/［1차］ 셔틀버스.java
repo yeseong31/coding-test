@@ -1,45 +1,55 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 class Solution {
     
     public String solution(int n, int t, int m, String[] timetable) {
-        
         List<Integer> crews = new ArrayList<>();
+
         for (String time : timetable) {
             int hour = Integer.parseInt(time.substring(0, 2));
             int minute = Integer.parseInt(time.substring(3, 5));
+
             crews.add(hour * 60 + minute);
         }
 
         crews.sort(Collections.reverseOrder());
 
-        List<int[]> answer = new ArrayList<>();
+        int lastDeparture = 0;
+        int lastBoardedTime = 0;
+        int lastBoardedCount = 0;
 
-        for (int i = 0; i < n; i++) {
-            int departTime = 9 * 60 + i * t;
-            int cnt = 0;
-            int prev = departTime;
+        for (int bus = 0; bus < n; bus++) {
+            int departure = 9 * 60 + bus * t;
+            int boardedCount = 0;
+            int boardedTime = 0;
 
-            while (!crews.isEmpty() && cnt < m && crews.get(crews.size() - 1) <= departTime) {
-                prev = crews.remove(crews.size() - 1);
-                cnt++;
+            while (!crews.isEmpty()
+                    && boardedCount < m
+                    && crews.get(crews.size() - 1) <= departure) {
+
+                boardedTime = crews.remove(crews.size() - 1);
+                boardedCount++;
             }
 
-            answer.add(new int[]{departTime, cnt, prev});
+            lastDeparture = departure;
+            lastBoardedTime = boardedTime;
+            lastBoardedCount = boardedCount;
         }
 
-        int target;
-        int[] last = answer.get(answer.size() - 1);
+        int conTime;
 
-        if (last[1] < m) {
-            target = last[0];
+        if (lastBoardedCount < m) {
+            conTime = lastDeparture;
         } else {
-            target = last[2] - 1;
+            conTime = lastBoardedTime - 1;
         }
 
-        int hour = target / 60;
-        int minute = target % 60;
-
-        return String.format("%02d:%02d", hour, minute);
+        return String.format(
+                "%02d:%02d",
+                conTime / 60,
+                conTime % 60
+        );
     }
 }
