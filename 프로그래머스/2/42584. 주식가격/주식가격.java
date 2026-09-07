@@ -2,6 +2,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 class Solution {
+    
     public int[] solution(int[] prices) {
         int[] answer = new int[prices.length];
         Deque<Integer> stack = new ArrayDeque<>();
