@@ -1,10 +1,10 @@
 # [level 4] [3차] 자동완성 - 17685 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/17685) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/17685?language=java) 
 
 ### 성능 요약
 
-메모리: 398 MB, 시간: 1978.38 ms
+메모리: 224 MB, 시간: 114.92 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 02월 22일 17:24:06
+2026년 09월 08일 20:17:34
 
 ### 문제 설명
 
