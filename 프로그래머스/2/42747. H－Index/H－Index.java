@@ -1,19 +1,21 @@
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
     
     public int solution(int[] citations) {
-        Integer[] arr = Arrays.stream(citations).boxed().toArray(Integer[]::new);
-        Arrays.sort(arr, Collections.reverseOrder());
-        
-        int count = 0;
-        
-        for (int i = 0; i < arr.length; i++) {
-            if (i < arr[i]) {
-                count++;
+        Arrays.sort(citations);
+
+        int n = citations.length;
+
+        for (int i = 0; i < n; i++) {
+            int citation = citations[n - 1 - i];
+            int paperCount = i + 1;
+
+            if (citation < paperCount) {
+                return i;
             }
         }
-        
-        return count;
+
+        return n;
     }
 }
