@@ -1,51 +1,53 @@
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class Solution {
-    
-    public static int solution(String begin, String target, String[] words) {
-        List<String> wordList = Arrays.asList(words);
-        if (!wordList.contains(target)) {
-            return 0;
-        }
 
-        Queue<String> queue = new LinkedList<>();
-        Queue<Integer> countQueue = new LinkedList<>();
-        Set<String> visited = new HashSet<>();
+    public int solution(String begin, String target, String[] words) {
+        boolean[] visited = new boolean[words.length];
+        Queue<String> queue = new ArrayDeque<>();
 
         queue.offer(begin);
-        countQueue.offer(0);
-        visited.add(begin);
+
+        int count = 0;
 
         while (!queue.isEmpty()) {
-            String currentWord = queue.poll();
-            int count = countQueue.poll();
+            int levelSize = queue.size();
 
-            if (currentWord.equals(target)) {
-                return count;
+            for (int i = 0; i < levelSize; i++) {
+                String current = queue.poll();
+
+                if (current.equals(target)) {
+                    return count;
+                }
+
+                for (int j = 0; j < words.length; j++) {
+                    if (!visited[j] && canConvert(current, words[j])) {
+                        visited[j] = true;
+                        queue.offer(words[j]);
+                    }
+                }
             }
 
-            for (String word : words) {
-                if (visited.contains(word)) {
-                    continue;
-                }
-                if (diffCount(currentWord, word) == 1) {
-                    queue.offer(word);
-                    countQueue.offer(count + 1);
-                    visited.add(word);
-                }
-            }
+            count++;
         }
 
         return 0;
     }
 
-    private static int diffCount(String a, String b) {
-        int diff = 0;
-        for (int i = 0; i < a.length(); i++) {
-            if (a.charAt(i) != b.charAt(i)) {
-                diff++;
+    private boolean canConvert(String first, String second) {
+        int difference = 0;
+
+        for (int i = 0; i < first.length(); i++) {
+            if (first.charAt(i) != second.charAt(i)) {
+                difference++;
+
+                if (difference > 1) {
+                    return false;
+                }
             }
         }
-        return diff;
+
+        return difference == 1;
     }
 }
