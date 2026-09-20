@@ -1,50 +1,45 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class Solution {
-    private static final Map<String, Set<String>> bannedIdMap = new HashMap<>();
     
-    private static void dfs(String[] banned_id, int seq, Set<String> current, Set<Set<String>> answer) {
-        if (seq == banned_id.length) {
-            if (current.size() == banned_id.length) {
-                answer.add(new HashSet<>(current));
+    private final Set<Integer> result = new HashSet<>();
+    private final List<List<Integer>> candidates = new ArrayList<>();
+
+    public int solution(String[] userId, String[] bannedId) {
+        result.clear();
+        candidates.clear();
+
+        for (String banned : bannedId) {
+            List<Integer> matchedUsers = new ArrayList<>();
+            String regex = banned.replace('*', '.');
+
+            for (int i = 0; i < userId.length; i++) {
+                if (userId[i].matches(regex)) {
+                    matchedUsers.add(i);
+                }
             }
+
+            candidates.add(matchedUsers);
+        }
+
+        dfs(0, 0);
+        return result.size();
+    }
+
+    private void dfs(int depth, int usedMask) {
+        if (depth == candidates.size()) {
+            result.add(usedMask);
             return;
         }
-        
-        for (String bid : bannedIdMap.get(banned_id[seq])) {
-            if (current.contains(bid)) {
+
+        for (int userIndex : candidates.get(depth)) {
+            int userBit = 1 << userIndex;
+
+            if ((usedMask & userBit) != 0) {
                 continue;
             }
 
-            current.add(bid);
-            dfs(banned_id, seq + 1, current, answer);
-            current.remove(bid);
+            dfs(depth + 1, usedMask | userBit);
         }
-    }
-    
-    public int solution(String[] user_id, String[] banned_id) {
-        for (String bid : banned_id) {
-            String regex = bid.replace("*", ".");
-            if (bannedIdMap.containsKey(regex)) {
-                continue;
-            }
-            
-            Set<String> matchedIds = new HashSet<>();
-            for (String uid : user_id) {
-                if (uid.matches(regex)) {
-                    matchedIds.add(uid);
-                }
-            }
-            
-            bannedIdMap.put(bid, matchedIds);
-        }
-        
-        Set<Set<String>> answer = new HashSet<>();
-        dfs(banned_id, 0, new HashSet<>(), answer);
-        
-        return answer.size();
     }
 }
