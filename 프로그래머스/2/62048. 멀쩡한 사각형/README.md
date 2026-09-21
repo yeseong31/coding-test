@@ -1,10 +1,10 @@
 # [level 2] 멀쩡한 사각형 - 62048 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/62048?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/62048) 
 
 ### 성능 요약
 
-메모리: 82.8 MB, 시간: 0.03 ms
+메모리: 82.4 MB, 시간: 0.03 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 09월 18일 20:24:46
+2026년 09월 21일 19:43:50
 
 ### 문제 설명
 
