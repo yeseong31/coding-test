@@ -1,76 +1,90 @@
 import java.util.*;
 
 class Solution {
-
+    
     public int solution(int distLimit, int splitLimit) {
-        long d = distLimit;
-        long s = splitLimit;
-
+        long distance = distLimit;
+        long limit = splitLimit;
+        
         List<Long> values = new ArrayList<>();
-        generate(1, s, values);
+        generateValues(1, limit, values);
         Collections.sort(values);
-
+        
         int n = values.size();
-        long[] cost = new long[n];
-        Arrays.fill(cost, Long.MAX_VALUE);
-        cost[0] = 0;
-
-        Map<Long, Integer> index = new HashMap<>(n);
+        long[] minCost = new long[n];
+        Arrays.fill(minCost, Long.MAX_VALUE);
+        minCost[0] = 0;
+        
+        Map<Long, Integer> index = new HashMap<>();
         for (int i = 0; i < n; i++) {
             index.put(values.get(i), i);
         }
-
+        
         for (int i = 0; i < n; i++) {
-            long p = values.get(i);
-
-            if (cost[i] == Long.MAX_VALUE) {
+            if (minCost[i] == Long.MAX_VALUE) {
                 continue;
             }
+            
+            long value = values.get(i);
 
-            if (p * 2 <= s) {
-                int next = index.get(p * 2);
-                cost[next] = Math.min(cost[next], cost[i] + p);
-            }
-
-            if (p * 3 <= s) {
-                int next = index.get(p * 3);
-                cost[next] = Math.min(cost[next], cost[i] + p);
-            }
+            updateCost(value, value * 2, i, index, minCost, limit);
+            updateCost(value, value * 3, i, index, minCost, limit);
         }
-
+        
         long answer = 1;
-
+        
         for (int i = 0; i < n; i++) {
-            long p = values.get(i);
+            long value = values.get(i);
+            long cost = minCost[i];
 
-            if (cost[i] > d) {
+            if (cost > distance) {
                 continue;
             }
+            
+            answer = Math.max(answer, value);
+            
+            long remaining = distance - cost;
+            long extra = Math.min(value, remaining);
 
-            answer = Math.max(answer, p);
-
-            long remain = d - cost[i];
-            long x = Math.min(p, remain);
-
-            if (p * 2 <= s) {
-                answer = Math.max(answer, p + x);
+            if (value * 2 <= limit) {
+                answer = Math.max(answer, value + extra);
             }
-
-            if (p * 3 <= s) {
-                answer = Math.max(answer, p + (x << 1));
+            
+            if (value * 3 <= limit) {
+                answer = Math.max(answer, value + extra * 2);
             }
         }
-
+        
         return (int) answer;
     }
-
-    private void generate(long value, long limit, List<Long> values) {
+    
+    private void updateCost(
+            long current,
+            long nextValue,
+            int currentIndex,
+            Map<Long, Integer> index,
+            long[] minCost,
+            long limit
+    ) {
+        if (nextValue > limit) {
+            return;
+        }
+        
+        int nextIndex = index.get(nextValue);
+        minCost[nextIndex] = Math.min(
+                minCost[nextIndex],
+                minCost[currentIndex] + current
+        );
+    }
+    
+    private void generateValues(long value, long limit, List<Long> values) {
         if (value > limit) {
             return;
         }
-
+        
         values.add(value);
-        generate(value * 2, limit, values);
-        generate(value * 3, limit, values);
+        
+        generateValues(value * 2, limit, values);
+        generateValues(value * 3, limit, values);
     }
 }
